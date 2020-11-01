@@ -2,9 +2,9 @@
 Rapid long-read squiggle alignment to a short viral reference genome.
 
 #Datasets:
-covid: /z/scratch1/hariss/covid/
-human: /y/hariss/FAST5/50-50/c/h
-zymo: /y/hariss/FAST5/50-50/c/z
+covid: /z/scratch1/hariss/covid/  
+human: /y/hariss/FAST5/50-50/c/h  
+zymo: /y/hariss/FAST5/50-50/c/z  
 
 Normalize using RawMap (from public repo with modified RawMap.cpp file) followed by dtw:
 
