@@ -11,6 +11,6 @@ Normalize using RawMap (from public repo with modified RawMap.cpp file) followed
 1. find {datasetpath} -type f > input
 2. Clone RawMap form https://github.com/harisankarsadasivan/RawMap. Modify the top file with the top file RawMap.cpp with the one in SquiggAlign repo. 
 ./RawMap train input {empty dummy file name} > input_log
-Open input_log and trin beginning and end.
+Open input_log and trim beginning and end.
 3. Change <input_log> in the notebook script.
 4. Run notebook on python
