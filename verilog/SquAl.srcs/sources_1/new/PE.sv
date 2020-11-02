@@ -42,7 +42,7 @@ module PE(input clk,
 
   
      
-  wire [`DATA_WIDTH-1:0] diag_tmp, top_tmp, left_tmp, score_wire;
+  wire [`DATA_WIDTH-1:0] diag_tmp, top_tmp, left_tmp, score_wire,diff;
 
   //tmp wires
   assign diag_tmp = diag;

@@ -1,0 +1,14 @@
+#-----------------------------------------------------------
+# Vivado v2019.1 (64-bit)
+# SW Build 2552052 on Fri May 24 14:49:42 MDT 2019
+# IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
+# Start of session at: Mon Nov  2 00:22:01 2020
+# Process ID: 19476
+# Current directory: G:/My Drive/SquiggAlign/verilog
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent19324 G:\My Drive\SquiggAlign\verilog\SquAl.xpr
+# Log file: G:/My Drive/SquiggAlign/verilog/vivado.log
+# Journal file: G:/My Drive/SquiggAlign/verilog\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project {G:/My Drive/SquiggAlign/verilog/SquAl.xpr}
+update_compile_order -fileset sources_1
