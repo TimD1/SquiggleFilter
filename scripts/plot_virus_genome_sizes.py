@@ -1,3 +1,5 @@
+import matplotlib as mpl
+mpl.use('agg')
 import matplotlib.pyplot as plt
 
 def add_datapoint(ax, data):
@@ -49,4 +51,4 @@ ax.text(105000, 7.5, "dsRNA", color="blue")
 ax.plot(100000, 7.2, color="red", marker="+")
 ax.text(105000, 7, "dsDNA", color="red")
 
-plt.show()
+plt.savefig('../img/genome_sizes.png')

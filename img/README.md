@@ -1,1 +1,1 @@
-This folder contains source code for image generation.
+This folder contains all generated images.
