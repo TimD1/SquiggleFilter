@@ -2,13 +2,22 @@
 # Vivado v2019.1 (64-bit)
 # SW Build 2552052 on Fri May 24 14:49:42 MDT 2019
 # IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
-# Start of session at: Mon Nov  2 00:22:01 2020
-# Process ID: 19476
+# Start of session at: Tue Nov  3 12:53:25 2020
+# Process ID: 21000
 # Current directory: G:/My Drive/SquiggAlign/verilog
-# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent19324 G:\My Drive\SquiggAlign\verilog\SquAl.xpr
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent9876 G:\My Drive\SquiggAlign\verilog\SquAl.xpr
 # Log file: G:/My Drive/SquiggAlign/verilog/vivado.log
 # Journal file: G:/My Drive/SquiggAlign/verilog\vivado.jou
 #-----------------------------------------------------------
 start_gui
 open_project {G:/My Drive/SquiggAlign/verilog/SquAl.xpr}
-update_compile_order -fileset sources_1
+set_property BOARD_PART_REPO_PATHS {{C:/Users/Harisankar Sadasivan/AppData/Roaming/Xilinx/Vivado/2019.1/xhub/board_store} {G:/My Drive/SquiggAlign/verilog/{C:Xilinxivado-boards-masterivado-boards-master} {G:/My Drive/SquiggAlign/verilog/ewoard_files"}}} [current_project]
+set_param board.repoPaths {{C:/Users/Harisankar Sadasivan/AppData/Roaming/Xilinx/Vivado/2019.1/xhub/board_store} {G:/My Drive/SquiggAlign/verilog/{C:Xilinxivado-boards-masterivado-boards-master} {G:/My Drive/SquiggAlign/verilog/ewoard_files"}}}
+set_property top testbench_PE [current_fileset]
+set_property BOARD_PART_REPO_PATHS {{C:/Users/Harisankar Sadasivan/AppData/Roaming/Xilinx/Vivado/2019.1/xhub/board_store} {G:/My Drive/SquiggAlign/verilog/{C:Xilinxivado-boards-masterivado-boards-master} {G:/My Drive/SquiggAlign/verilog/ewoard_files"}}} [current_project]
+set_param board.repoPaths {{C:/Users/Harisankar Sadasivan/AppData/Roaming/Xilinx/Vivado/2019.1/xhub/board_store} {G:/My Drive/SquiggAlign/verilog/{C:Xilinxivado-boards-masterivado-boards-master} {G:/My Drive/SquiggAlign/verilog/ewoard_files"}}}
+launch_simulation
+source testbench_PE.tcl
+close_sim
+launch_simulation
+source testbench_PE.tcl
