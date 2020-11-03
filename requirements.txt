@@ -1,2 +1,4 @@
-matplotlib
+matplotlib==3.0.3
 h5py
+git+https://github.com/rrwick/Porechop
+pomoxis
