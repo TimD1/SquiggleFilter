@@ -1,6 +1,8 @@
 import h5py
 import numpy as np
 import re
+import matplotlib as mpl
+mpl.use('agg')
 import matplotlib.pyplot as plt
 
 
@@ -17,4 +19,4 @@ for read_name in fast5_file:
 plt.hist(all_signals, bins=100, range=[0,1000], facecolor='g', alpha=0.6)
 plt.xlabel('ADC Value')
 plt.ylabel('Counts')
-plt.savefig('signal_range.png')
+plt.savefig('../img/signal_range.png')
