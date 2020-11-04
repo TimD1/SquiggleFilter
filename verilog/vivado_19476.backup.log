@@ -1,30 +1,0 @@
-#-----------------------------------------------------------
-# Vivado v2019.1 (64-bit)
-# SW Build 2552052 on Fri May 24 14:49:42 MDT 2019
-# IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
-# Start of session at: Mon Nov  2 00:22:01 2020
-# Process ID: 19476
-# Current directory: G:/My Drive/SquiggAlign/verilog
-# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent19324 G:\My Drive\SquiggAlign\verilog\SquAl.xpr
-# Log file: G:/My Drive/SquiggAlign/verilog/vivado.log
-# Journal file: G:/My Drive/SquiggAlign/verilog\vivado.jou
-#-----------------------------------------------------------
-Sourcing tcl script 'C:/Users/Harisankar Sadasivan/AppData/Roaming/Xilinx/Vivado/Vivado_init.tcl'
-start_gui
-open_project {G:/My Drive/SquiggAlign/verilog/SquAl.xpr}
-WARNING: [Board 49-91] Board repository path '{C:Xilinxivado-boards-masterivado-boards-master
-ewoard_files"}' does not exist, it will not be used to search board files.
-INFO: [Project 1-313] Project file moved from 'G:/My Drive/598-satish/edit_distance/SquAl' since last save.
-Scanning sources...
-Finished scanning sources
-WARNING: [filemgmt 56-3] Board Part Repository Path: Could not find the directory 'C:/Users/Harisankar Sadasivan/AppData/Roaming/Xilinx/Vivado/{C:Xilinxivado-boards-masterivado-boards-master
-ewoard_files"}'.
-INFO: [IP_Flow 19-234] Refreshing IP repositories
-INFO: [IP_Flow 19-1704] No user IP repositories specified
-INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2019.1/data/ip'.
-exit
-INFO: [Common 17-206] Exiting Vivado at Mon Nov  2 00:22:33 2020...
-: peak = 685.441 ; gain = 59.250
-update_compile_order -fileset sources_1
-exit
-INFO: [Common 17-206] Exiting Vivado at Mon Nov  2 00:22:55 2020...
