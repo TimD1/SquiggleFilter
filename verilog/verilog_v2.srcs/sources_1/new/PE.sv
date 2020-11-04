@@ -35,8 +35,9 @@ module PE(
       input [`DATA_OUT_WIDTH-1:0] diag,
       input [`DATA_OUT_WIDTH-1:0] rst_value,              
       output logic[`DATA_OUT_WIDTH-1:0] prev_op, output logic[`DATA_OUT_WIDTH-1:0] curr_op,     
-      output done,
-      output [`DATA_WIDTH-1:0] diff
+      output [`DATA_WIDTH-1:0] diff,
+      //output signed [`DATA_OUT_WIDTH+1:0] P,
+      output [`DATA_OUT_WIDTH-1:0] score_wire
        );
   
 
@@ -44,10 +45,10 @@ module PE(
   
      
 
-  wire [`DATA_OUT_WIDTH-1:0] diag_tmp, top_tmp, left_tmp, score_wire;
-  wire signed [`DATA_WIDTH:0] diff;
-  
-  wire signed [`DATA_OUT_WIDTH+1:0] P; 
+  wire [`DATA_OUT_WIDTH-1:0] diag_tmp, top_tmp, left_tmp;
+  //wire signed [`DATA_WIDTH:0] diff;
+  //wire [`DATA_OUT_WIDTH-1:0] score_wire;
+  //wire signed [`DATA_OUT_WIDTH+1:0] P; 
 
    
  
@@ -58,20 +59,20 @@ module PE(
    
 
   //score computation
-  assign diff= query-reference;
-   mult_gen_0 MUL (
-      .CLK(clk),  // input wire CLK
-      .A(diff),      // input wire [10 : 0] A
-      .B(diff),      // input wire [10 : 0] B
-      .P(P)      // output wire [21 : 0] P
-    );
-  assign score_wire= P[`DATA_OUT_WIDTH-1:0] + (diag_tmp<top_tmp?(diag_tmp<left_tmp?diag_tmp:left_tmp):(top_tmp<left_tmp?top_tmp:left_tmp));
+  assign diff= (query>reference)?(query-reference):(reference-query);
+//   mult_gen_0 MUL (
+//      .CLK(clk),  // input wire CLK
+//      .A(diff),      // input wire [10 : 0] A
+//      .B(diff),      // input wire [10 : 0] B
+//      .P(P)      // output wire [21 : 0] P
+//    );
+  assign score_wire= diff + (diag_tmp<top_tmp?(diag_tmp<left_tmp?diag_tmp:left_tmp):(top_tmp<left_tmp?top_tmp:left_tmp));
 
     always_ff @(posedge clk or posedge rst) begin //{}
         
        if(rst) begin //{
           curr_op<=rst_value;
-          prev_op<=0;
+          prev_op<=curr_op;
 
        end //}
        else if(activate) begin //{

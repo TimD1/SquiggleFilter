@@ -24,7 +24,7 @@ module testbench_PE();
    logic clk;
    logic rst,top_rst;
 
-   logic [`DATA_WIDTH-1:0] q,diff;
+   logic [`DATA_WIDTH-1:0] q;
    logic [`DATA_WIDTH-1:0] r;     
    
    logic                   start,activate;
@@ -32,7 +32,12 @@ module testbench_PE();
    logic [`REF_SIZE_BITS-1:0]             reference_length; 
    logic [`DATA_OUT_WIDTH-1:0] result, top,left,diag;
    logic [`DATA_OUT_WIDTH-1:0] buff_op,curr_op;
+      logic [`DATA_WIDTH-1:0] diff;
+      logic [`DATA_OUT_WIDTH-1:0] rst_val;
+       //logic signed [`DATA_OUT_WIDTH-1:0] P;
+       logic [`DATA_OUT_WIDTH-1:0] score_wire;
 PE pe(.clk(clk),
+      .rst_val(rst_val),
       .rst(rst),
       .query(q),
       .reference(r),
@@ -43,8 +48,10 @@ PE pe(.clk(clk),
       .diag(diag),
       .rst_value(0),              
       .prev_op(buff_op), .curr_op(curr_op),     
-      .done(done),
-      .diff(diff)
+      .diff(diff),
+	  //.P(P),
+	  .score_wire(score_wire)
+      
     );
     
      always begin
@@ -78,7 +85,18 @@ PE pe(.clk(clk),
       q=4;
       
       @(posedge clk)
-      @(posedge clk)
+     
+      top=10;
+      left=20;
+      diag=30;
+      r=13;
+      q=6;
+       @(posedge clk)
+       top=11;
+      left=22;
+      diag=33;
+      r=15;
+      q=4;
       #1000;
        $finish;
      end
