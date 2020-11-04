@@ -1,0 +1,14 @@
+#-----------------------------------------------------------
+# Webtalk v2019.1 (64-bit)
+# SW Build 2552052 on Fri May 24 14:49:42 MDT 2019
+# IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
+# Start of session at: Tue Nov  3 12:57:23 2020
+# Process ID: 16404
+# Current directory: G:/My Drive/SquiggAlign/verilog/SquAl.sim/sim_1/behav/xsim
+# Command line: wbtcv.exe -mode batch -source G:/My Drive/SquiggAlign/verilog/SquAl.sim/sim_1/behav/xsim/xsim.dir/testbench_PE_behav/webtalk/xsim_webtalk.tcl -notrace
+# Log file: G:/My Drive/SquiggAlign/verilog/SquAl.sim/sim_1/behav/xsim/webtalk.log
+# Journal file: G:/My Drive/SquiggAlign/verilog/SquAl.sim/sim_1/behav/xsim\webtalk.jou
+#-----------------------------------------------------------
+source G:/My -notrace
+couldn't read file "G:/My": no such file or directory
+INFO: [Common 17-206] Exiting Webtalk at Tue Nov  3 12:57:23 2020...

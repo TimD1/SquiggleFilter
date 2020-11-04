@@ -28,22 +28,24 @@ module PE(input clk,
       input [`DATA_WIDTH-1:0] r,
       
       input activate,      
-      input [`DATA_WIDTH-1:0] top,
-      input [`DATA_WIDTH-1:0] left,
-      input [`DATA_WIDTH-1:0] diag,
+      input [`DATA_OUT_WIDTH-1:0] top,
+      input [`DATA_OUT_WIDTH-1:0] left,
+      input [`DATA_OUT_WIDTH-1:0] diag,
       input [`DATA_WIDTH-1:0] top_rst,              
-      output logic[`DATA_WIDTH-1:0] buff_op, output logic[`DATA_WIDTH-1:0] curr_op,     
+      output logic[`DATA_OUT_WIDTH-1:0] buff_op, output logic[`DATA_OUT_WIDTH-1:0] curr_op,     
       output done
     
        );
   
 
- 
 
   
      
-  wire [`DATA_WIDTH-1:0] diag_tmp, top_tmp, left_tmp, score_wire,diff;
+  wire [`DATA_OUT_WIDTH-1:0] diag_tmp, top_tmp, left_tmp, score_wire,diff,P;
 
+
+   
+ 
   //tmp wires
   assign diag_tmp = diag;
   assign top_tmp = top ;
@@ -52,7 +54,13 @@ module PE(input clk,
 
   //score computation
   assign diff= q-r;
-  assign score_wire= diff*diff + (diag_tmp<top_tmp?(diag_tmp<left_tmp?diag_tmp:left_tmp):(top_tmp<left_tmp?top_tmp:left_tmp));
+   mult_gen_0 MUL (
+      .CLK(clk),  // input wire CLK
+      .A(diff),      // input wire [10 : 0] A
+      .B(diff),      // input wire [10 : 0] B
+      .P(P)      // output wire [21 : 0] P
+    );
+  assign score_wire= P[`DATA_OUT_WIDTH-2:0] + (diag_tmp<top_tmp?(diag_tmp<left_tmp?diag_tmp:left_tmp):(top_tmp<left_tmp?top_tmp:left_tmp));
 
     always_ff @(posedge clk or posedge rst) begin //{}
         
@@ -78,5 +86,3 @@ module PE(input clk,
     end //}
         
 endmodule : PE
-
-
