@@ -2,74 +2,15 @@
 # Vivado v2019.1 (64-bit)
 # SW Build 2552052 on Fri May 24 14:49:42 MDT 2019
 # IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
-# Start of session at: Wed Nov  4 16:53:57 2020
-# Process ID: 7904
+# Start of session at: Thu Nov  5 11:29:35 2020
+# Process ID: 10028
 # Current directory: C:/verilog_v3
-# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent9144 C:\verilog_v3\verilog_v2.xpr
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent14712 C:\verilog_v3\verilog_v2.xpr
 # Log file: C:/verilog_v3/vivado.log
 # Journal file: C:/verilog_v3\vivado.jou
 #-----------------------------------------------------------
 start_gui
 open_project C:/verilog_v3/verilog_v2.xpr
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-source testbench.tcl
-close_sim
 launch_simulation
 source testbench.tcl
 close_sim

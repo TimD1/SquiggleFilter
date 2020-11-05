@@ -18,9 +18,9 @@ module sDTW(input clk,
                      output logic activate		[`QUERY_LEN-1:0],
                      output                 [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		pe_prev_op,
                      output logic [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		counter,
-                     output [`DATA_WIDTH-1:0] diff,
+                     output [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] diff,
                      //output signed [`DATA_OUT_WIDTH+1:0] P,
-                     output [`DATA_OUT_WIDTH-1:0] score_wire
+                     output [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0] score_wire
                     );
 	
 //	logic							active		[`QUERY_LEN-1:0];
@@ -41,30 +41,33 @@ module sDTW(input clk,
 					.query     (query[0]),
 					.curr_op(pe_op[0]),
 					.prev_op   (pe_prev_op[0]),
-					.diff(diff),
+					.diff(diff[0]),
 					//.P(P),
-					.score_wire(score_wire)
+					.score_wire(score_wire[0])
 				);
 
 	// except for first PE, all other PE's have a uniform connection pattern
 
-//	genvar i;
-//	generate
-//		for (i=1; i<`QUERY_LEN; i++) begin : pe_systolic
-//			PE col(	.activate(activate[i]),
-//					.clk(clk),
-//					.rst(rst),
-//					.rst_value (i+1),
-//					.left(pe_op[i-1]),
-//					.top(pe_op[i]),
-//					.diag(pe_prev_op[i-1]),
-//					.reference(reference[counter[i]]),
-//					.query(query[i]),
-//					.curr_op(pe_op[i]),
-//					.prev_op(pe_prev_op[i])
-//				);
-//		end
-//	endgenerate
+	genvar i;
+	generate
+		for (i=1; i<`QUERY_LEN; i++) begin : pe_systolic
+			PE col(	.activate(activate[i]),
+					.clk(clk),
+					.rst(rst),
+					.rst_value (rst_val),
+					.left(pe_op[i-1]),
+					.top(pe_op[i]),
+					.diag(pe_prev_op[i-1]),
+					.reference(reference[counter[i]]),
+					.query(query[i]),
+					.curr_op(pe_op[i]),
+					.prev_op(pe_prev_op[i]),
+					.diff(diff[i]),
+					//.P(P),
+					.score_wire(score_wire[i])
+				);
+		end
+	endgenerate
 
 	// output logic
 	always_ff @(posedge clk)

@@ -34,9 +34,9 @@ module testbench();
    logic activate		[`QUERY_LEN-1:0];
    logic [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		pe_prev_op;
    logic [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		counter;
-   logic [`DATA_WIDTH-1:0] diff;
+   logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] diff;
        //logic signed [`DATA_OUT_WIDTH-1:0] P;
-   logic [`DATA_OUT_WIDTH-1:0] score_wire;
+   logic [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0] score_wire;
    // instantiate accelerator
    sDTW ed(.clk(clk),
                     .rst(rst),
@@ -55,102 +55,6 @@ module testbench();
                     //.P(P),
                     .score_wire(score_wire)
                     );   
-   
-
-   /////////////////////////
-   //  Helper Tasks
-   /////////////////////////
-
-
-//    task software_edit_distance(input clk,
-//                                input rst,
-//                                input start,
-//                                input [`DATA_WIDTH-1:0] query [`QUERY_LEN-1:0],
-//                                input [`DATA_WIDTH-1:0] reference [`REF_MAX_LEN-1:0],
-//                                input [9:0] reference_length,
-//                                output done,
-//                                output [`DATA_WIDTH-1:0] result);
-
-//      int i,j,t,c;
-//      int edit_distance[`QUERY_LEN+1][`REF_MAX_LEN+1];
-
-//      for (i=0; i<=`QUERY_LEN; i++) 
-//      begin
-//        edit_distance[i][0] = i;
-//      end
-
-//      for(j=0; j<=reference_length; j++)
-//      begin
-//        edit_distance[0][j] = j;
-//      end
-
-//      for (i=1; i<=`QUERY_LEN; i++)
-//      begin
-//        for(j=1; j <= reference_length; j++)
-//        begin
-//          // $display("Query %0d", query[i-1]);
-//          // $display("Reference %0d", reference[j-1]);
-//          if(query[i-1] == reference[j-1])
-//            c = 0;
-//          else
-//            c = 1;
-//          t = (edit_distance[i-1][j] < edit_distance[i][j-1]) ? edit_distance[i-1][j] + 1 : edit_distance[i][j-1] + 1;
-//          edit_distance[i][j] = (edit_distance[i-1][j-1]+c) < t ? (edit_distance[i-1][j-1] + c) : t;
-//          // $display("i %0d j %0d Value %0d", i, j, edit_distance[i][j]);
-//        end
-//      end
-
-//      result = edit_distance[`QUERY_LEN][reference_length];
-//      $display("Edit Distance Value: %0d", result);
-//      done = 1'b1;
-
-//    endtask
-
-//    task run_test(string test_id,
-//                 input [`DATA_WIDTH-1:0] test_query [`QUERY_LEN-1:0], 
-//                 input [`DATA_WIDTH-1:0] test_reference [`REF_MAX_LEN-1:0],
-//                 input [`REF_SIZE_BITS:0]             test_reference_len,
-//                 input [`DATA_WIDTH-1:0] expected_result);
-      
-//      query = test_query;
-//      reference = test_reference;
-//      reference_length = test_reference_len;
-      
-//      // reset edit distance accelerator
-//      rst = 1'b1;
-//      @(posedge clk)
-//      @(posedge clk)
-//      rst = 1'b0;
-      
-//      // start the accelerator!
-//      start = 1'b1;
-
-      
-//      // Call your own verification task here if you please
-      
-//       // software_edit_distance(.clk(clk),
-//       // .rst(rst),
-//       // .start(start),
-//       // .query(query),
-//       // .reference(reference),
-//       // .reference_length(reference_length),
-//       // .done(done),
-//       // .result(result));
-       
-      
-//      // wait for test to finish
-//      while(done == 1'b0) begin
-//         @(posedge clk);
-//      end
-      
-//      // check to see if the score matches the expectation
-//      if(result == expected_result) begin
-//         $display("Test\t%d\t\tPASSED!", test_id);
-//      end else begin
-//         $display("Test\t%d\t\tFAILED! result = %d expected = %d", test_id, result, expected_result);
-//      end
-      
-//   endtask
    
    
    always begin
@@ -183,7 +87,7 @@ module testbench();
       rst = 1'b0;
       start = 1'b1;
       //query[`QUERY_LEN-1:0]={4'd5,4'd6};
-      query[`QUERY_LEN-1:0]={4'd5};
+      query[`QUERY_LEN-1:0]={4'd8,4'd7,4'd5};
       //reference[`REF_MAX_LEN-1:0]={4'd1,4'd2,4'd3,4'd4,4'd5,4'd6,4'd7,4'd8,4'd9,4'd10};
       reference[`REF_MAX_LEN-1:0]={4'd10,4'd9,4'd8,4'd7,4'd6,4'd5};
       reference_length=6;

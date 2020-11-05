@@ -4,7 +4,7 @@
 `define DATA_WIDTH 4
 `define DATA_OUT_WIDTH 9
 
-`define QUERY_LEN 1
+`define QUERY_LEN 3
 `define REF_MAX_LEN  6
 
 `define REF_SIZE_BITS 17

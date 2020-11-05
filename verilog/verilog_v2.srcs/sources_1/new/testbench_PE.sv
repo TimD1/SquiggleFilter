@@ -32,10 +32,10 @@ module testbench_PE();
    logic [`REF_SIZE_BITS-1:0]             reference_length; 
    logic [`DATA_OUT_WIDTH-1:0] result, top,left,diag;
    logic [`DATA_OUT_WIDTH-1:0] buff_op,curr_op;
-      logic [`DATA_WIDTH-1:0] diff;
+      logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] diff;
       logic [`DATA_OUT_WIDTH-1:0] rst_val;
        //logic signed [`DATA_OUT_WIDTH-1:0] P;
-       logic [`DATA_OUT_WIDTH-1:0] score_wire;
+       logic [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0] score_wire;
 PE pe(.clk(clk),
       .rst_val(rst_val),
       .rst(rst),
@@ -48,9 +48,9 @@ PE pe(.clk(clk),
       .diag(diag),
       .rst_value(0),              
       .prev_op(buff_op), .curr_op(curr_op),     
-      .diff(diff),
+      .diff(diff[0]),
 	  //.P(P),
-	  .score_wire(score_wire)
+	  .score_wire(score_wire[0])
       
     );
     
