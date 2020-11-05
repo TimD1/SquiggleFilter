@@ -1,4 +1,5 @@
 venv3/
-data/*/
+data/covid_strains
+data/*/*/
 results/*
 *.ipynb*
