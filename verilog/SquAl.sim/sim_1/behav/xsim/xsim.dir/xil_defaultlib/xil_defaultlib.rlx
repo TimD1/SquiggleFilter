@@ -1,9 +1,0 @@
-0.6
-2019.1
-May 24 2019
-15:06:07
-G:/My Drive/SquiggAlign/verilog/SquAl.sim/sim_1/behav/xsim/glbl.v,1558713910,verilog,,,,glbl,,,,,,,,
-G:/My Drive/SquiggAlign/verilog/SquAl.srcs/sources_1/ip/mult_gen_0/sim/mult_gen_0.vhd,1604362996,vhdl,,,,mult_gen_0,,,,,,,,
-G:/My Drive/SquiggAlign/verilog/SquAl.srcs/sources_1/new/PE.sv,1604425597,systemVerilog,,,G:/My Drive/SquiggAlign/verilog/SquAl.srcs/sources_1/new/constants.vh,PE,,,../../../../SquAl.srcs/sources_1/new,,,,,
-G:/My Drive/SquiggAlign/verilog/SquAl.srcs/sources_1/new/constants.vh,1604423179,verilog,,,,,,,,,,,,
-G:/My Drive/SquiggAlign/verilog/SquAl.srcs/sources_1/new/testbench_PE.sv,1604426237,systemVerilog,,G:/My Drive/SquiggAlign/verilog/SquAl.srcs/sources_1/new/PE.sv,G:/My Drive/SquiggAlign/verilog/SquAl.srcs/sources_1/new/constants.vh,testbench_PE,,,../../../../SquAl.srcs/sources_1/new,,,,,

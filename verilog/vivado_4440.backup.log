@@ -1,0 +1,174 @@
+#-----------------------------------------------------------
+# Vivado v2019.1 (64-bit)
+# SW Build 2552052 on Fri May 24 14:49:42 MDT 2019
+# IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
+# Start of session at: Wed Nov  4 14:15:16 2020
+# Process ID: 4440
+# Current directory: C:/verilog_v3
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent16664 C:\verilog_v3\verilog_v2.xpr
+# Log file: C:/verilog_v3/vivado.log
+# Journal file: C:/verilog_v3\vivado.jou
+#-----------------------------------------------------------
+Sourcing tcl script 'C:/Users/Harisankar Sadasivan/AppData/Roaming/Xilinx/Vivado/Vivado_init.tcl'
+start_gui
+open_project C:/verilog_v3/verilog_v2.xpr
+WARNING: [Board 49-91] Board repository path '{C:Xilinxivado-boards-masterivado-boards-master
+ewoard_files"}' does not exist, it will not be used to search board files.
+Scanning sources...
+Finished scanning sources
+WARNING: [filemgmt 56-3] Board Part Repository Path: Could not find the directory 'C:/Users/Harisankar Sadasivan/AppData/Roaming/Xilinx/Vivado/2019.1/xhub/board_store'.
+WARNING: [filemgmt 56-3] Board Part Repository Path: Could not find the directory 'C:/verilog_v3/{C:Xilinx'.
+WARNING: [filemgmt 56-3] Board Part Repository Path: Could not find the directory 'C:/verilog_v3/ivado-boards-master'.
+WARNING: [filemgmt 56-3] Board Part Repository Path: Could not find the directory 'C:/verilog_v3/ivado-boards-master'.
+WARNING: [filemgmt 56-3] Board Part Repository Path: Could not find the directory 'C:/verilog_v3/ewoard_files"}'.
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2019.1/data/ip'.
+open_project: Time (s): cpu = 00:00:21 ; elapsed = 00:00:07 . Memory (MB): peak = 701.230 ; gain = 85.828
+launch_simulation
+INFO: [Vivado 12-5698] Checking validity of IPs in the design for the 'XSim' simulator...
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/verilog_v3/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [Vivado 12-4795] Using compiled simulation libraries for IPs
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'C:/Xilinx/Vivado/2019.1/data/xsim/xsim.ini' copied to run dir:'C:/verilog_v3/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-54] Inspecting design source files for 'testbench_PE' in fileset 'sim_1'...
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-100] Fetching design files from 'sources_1'...(this may take a while)...
+INFO: [USF-XSim-101] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/verilog_v3/verilog_v2.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj testbench_PE_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench_PE.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module testbench_PE
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog_v3/verilog_v2.srcs/sources_1/new/PE.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module PE
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog_v3/verilog_v2.srcs/sources_1/new/sDTW.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module sDTW
+"xvhdl --incr --relax -prj testbench_PE_vhdl.prj"
+INFO: [USF-XSim-69] 'compile' step finished in '4' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/verilog_v3/verilog_v2.sim/sim_1/behav/xsim'
+"xelab -wto 89d7605952a24057b2151880802bfea9 --incr --debug typical --relax --mt 2 -L xil_defaultlib -L xbip_utils_v3_0_10 -L xbip_pipe_v3_0_6 -L xbip_bram18k_v3_0_6 -L mult_gen_v12_0_15 -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot testbench_PE_behav xil_defaultlib.testbench_PE xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator 2019.1
+Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
+Running: C:/Xilinx/Vivado/2019.1/bin/unwrapped/win64.o/xelab.exe -wto 89d7605952a24057b2151880802bfea9 --incr --debug typical --relax --mt 2 -L xil_defaultlib -L xbip_utils_v3_0_10 -L xbip_pipe_v3_0_6 -L xbip_bram18k_v3_0_6 -L mult_gen_v12_0_15 -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot testbench_PE_behav xil_defaultlib.testbench_PE xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 9 for port 'rst_value' [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench_PE.sv:47]
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.PE
+Compiling module xil_defaultlib.testbench_PE
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot testbench_PE_behav
+
+****** Webtalk v2019.1 (64-bit)
+  **** SW Build 2552052 on Fri May 24 14:49:42 MDT 2019
+  **** IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
+    ** Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
+
+source C:/verilog_v3/verilog_v2.sim/sim_1/behav/xsim/xsim.dir/testbench_PE_behav/webtalk/xsim_webtalk.tcl -notrace
+INFO: [Common 17-186] 'C:/verilog_v3/verilog_v2.sim/sim_1/behav/xsim/xsim.dir/testbench_PE_behav/webtalk/usage_statistics_ext_xsim.xml' has been successfully sent to Xilinx on Wed Nov  4 14:16:03 2020. For additional details about this file, please refer to the WebTalk help file at C:/Xilinx/Vivado/2019.1/doc/webtalk_introduction.html.
+INFO: [Common 17-206] Exiting Webtalk at Wed Nov  4 14:16:03 2020...
+run_program: Time (s): cpu = 00:00:01 ; elapsed = 00:00:10 . Memory (MB): peak = 706.883 ; gain = 0.000
+INFO: [USF-XSim-69] 'elaborate' step finished in '10' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/verilog_v3/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "testbench_PE_behav -key {Behavioral:sim_1:Functional:testbench_PE} -tclbatch {testbench_PE.tcl} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Vivado Simulator 2019.1
+Time resolution is 1 ps
+source testbench_PE.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+# run 1000ns
+xsim: Time (s): cpu = 00:00:18 ; elapsed = 00:00:07 . Memory (MB): peak = 741.969 ; gain = 34.379
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'testbench_PE_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 1000ns
+launch_simulation: Time (s): cpu = 00:00:25 ; elapsed = 00:00:25 . Memory (MB): peak = 741.969 ; gain = 35.086
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+launch_simulation
+INFO: [Vivado 12-5698] Checking validity of IPs in the design for the 'XSim' simulator...
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/verilog_v3/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [Vivado 12-4795] Using compiled simulation libraries for IPs
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'C:/Xilinx/Vivado/2019.1/data/xsim/xsim.ini' copied to run dir:'C:/verilog_v3/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-54] Inspecting design source files for 'testbench_PE' in fileset 'sim_1'...
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-100] Fetching design files from 'sources_1'...(this may take a while)...
+INFO: [USF-XSim-101] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/verilog_v3/verilog_v2.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj testbench_PE_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench_PE.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module testbench_PE
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog_v3/verilog_v2.srcs/sources_1/new/PE.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module PE
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog_v3/verilog_v2.srcs/sources_1/new/sDTW.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module sDTW
+INFO: [VRFC 10-2458] undeclared symbol P, assumed default net type wire [C:/verilog_v3/verilog_v2.srcs/sources_1/new/sDTW.sv:45]
+"xvhdl --incr --relax -prj testbench_PE_vhdl.prj"
+INFO: [USF-XSim-69] 'compile' step finished in '5' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/verilog_v3/verilog_v2.sim/sim_1/behav/xsim'
+"xelab -wto 89d7605952a24057b2151880802bfea9 --incr --debug typical --relax --mt 2 -L xil_defaultlib -L xbip_utils_v3_0_10 -L xbip_pipe_v3_0_6 -L xbip_bram18k_v3_0_6 -L mult_gen_v12_0_15 -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot testbench_PE_behav xil_defaultlib.testbench_PE xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator 2019.1
+Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
+Running: C:/Xilinx/Vivado/2019.1/bin/unwrapped/win64.o/xelab.exe -wto 89d7605952a24057b2151880802bfea9 --incr --debug typical --relax --mt 2 -L xil_defaultlib -L xbip_utils_v3_0_10 -L xbip_pipe_v3_0_6 -L xbip_bram18k_v3_0_6 -L mult_gen_v12_0_15 -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot testbench_PE_behav xil_defaultlib.testbench_PE xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 9 for port 'rst_value' [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench_PE.sv:47]
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.PE
+Compiling module xil_defaultlib.testbench_PE
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot testbench_PE_behav
+INFO: [USF-XSim-69] 'elaborate' step finished in '3' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/verilog_v3/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "testbench_PE_behav -key {Behavioral:sim_1:Functional:testbench_PE} -tclbatch {testbench_PE.tcl} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Vivado Simulator 2019.1
+Time resolution is 1 ps
+source testbench_PE.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+# run 1000ns
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'testbench_PE_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 1000ns
+launch_simulation: Time (s): cpu = 00:00:08 ; elapsed = 00:00:14 . Memory (MB): peak = 771.086 ; gain = 0.000
+set_property is_enabled true [get_files  C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv]
+set_property top testbench [current_fileset]
+set_property top testbench [get_filesets sim_1]
+set_property top_lib xil_defaultlib [get_filesets sim_1]
+set_property is_enabled false [get_files  C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench_PE.sv]
+launch_simulation
+boost::filesystem::remove: The process cannot access the file because it is being used by another process: "C:/verilog_v3/verilog_v2.sim/sim_1/behav/xsim/simulate.log"
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+exit
+INFO: [Common 17-206] Exiting Vivado at Wed Nov  4 14:29:26 2020...

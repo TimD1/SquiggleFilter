@@ -1,1 +1,0 @@
--wto "7d33d80f24c44d65b9f8fd271a9c5033" --incr --debug "typical" --relax --mt "2" -L "xbip_utils_v3_0_10" -L "xbip_pipe_v3_0_6" -L "xbip_bram18k_v3_0_6" -L "mult_gen_v12_0_15" -L "xil_defaultlib" -L "unisims_ver" -L "unimacro_ver" -L "secureip" -L "xpm" --snapshot "testbench_PE_behav" "xil_defaultlib.testbench_PE" "xil_defaultlib.glbl" -log "elaborate.log" 
