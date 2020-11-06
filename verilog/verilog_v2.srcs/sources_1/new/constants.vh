@@ -1,12 +1,11 @@
-//`define CHAR_WIDTH 8
-// check overflow: (log2[1M+1K]=21)
-//10 and 22
-`define DATA_WIDTH 4
-`define DATA_OUT_WIDTH 9
+//independent defines, tunable params before synthesis
+`define DATA_WIDTH 10
+`define QUERY_LEN 100
+`define REF_MAX_LEN 1000
 
-`define QUERY_LEN 3
-`define REF_MAX_LEN  6
 
-`define REF_SIZE_BITS 17
+//dependent defines
+`define DATA_OUT_WIDTH (`DATA_WIDTH +1)
+`define REF_SIZE_BITS ($clog2(`REF_MAX_LEN)+1)
 `define MAX_VAL {`DATA_OUT_WIDTH{1'b1}}
 //`define MAX_VAL 15

@@ -1,0 +1,11 @@
+Vivado Simulator 2019.1
+Time resolution is 1 ps
+file opened succesfully: -20000
+ptr=     -20000
+file opened succesfully: -20000
+  92	 172
+////////////////////////////////////////////////
+//          Running Squal Testbench             //
+////////////////////////////////////////////////
+Test			FAILED! result = 1300 expected =    0
+2047
