@@ -25,32 +25,34 @@ module testbench_PE();
    logic rst,top_rst;
 
    logic [`DATA_WIDTH-1:0] q;
-   logic [`DATA_WIDTH-1:0] r;     
+   logic [`DATA_WIDTH-1:0] ir;
+   logic [`DATA_WIDTH-1:0] o_r;     
    
    logic                   start,activate;
    logic                   done = 0;
    logic [`REF_SIZE_BITS-1:0]             reference_length; 
    logic [`DATA_OUT_WIDTH-1:0] result, top,left,diag;
    logic [`DATA_OUT_WIDTH-1:0] buff_op,curr_op;
-      logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] diff;
-      logic [`DATA_OUT_WIDTH-1:0] rst_val;
+   logic [`DATA_OUT_WIDTH-1:0] diff;
+   logic [2:0] min_state;
+      
        //logic signed [`DATA_OUT_WIDTH-1:0] P;
-       logic [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0] score_wire;
-PE pe(.clk(clk),
-      .rst_val(rst_val),
+       logic [`DATA_OUT_WIDTH-1:0] score_wire;
+PE pe(.clk(clk),      
       .rst(rst),
       .query(q),
-      .reference(r),
-      
+      .ip_reference(ir),
+      .op_reference(o_r),
       .activate(activate),      
       .top(top),
       .left(left),
       .diag(diag),
-      .rst_value(0),              
+                 
       .prev_op(buff_op), .curr_op(curr_op),     
-      .diff(diff[0]),
+      .diff(diff),
+      .min_state(min_state),
 	  //.P(P),
-	  .score_wire(score_wire[0])
+	  .score_wire(score_wire)
       
     );
     
@@ -76,26 +78,28 @@ PE pe(.clk(clk),
       @(posedge clk)
 
       rst = 1'b0;
+      @(posedge clk)
+      @(posedge clk)
       start = 1'b1;
       activate=1'b1;
       top=11;
       left=22;
       diag=33;
-      r=15;
+      ir=15;
       q=4;
       
       @(posedge clk)
      
-      top=10;
+      top=30;
       left=20;
-      diag=30;
-      r=13;
+      diag=10;
+      ir=13;
       q=6;
        @(posedge clk)
-       top=11;
-      left=22;
+       top=22;
+      left=11;
       diag=33;
-      r=15;
+      ir=15;
       q=4;
       #1000;
        $finish;

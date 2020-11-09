@@ -27,17 +27,18 @@ module PE(
       input clk,
       input rst,
       input [`DATA_WIDTH-1:0] query,
-      input [`DATA_WIDTH-1:0] reference,
+      input [`DATA_WIDTH-1:0] ip_reference,
       
       input activate,      
       input [`DATA_OUT_WIDTH-1:0] top,
       input [`DATA_OUT_WIDTH-1:0] left,
-      input [`DATA_OUT_WIDTH-1:0] diag,
-      input [`DATA_OUT_WIDTH-1:0] rst_value,              
-      output logic[`DATA_OUT_WIDTH-1:0] prev_op, output logic[`DATA_OUT_WIDTH-1:0] curr_op,     
-      output [`DATA_WIDTH-1:0] diff,
+      input [`DATA_OUT_WIDTH-1:0] diag,                  
+      output logic[`DATA_OUT_WIDTH-1:0] prev_op, output logic[`DATA_OUT_WIDTH-1:0] curr_op,
+      //output logic  [`DATA_WIDTH-1:0] op_reference,   
+      output [`DATA_OUT_WIDTH-1:0] diff,
       //output signed [`DATA_OUT_WIDTH+1:0] P,
-      output [`DATA_OUT_WIDTH-1:0] score_wire
+      output logic [`DATA_OUT_WIDTH-1:0] score_wire,
+      output [2:0] min_state
        );
   
 
@@ -45,50 +46,59 @@ module PE(
   
      
 
-  wire [`DATA_OUT_WIDTH-1:0] diag_tmp, top_tmp, left_tmp;
-  //wire signed [`DATA_WIDTH:0] diff;
-  //wire [`DATA_OUT_WIDTH-1:0] score_wire;
+  //wire [`DATA_OUT_WIDTH-1:0] diag_tmp, top_tmp, left_tmp;
+ // wire [2:0] min_state;
+//  wire [`DATA_WIDTH:0] diff;
+ // wire [`DATA_OUT_WIDTH-1:0] score_wire;
   //wire signed [`DATA_OUT_WIDTH+1:0] P; 
 
    
- 
-  //tmp wires
-  assign diag_tmp = diag;
-  assign top_tmp = top ;
-  assign left_tmp = left ;
+
    
 
-  //score computation
-  assign diff= (query>reference)?(query-reference):(reference-query);
-//   mult_gen_0 MUL (
-//      .CLK(clk),  // input wire CLK
-//      .A(diff),      // input wire [10 : 0] A
-//      .B(diff),      // input wire [10 : 0] B
-//      .P(P)      // output wire [21 : 0] P
-//    );
-  assign score_wire= diff + (diag_tmp<top_tmp?(diag_tmp<left_tmp?diag_tmp:left_tmp):(top_tmp<left_tmp?top_tmp:left_tmp));
+  //absolute delta score computation between reference and query
+  assign diff= (query>ip_reference)?(query-ip_reference):(ip_reference-query);
 
-    always_ff @(posedge clk or posedge rst) begin //{}
-        
+  //state calculations for finding minimum among neighbors.
+  assign min_state[2]=diag<top;
+  assign min_state[1]=diag<left;
+  assign min_state[0]=top<left;
+  
+  //find minimum among neighboring cells
+  always @(*) begin
+  casex (min_state)
+              3'b11x: 
+                score_wire=diff+diag;
+              3'b10x: 
+                score_wire=diff+left;
+              3'b0x1: 
+                score_wire=diff+top;
+              3'b0x0: 
+                score_wire=diff+left;
+  endcase 
+  end 
+
+ 
+    always_ff @(posedge clk) begin //{}
+       //sync reset
        if(rst) begin //{
-          curr_op<=rst_value;
+          curr_op<=`MAX_VAL;
           prev_op<=curr_op;
+         
+          
 
        end //}
        else if(activate) begin //{
           //update sequentially
           curr_op<=score_wire;
+          
           prev_op<=curr_op;
-
+          
        end //}
-       else begin //{
-          curr_op<=curr_op;
-          prev_op<=prev_op;
-       end//}
 
         
         
         
     end //}
-        
+
 endmodule : PE

@@ -1,0 +1,50 @@
+#-----------------------------------------------------------
+# Vivado v2019.1 (64-bit)
+# SW Build 2552052 on Fri May 24 14:49:42 MDT 2019
+# IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
+# Start of session at: Sat Nov  7 20:06:31 2020
+# Process ID: 8484
+# Current directory: C:/verilog_v3
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent16428 C:\verilog_v3\verilog_v2.xpr
+# Log file: C:/verilog_v3/vivado.log
+# Journal file: C:/verilog_v3\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/verilog_v3/verilog_v2.xpr
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+launch_simulation
+source testbench.tcl
+current_wave_config {Untitled 2}
+add_wave {{/testbench/ed/reference}} 
+current_wave_config {Untitled 2}
+log_wave {/testbench/ed/result} 
+current_wave_config {Untitled 2}
+add_wave {{/testbench/ed/result}} 
+current_wave_config {Untitled 2}
+log_wave {/testbench/ed/reference} 
+current_wave_config {Untitled 2}
+add_wave {{/testbench/ed/reference}} 
+current_wave_config {Untitled 2}
+add_wave {{/testbench/ed/reference}} 
+current_wave_config {Untitled 2}
+add_wave {{/testbench/ed/reference}} 
+close_sim
+launch_simulation
+source testbench.tcl
+current_wave_config {Untitled 3}
+add_wave {{/testbench/ed/reference}} 
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+current_wave_config {Untitled 5}
+add_wave {{/testbench/ed/pe_op}} 
+current_wave_config {Untitled 5}
+add_wave {{/testbench/ed/clk}} {{/testbench/ed/rst}} {{/testbench/ed/start}} {{/testbench/ed/query}} {{/testbench/ed/reference}} {{/testbench/ed/result}} {{/testbench/ed/done}} {{/testbench/ed/activate}} {{/testbench/ed/pe_op}} {{/testbench/ed/pe_op[1]}} {{/testbench/ed/pe_op[0]}} {{/testbench/ed/pe_prev_op}} {{/testbench/ed/score_wire}} {{/testbench/ed/op_reference}} 
+close_sim
+launch_simulation

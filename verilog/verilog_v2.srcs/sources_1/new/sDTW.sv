@@ -1,49 +1,61 @@
 /*
  * 
- * A systolic array implementation to compute the Edit Distance string scoring metric
+ * A systolic array implementation to compute the sDTW scores and thereafter find if alignment meets threshold requirements or not
  *
  */
  
 `include "constants.vh"
 
 module sDTW(input clk,
-                     input rst, input [`DATA_OUT_WIDTH-1:0] rst_val,
+                     input rst, 
                      input start,
                      input [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] query ,
-                     input [`REF_MAX_LEN-1:0][`DATA_WIDTH-1:0] reference ,
-                     input [`REF_SIZE_BITS:0] reference_length,
-                     output logic [`DATA_OUT_WIDTH-1:0] result,
+                     input [`DATA_WIDTH-1:0] reference ,
+                     //input [`REF_SIZE_BITS:0] reference_length,
+                     output logic result,
                      output logic done,
                      output [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		pe_op,
-                     output logic activate		[`QUERY_LEN-1:0],
-                     output                 [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		pe_prev_op,
-                     output logic [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		counter,
-                     output [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] diff,
+                    output logic activate		[`QUERY_LEN-1:0],
+                    output                 [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		pe_prev_op,
+                     //output logic [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		counter
+                    output [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0] diff,
                      //output signed [`DATA_OUT_WIDTH+1:0] P,
-                     output [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0] score_wire
+                    output [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0] score_wire,
+                    output logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] ip_reference,
+                    output logic [`CNTR_BITS-1:0] counter,
+                    output logic stop_sig,
+                    output logic [`QUERY_LEN-1:0] early_stop,
+                    output logic [`QUERY_LEN-1:0] normal_stop
                     );
 	
-//	logic							active		[`QUERY_LEN-1:0];
-//	logic	[`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		counter		; //TBD: check if width can be reduced 
+//	logic	activate		[`QUERY_LEN-1:0];
 //	wire	[`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		pe_op 		;
 //	wire	[`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		pe_prev_op 	;
+//	wire [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0] score_wire;
+	//logic	[`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		counter		; //TBD: check if width can be reduced 
 	
+	//wire op_reference[`QUERY_LEN-1:0];
+    //logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] ip_reference;
 	// first PE declared separately since it has nothing on the left; just constants as inputs
+	
+	//logic [`QUERY_LEN-1:0] early_stop, normal_stop;
+	//wire stop_sig; //signal stopping the systolic array, early or normal
+	//logic [`CNTR_BITS-1:0] counter;
 	PE first_col(	.activate(activate[0]),
 					.clk(clk),
 					.rst(rst),
-					.rst_value (rst_val),
+					
 					.left      (0),
 					.top       (pe_op[0]),
 					//.top       (pe_op[0]),
 					.diag      (0),
-					.reference (reference[counter[0]]),
+					.ip_reference (ip_reference[0]),
 					.query     (query[0]),
 					.curr_op(pe_op[0]),
 					.prev_op   (pe_prev_op[0]),
 					.diff(diff[0]),
-					//.P(P),
 					.score_wire(score_wire[0])
+					//.op_reference(op_reference[0])
 				);
 
 	// except for first PE, all other PE's have a uniform connection pattern
@@ -54,83 +66,137 @@ module sDTW(input clk,
 			PE col(	.activate(activate[i]),
 					.clk(clk),
 					.rst(rst),
-					.rst_value (rst_val),
+					
 					.left(pe_op[i-1]),
 					.top(pe_op[i]),
 					.diag(pe_prev_op[i-1]),
-					.reference(reference[counter[i]]),
+					.ip_reference(ip_reference[i]),
 					.query(query[i]),
 					.curr_op(pe_op[i]),
 					.prev_op(pe_prev_op[i]),
-					.diff(diff[i]),
-					//.P(P),
+					.diff(diff[i]),					
 					.score_wire(score_wire[i])
+					//.op_reference(op_reference[i])
 				);
 		end
 	endgenerate
 
-	// output logic
+
+
+    always@(done) begin
+     for(integer i=0; i<`QUERY_LEN; i++) begin //{
+				            activate[i] <= 0;
+			
+     end //}
+     
+     
+     
+    end
+	// logic for sDTW early abandon
 	always_ff @(posedge clk)
 	begin
-		if(counter[`QUERY_LEN-1] == reference_length) begin
-			done <= 1'b1;
-			result <= pe_op[`QUERY_LEN-1];
-		end
-		else begin
-			done <= 1'b0;
-			result <= 0;
-		end
-	end
 
+			
+			//comparing wrt threshold
+			 if(counter>`QUERY_LEN) begin //{
+			         //comparator signals for early stop
+                     for(integer j=0; j<`QUERY_LEN; j++)
+                     begin
+                        if(pe_op[j]>`DTW_THRESHOLD) begin
+                            early_stop[j]<=1;				 					
+                        end
+                        else
+                           early_stop[j]<=0;	
+                     end
+                     //AND-ing to do early stop
+                     if(&early_stop[`QUERY_LEN-1:0]==1) begin//{
+                         done<=1;
+                         //stop_sig<=1;
+                         result<=0;
+                     end //}
+			 end //}
+			
+			     			 
+	end
+	
+	//logic for normal sDTW thresholding
+	always_ff @(posedge clk)
+	begin
+	        if (counter==`QUERY_LEN+`REF_MAX_LEN) begin
+			     done<=1;
+			     //comparator signals generated for OR-ing
+			     for(integer j=0; j<`QUERY_LEN; j++)
+			     begin
+			 	 if(pe_op[j]<=`DTW_THRESHOLD) begin
+			 		normal_stop[j]<=1;				 					
+			 	 end
+			 	 else
+			 	   normal_stop[j]<=0;
+			 	 end	
+			 	 //OR-ing to check normal stop
+			 	 if(|normal_stop[`QUERY_LEN-1:0]==1) begin//{
+			    
+			     result<=1;
+			     end //}
+			end
+			
+			
+			
+    end
+    
+    
 	// control logic
 	always_ff @(posedge clk)
 	begin
 
-		// reset signal values to 0
+	    //sync reset
 		if(rst)
 		begin
 			for(integer j=0; j<`QUERY_LEN; j++)
 			begin
 				activate[j] <= 0;
-				counter[j] <= 0;
+	            early_stop[j]<=0;
+	            normal_stop[j]<=1;
+	            
 			end
+			done<=0;
+			result<=0;
+			counter<=0;
+			//stop_sig<=0;
 		end
 
 		else if(start)
 		begin
 
-			// if PE is active, increment its counter or else hold counter value
-			for(integer j=0; j<`QUERY_LEN; j++)
-			begin	
-				if(activate[j])
-					counter[j] <= counter[j] + 1;
-				else 
-					counter[j] <= counter[j];
- 			end
-
- 			
- 			if(counter[0] == 0)
-				activate[0] <= 1;
-				// activate PE0 when start signal arrives after it has been reset to 0
-			else if(counter[0] == reference_length)
-				activate[0] <= 0;
-				// deactivate PE0 when it finishes its column
-			else
-				activate[0] <= activate[0];
-
-			for(integer j=1; j<`QUERY_LEN; j++)
-				activate[j] <= activate[j-1];
+            //start first PE
+            if(counter<`REF_MAX_LEN) begin
+                activate[0] <= 1;
+    
+                //fire consecutive PE's in consecutive cycles
+                for(integer j=1; j<`QUERY_LEN; j++) begin //{
+                    activate[j] <= activate[j-1];
+                
+                end //}
+			end 
+			//inactivate PE's at the end of computation
+			else begin
+                activate[0] <= 0;
+    
+                //fire consecutive PE's in consecutive cycles
+                for(integer j=1; j<`QUERY_LEN; j++) begin //{
+                    activate[j] <= activate[j-1];
+                
+                end //}
+			end
+			//stream reference into the PE's
+            ip_reference[0]<=reference;
+            for(int i=1;i<`QUERY_LEN;i++)
+                ip_reference[i]<=ip_reference[i-1];
+            counter<=counter+1;    
 				// propogate active high and active low to other PEs with one cycle delay
 		end
 
-		else
-		begin
-			for(integer j=0; j<`QUERY_LEN; j++)
-			begin
-				activate[j] <= activate[j];
-				counter[j] <= counter[j];
-			end
-		end
+		
 	end
 	
 endmodule

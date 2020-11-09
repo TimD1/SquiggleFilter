@@ -2,10 +2,10 @@
 # Vivado v2019.1 (64-bit)
 # SW Build 2552052 on Fri May 24 14:49:42 MDT 2019
 # IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
-# Start of session at: Thu Nov  5 20:13:32 2020
-# Process ID: 12644
+# Start of session at: Sun Nov  8 13:53:37 2020
+# Process ID: 1152
 # Current directory: C:/verilog_v3
-# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent5060 C:\verilog_v3\verilog_v2.xpr
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent18680 C:\verilog_v3\verilog_v2.xpr
 # Log file: C:/verilog_v3/vivado.log
 # Journal file: C:/verilog_v3\vivado.jou
 #-----------------------------------------------------------
@@ -27,26 +27,12 @@ launch_simulation
 source testbench.tcl
 close_sim
 launch_simulation
-source testbench.tcl
-close_sim
 launch_simulation
 source testbench.tcl
-close_sim
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-launch_simulation
-source testbench.tcl
+current_wave_config {Untitled 6}
+add_wave {{/testbench/ed/first_col/ip_reference}} 
+current_wave_config {Untitled 6}
+add_wave {{/testbench/ed/first_col/ip_reference}} 
 close_sim
 launch_simulation
 source testbench.tcl
@@ -76,13 +62,14 @@ launch_simulation
 source testbench.tcl
 close_sim
 launch_simulation
+launch_simulation
 source testbench.tcl
-set_property BOARD_PART_REPO_PATHS {{C:/Users/Harisankar Sadasivan/AppData/Roaming/Xilinx/Vivado/2019.1/xhub/board_store} C:/verilog_v3/{C:Xilinxivado-boards-masterivado-boards-master C:/verilog_v3/ewoard_files"}} [current_project]
-set_param board.repoPaths {{C:/Users/Harisankar Sadasivan/AppData/Roaming/Xilinx/Vivado/2019.1/xhub/board_store} C:/verilog_v3/{C:Xilinxivado-boards-masterivado-boards-master C:/verilog_v3/ewoard_files"}}
-set_property -name {xsim.simulate.runtime} -value {100000ns} -objects [get_filesets sim_1]
-set_property BOARD_PART_REPO_PATHS {{C:/Users/Harisankar Sadasivan/AppData/Roaming/Xilinx/Vivado/2019.1/xhub/board_store} C:/verilog_v3/{C:Xilinxivado-boards-masterivado-boards-master C:/verilog_v3/ewoard_files"}} [current_project]
-set_param board.repoPaths {{C:/Users/Harisankar Sadasivan/AppData/Roaming/Xilinx/Vivado/2019.1/xhub/board_store} C:/verilog_v3/{C:Xilinxivado-boards-masterivado-boards-master C:/verilog_v3/ewoard_files"}}
 close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+launch_simulation
 launch_simulation
 source testbench.tcl
 close_sim
@@ -100,7 +87,6 @@ source testbench.tcl
 close_sim
 launch_simulation
 source testbench.tcl
-set_property -name {xsim.simulate.runtime} -value {9000000ns} -objects [get_filesets sim_1]
 close_sim
 launch_simulation
 source testbench.tcl
@@ -108,3 +94,58 @@ close_sim
 launch_simulation
 source testbench.tcl
 close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+launch_simulation
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+launch_simulation
+launch_simulation
+launch_simulation
+launch_simulation
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl

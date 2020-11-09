@@ -1,11 +1,6 @@
 /*
  *
- * Starter Testbench for EECS 498/598 HW2
- * 
- * You can use this testbench to test your Edit-Distance systolic array
- * accelerator. Your design must at least pass these tests in order to
- * be considered for grading. Grading will use an expanded set of test 
- * cases that are secret.
+ SquAL testbench
  * 
  */
 
@@ -20,64 +15,95 @@ module testbench();
    
    logic clk;
    logic rst;
-   logic [`DATA_OUT_WIDTH-1:0] rst_val;
+   //logic [`DATA_OUT_WIDTH-1:0] rst_val;
    logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] query ;
-   logic [`REF_MAX_LEN-1:0][`DATA_WIDTH-1:0] reference ;     
+   logic [`DATA_WIDTH-1:0] reference ;     
    
    logic                   start;
    logic                   done = 0;
-   logic [`REF_SIZE_BITS:0]   reference_length; 
-   logic [`DATA_OUT_WIDTH-1:0] result;
+   //logic [`REF_SIZE_BITS:0]   reference_length; 
+   logic  result;
    logic[`DATA_OUT_WIDTH-1:0] expected_result=0;
    //additional signals
    logic [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		pe_op;
    logic activate		[`QUERY_LEN-1:0];
    logic [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		pe_prev_op;
-   logic [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		counter;
-   logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] diff;
+  // logic [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		counter;
+   logic [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0] diff;
        //logic signed [`DATA_OUT_WIDTH-1:0] P;
    logic [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0] score_wire;
    int ref_file,rd_file;
+   logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] ip_reference;
+   logic [`CNTR_BITS-1:0] counter;
+   logic stop_sig;
+   logic [`QUERY_LEN-1:0] early_stop;
+   logic [`QUERY_LEN-1:0] normal_stop;
    // instantiate accelerator
+    
    sDTW ed(.clk(clk),
-                    .rst(rst),
-                    .rst_val(rst_val),
+                    .rst(rst),                    
                     .query(query),
                     .reference(reference),
-                    .reference_length(reference_length),
+                    //.reference_length(reference_length),
                     .start(start),
                     .result(result),
                     .done(done),
                     .pe_op(pe_op),
                     .activate(activate),
-                    .counter(counter),
+                    //.counter(counter),
                     .pe_prev_op(pe_prev_op),
                     .diff(diff),
                     //.P(P),
-                    .score_wire(score_wire)
+                    .score_wire(score_wire),
+                    .ip_reference(ip_reference),
+                    .counter(counter),
+                    .stop_sig(stop_sig),
+                    .early_stop(early_stop),
+                    .normal_stop(normal_stop)
                     );   
+                    
+   //making connections to inner module wires
    
-   task read_from_file();
+       //logic signed [`DATA_OUT_WIDTH-1:0] P;
+
+   
+//    for(integer i=0;i<`QUERY_LEN;i++) begin //{
+   
+        
+         
+//   end //}
+   
+   
+   task read_from_ref();
      //read reference from file
+      automatic int i=0;
       ref_file=$fopen("G:/My Drive/SquiggAlign/data/covid/reference.signal","r");
       if (ref_file) $display("file opened succesfully: %0d",ref_file);
       else $display("file NOT opened succesfully: %0d",ref_file);
       $display("ptr=%d",ref_file);
-      for(int i =1;i<=`REF_MAX_LEN;i++) begin
-        $fscanf(ref_file,"%d",reference[i-1]);
+      while(!$feof(ref_file)) begin
+        i+=1;
+        @(posedge clk)
+        $fscanf(ref_file,"%d\n",reference);
+        if(i==`REF_MAX_LEN) break;
       end
       $fclose(ref_file);
-      
+   endtask : read_from_ref
+
+   task read_from_rd();   
       //read input normalized squiggle from file
       rd_file=$fopen("G:/My Drive/SquiggAlign/data/covid/trimmed_read.signal","r");
       if (rd_file) $display("file opened succesfully: %0d",rd_file);
       else $display("file NOT opened succesfully: %0d",rd_file);
-      for(int i =1;i<=`QUERY_LEN;i++) begin
-        $fscanf(rd_file,"%d",query[i-1]);
+      while(!$feof(rd_file)) begin
+        //@(posedge clk)
+        for(int i=0;i<`QUERY_LEN;i++) begin //{
+        $fscanf(rd_file,"%d\n",query[i]); 
+        end //}
+        break;
       end
-      $fclose(rd_file);
-      $display("%d\t%d",query[5],reference[10]);
-   endtask : read_from_file
+      $fclose(rd_file);    
+   endtask : read_from_rd
 
 
    always begin
@@ -88,7 +114,7 @@ module testbench();
 
    initial begin
 
-      
+     
       
       // initialize constants
       start = 1'b0;
@@ -102,21 +128,25 @@ module testbench();
       @(posedge clk)
       @(posedge clk)
       rst = 1'b1;
-      rst_val = `MAX_VAL ;  
-      read_from_file();    
+      
       //start = 1'b1;
       
       @(posedge clk)
       @(posedge clk)
       rst = 1'b0;
-      start = 1'b1;
-      reference_length=`REF_MAX_LEN;
-      //query[`QUERY_LEN-1:0]={4'd5,4'd6};
-      //query[`QUERY_LEN-1:0]={4'd8,4'd7,4'd5,4'd1,4'd17};
-      //reference[`REF_MAX_LEN-1:0]={4'd1,4'd2,4'd3,4'd4,4'd5,4'd6,4'd7,4'd8,4'd9,4'd10};
+      @(posedge clk)
+      @(posedge clk)
       
-      //reference[`REF_MAX_LEN-1:0]={4'd10,4'd9,4'd8,4'd7,4'd6,4'd5,4'd15,4'd15,4'd5,4'd1,4'd17};
-      
+   
+      fork 
+        read_from_ref();
+        read_from_rd();
+        begin
+        @(posedge clk)
+        start = 1'b1;
+        end
+      join_none
+    
      
       
       
@@ -125,10 +155,10 @@ module testbench();
       $display("////////////////////////////////////////////////");
       
       
-      while(done == 1'b0) begin
+      while(result == 1'b0) begin
          @(posedge clk);
       end
-      
+      rst=1;
       // check to see if the score matches the expectation
       if(result == expected_result) begin
          $display("Test\t\t\tPASSED!");
@@ -136,10 +166,14 @@ module testbench();
          $display("Test\t\t\tFAILED! result = %d expected = %d", result, expected_result);
       end
         $display("%d",`MAX_VAL);
-      #10000000;
+      //#10000000;
 
       $finish;
       
+   end
+
+   initial begin
+    
    end
 
 endmodule
