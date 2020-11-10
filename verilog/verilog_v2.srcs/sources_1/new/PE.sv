@@ -34,11 +34,11 @@ module PE(
       input [`DATA_OUT_WIDTH-1:0] left,
       input [`DATA_OUT_WIDTH-1:0] diag,                  
       output logic[`DATA_OUT_WIDTH-1:0] prev_op, output logic[`DATA_OUT_WIDTH-1:0] curr_op,
-      //output logic  [`DATA_WIDTH-1:0] op_reference,   
-      output [`DATA_OUT_WIDTH-1:0] diff,
-      //output signed [`DATA_OUT_WIDTH+1:0] P,
-      output logic [`DATA_OUT_WIDTH-1:0] score_wire,
-      output [2:0] min_state
+      output logic stop_bit,
+         
+      output [`DATA_OUT_WIDTH-1:0] diff,      
+      output logic [`DATA_OUT_WIDTH-1:0] score_wire
+//      output [2:0] min_state
        );
   
 
@@ -46,18 +46,17 @@ module PE(
   
      
 
-  //wire [`DATA_OUT_WIDTH-1:0] diag_tmp, top_tmp, left_tmp;
- // wire [2:0] min_state;
-//  wire [`DATA_WIDTH:0] diff;
- // wire [`DATA_OUT_WIDTH-1:0] score_wire;
-  //wire signed [`DATA_OUT_WIDTH+1:0] P; 
-
+//      wire [`DATA_OUT_WIDTH-1:0] diff;
+//      logic [`DATA_OUT_WIDTH-1:0] score_wire;
+      wire [2:0] min_state;
+      wire stop_wire;
    
 
    
 
   //absolute delta score computation between reference and query
   assign diff= (query>ip_reference)?(query-ip_reference):(ip_reference-query);
+  
 
   //state calculations for finding minimum among neighbors.
   assign min_state[2]=diag<top;
@@ -78,20 +77,21 @@ module PE(
   endcase 
   end 
 
+ assign stop_wire= (score_wire>=`DTW_THRESHOLD);
  
     always_ff @(posedge clk) begin //{}
        //sync reset
        if(rst) begin //{
           curr_op<=`MAX_VAL;
           prev_op<=curr_op;
-         
+          stop_bit<=0;
           
 
        end //}
        else if(activate) begin //{
           //update sequentially
           curr_op<=score_wire;
-          
+          stop_bit<=stop_wire;
           prev_op<=curr_op;
           
        end //}
@@ -99,6 +99,6 @@ module PE(
         
         
         
-    end //}
+ end //}
 
 endmodule : PE
