@@ -54,7 +54,7 @@
 // (in parentheses) to your own signal names.
 
 //----------- Begin Cut here for INSTANTIATION Template ---// INST_TAG
-div_gen_0 your_instance_name (
+div_gen_1 your_instance_name (
   .aclk(aclk),                                      // input wire aclk
   .s_axis_divisor_tvalid(s_axis_divisor_tvalid),    // input wire s_axis_divisor_tvalid
   .s_axis_divisor_tdata(s_axis_divisor_tdata),      // input wire [15 : 0] s_axis_divisor_tdata
@@ -65,7 +65,7 @@ div_gen_0 your_instance_name (
 );
 // INST_TAG_END ------ End INSTANTIATION Template ---------
 
-// You must compile the wrapper file div_gen_0.v when simulating
-// the core, div_gen_0. When compiling the wrapper file, be sure to
+// You must compile the wrapper file div_gen_1.v when simulating
+// the core, div_gen_1. When compiling the wrapper file, be sure to
 // reference the Verilog simulation library.
 

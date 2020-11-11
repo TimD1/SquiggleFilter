@@ -46,7 +46,7 @@
 // 
 // DO NOT MODIFY THIS FILE.
 
-// IP VLNV: xilinx.com:ip:div_gen:5.1
+// IP VLNV: xilinx.com:ip:mult_gen:12.0
 // IP Revision: 15
 
 // The following must be inserted into your Verilog file for this
@@ -54,18 +54,15 @@
 // (in parentheses) to your own signal names.
 
 //----------- Begin Cut here for INSTANTIATION Template ---// INST_TAG
-div_gen_0 your_instance_name (
-  .aclk(aclk),                                      // input wire aclk
-  .s_axis_divisor_tvalid(s_axis_divisor_tvalid),    // input wire s_axis_divisor_tvalid
-  .s_axis_divisor_tdata(s_axis_divisor_tdata),      // input wire [15 : 0] s_axis_divisor_tdata
-  .s_axis_dividend_tvalid(s_axis_dividend_tvalid),  // input wire s_axis_dividend_tvalid
-  .s_axis_dividend_tdata(s_axis_dividend_tdata),    // input wire [23 : 0] s_axis_dividend_tdata
-  .m_axis_dout_tvalid(m_axis_dout_tvalid),          // output wire m_axis_dout_tvalid
-  .m_axis_dout_tdata(m_axis_dout_tdata)            // output wire [39 : 0] m_axis_dout_tdata
+mult_gen_0 your_instance_name (
+  .CLK(CLK),  // input wire CLK
+  .A(A),      // input wire [7 : 0] A
+  .B(B),      // input wire [7 : 0] B
+  .P(P)      // output wire [15 : 0] P
 );
 // INST_TAG_END ------ End INSTANTIATION Template ---------
 
-// You must compile the wrapper file div_gen_0.v when simulating
-// the core, div_gen_0. When compiling the wrapper file, be sure to
+// You must compile the wrapper file mult_gen_0.v when simulating
+// the core, mult_gen_0. When compiling the wrapper file, be sure to
 // reference the Verilog simulation library.
 
