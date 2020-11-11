@@ -14,33 +14,31 @@ module sDTW(input clk,
                      //input [`REF_SIZE_BITS:0] reference_length,
                      output logic result,
                      output logic done,
+                     output [`QUERY_LEN-1:0] stop_bits,
                      output [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		pe_op,
                     output logic activate		[`QUERY_LEN-1:0],
-                    output                 [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		pe_prev_op,
-                     //output logic [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		counter
-                    output [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0] diff,
-                     //output signed [`DATA_OUT_WIDTH+1:0] P,
+                    output                 [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		pe_prev_op,                    
+                    output [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0] diff,                    
                     output [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0] score_wire,
                     output logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] ip_reference,
-                    output logic [`CNTR_BITS-1:0] counter,
-                    output logic stop_sig,
-                    output logic [`QUERY_LEN-1:0] early_stop,
-                    output logic [`QUERY_LEN-1:0] normal_stop
+                    output logic [`CNTR_BITS-1:0] counter
                     );
 	
-//	logic	activate		[`QUERY_LEN-1:0];
+//    logic	activate		[`QUERY_LEN-1:0];
 //	wire	[`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		pe_op 		;
 //	wire	[`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		pe_prev_op 	;
 //	wire [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0] score_wire;
-	//logic	[`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		counter		; //TBD: check if width can be reduced 
+//	logic	[`CNTR_BITS-1:0]		counter		; //TBD: check if width can be reduced 
+//	logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] ip_reference;
 	
 	//wire op_reference[`QUERY_LEN-1:0];
-    //logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] ip_reference;
+    
 	// first PE declared separately since it has nothing on the left; just constants as inputs
 	
-	//logic [`QUERY_LEN-1:0] early_stop, normal_stop;
+	
 	//wire stop_sig; //signal stopping the systolic array, early or normal
 	//logic [`CNTR_BITS-1:0] counter;
+	//logic [`QUERY_LEN-1:0] early_stop, normal_stop;
 	PE first_col(	.activate(activate[0]),
 					.clk(clk),
 					.rst(rst),
@@ -53,6 +51,7 @@ module sDTW(input clk,
 					.query     (query[0]),
 					.curr_op(pe_op[0]),
 					.prev_op   (pe_prev_op[0]),
+					.stop_bit(stop_bits[0]),
 					.diff(diff[0]),
 					.score_wire(score_wire[0])
 					//.op_reference(op_reference[0])
@@ -74,6 +73,7 @@ module sDTW(input clk,
 					.query(query[i]),
 					.curr_op(pe_op[i]),
 					.prev_op(pe_prev_op[i]),
+					.stop_bit(stop_bits[i]),
 					.diff(diff[i]),					
 					.score_wire(score_wire[i])
 					//.op_reference(op_reference[i])
@@ -99,17 +99,9 @@ module sDTW(input clk,
 			
 			//comparing wrt threshold
 			 if(counter>`QUERY_LEN) begin //{
-			         //comparator signals for early stop
-                     for(integer j=0; j<`QUERY_LEN; j++)
-                     begin
-                        if(pe_op[j]>`DTW_THRESHOLD) begin
-                            early_stop[j]<=1;				 					
-                        end
-                        else
-                           early_stop[j]<=0;	
-                     end
+			        
                      //AND-ing to do early stop
-                     if(&early_stop[`QUERY_LEN-1:0]==1) begin//{
+                     if(&stop_bits[`QUERY_LEN-1:0]==1) begin//{
                          done<=1;
                          //stop_sig<=1;
                          result<=0;
@@ -124,17 +116,10 @@ module sDTW(input clk,
 	begin
 	        if (counter==`QUERY_LEN+`REF_MAX_LEN) begin
 			     done<=1;
-			     //comparator signals generated for OR-ing
-			     for(integer j=0; j<`QUERY_LEN; j++)
-			     begin
-			 	 if(pe_op[j]<=`DTW_THRESHOLD) begin
-			 		normal_stop[j]<=1;				 					
-			 	 end
-			 	 else
-			 	   normal_stop[j]<=0;
-			 	 end	
+			   
+			    
 			 	 //OR-ing to check normal stop
-			 	 if(|normal_stop[`QUERY_LEN-1:0]==1) begin//{
+			 	 if(|stop_bits[`QUERY_LEN-1:0]==1) begin//{
 			    
 			     result<=1;
 			     end //}
@@ -154,9 +139,7 @@ module sDTW(input clk,
 		begin
 			for(integer j=0; j<`QUERY_LEN; j++)
 			begin
-				activate[j] <= 0;
-	            early_stop[j]<=0;
-	            normal_stop[j]<=1;
+				activate[j] <= 0;	           
 	            
 			end
 			done<=0;

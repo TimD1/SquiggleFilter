@@ -35,9 +35,12 @@ module testbench();
    int ref_file,rd_file;
    logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] ip_reference;
    logic [`CNTR_BITS-1:0] counter;
-   logic stop_sig;
-   logic [`QUERY_LEN-1:0] early_stop;
-   logic [`QUERY_LEN-1:0] normal_stop;
+   logic [`QUERY_LEN-1:0] stop_bits;
+
+   
+ 
+   //   logic [`QUERY_LEN-1:0] early_stop;
+   //   logic [`QUERY_LEN-1:0] normal_stop;
    // instantiate accelerator
     
    sDTW ed(.clk(clk),
@@ -48,18 +51,17 @@ module testbench();
                     .start(start),
                     .result(result),
                     .done(done),
+                    .stop_bits(stop_bits),
                     .pe_op(pe_op),
-                    .activate(activate),
-                    //.counter(counter),
+                    .activate(activate),                    
                     .pe_prev_op(pe_prev_op),
-                    .diff(diff),
-                    //.P(P),
+                    .diff(diff),                    
                     .score_wire(score_wire),
                     .ip_reference(ip_reference),
-                    .counter(counter),
-                    .stop_sig(stop_sig),
-                    .early_stop(early_stop),
-                    .normal_stop(normal_stop)
+                    .counter(counter)
+
+//                    .early_stop(early_stop),
+//                    .normal_stop(normal_stop)
                     );   
                     
    //making connections to inner module wires
