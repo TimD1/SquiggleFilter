@@ -4,10 +4,8 @@ import mappy
 
 from ont_fast5_api.fast5_interface import get_fast5_file
 
-from pyguppyclient import GuppyBasecallerClient, yield_reads
+import pyguppyclient
 from pyguppyclient.decode import ReadData
-
-guppy_config = "/opt/ont/guppy/data/dna_r9.4.1_450bps_hac.cfg"
 
 def yield_read_chunks(filename, start, length):
     with get_fast5_file(filename, 'r') as f5_fh:
@@ -21,57 +19,75 @@ def yield_read_chunks(filename, start, length):
 
 ################################################################################
 
-def main(args):
+def init(args):
 
-    # initialize guppy and mappy
-    virus_ref = mappy.Aligner(
+    # parse input lengths and thresholds
+    lengths = [int(l) for l in args.chunk_lengths.split(",")]
+    thresholds = [int(t) for t in args.chunk_thresholds.split(",")]
+
+    return lengths, thresholds
+
+################################################################################
+
+def basecall_align(folder, max_reads, length, args):
+
+    # initialize mappy aligner
+    aligner = mappy.Aligner(
             fn_idx_in = args.virus_dir+"/reference.fasta",
             preset = "map-ont",
             best_n = 1
     )
-    with GuppyBasecallerClient(guppy_config, port=1234) as client:
 
-        # perform analyses for each read length
-        for length in [int(l) for l in args.chunk_lengths.split(",")]:
-            print(f"Chunk length: {length}")
+    # initialize guppy basecaller
+    if args.nucleotide_type == "dna":
+        guppy_config = f"/opt/ont/guppy/data/dna_r9.4.1_450bps_{args.model}.cfg"
+    else:
+        guppy_config = f"/opt/ont/guppy/data/rna_r9.4.1_70bps_{args.model}.cfg"
 
-            # basecall and align all virus reads 
-            virus_reads, virus_hits = 0, 0
-            for fast5_fn in glob(args.virus_dir + "/fast5/*.fast5"):
-                for read in yield_read_chunks(fast5_fn, args.trim_start, length):
-                    virus_reads += 1
-                    called = client.basecall(read)
-                    for hit in virus_ref.map(called.seq):
-                        virus_hits += 1
+    reads, scores = 0, []
+    with pyguppyclient.GuppyBasecallerClient(guppy_config, port=1234) as bc:
+        for fast5_fn in glob(folder + "/fast5/*.fast5"):
+            for read in yield_read_chunks(fast5_fn, args.trim_start, length):
+                called = bc.basecall(read)
+                try:
+                    alignment = next(aligner.map(called.seq))
+                    scores.append(alignment.mapq)
+                except(StopIteration): # no alignment
+                    scores.append(0)
 
-                    if virus_reads >= args.max_virus_reads:
-                        break
-                if virus_reads >= args.max_virus_reads:
-                    break
-            print(f"\tVirus mapped-unmapped: {virus_hits}-{args.max_virus_reads-virus_hits}")
+                # quit early if we've hit our read limit
+                if reads > max_reads: break
+                reads += 1
+            if reads > max_reads: break
 
-            # basecall and align all other reads 
-            other_reads, other_hits = 0, 0
-            for fast5_fn in glob(args.other_dir + "/fast5/*.fast5"):
-                for read in yield_read_chunks(fast5_fn, args.trim_start, length):
-                    other_reads += 1
-                    called = client.basecall(read)
-                    for hit in virus_ref.map(called.seq):
-                        other_hits += 1
+        # return mapping scores
+        return scores
 
-                    if other_reads >= args.max_other_reads:
-                        break
-                if other_reads >= args.max_other_reads:
-                    break
+################################################################################
 
-            print(f"\tOther mapped-unmapped: {other_hits}-{args.max_other_reads-other_hits}")
+def main(args):
 
+    lengths, thresholds = init(args)
 
+    for length in lengths:
+
+        print(f"Chunk length: {length}")
+
+        virus_scores = basecall_align( args.virus_dir, args.max_virus_reads, length, args)
+        other_scores = basecall_align( args.other_dir, args.max_other_reads, 
+                length, args)
+
+        print(virus_scores)
+        print(other_scores)
 
 ################################################################################
 
 def parser():
     parser = argparse.ArgumentParser()
+
+    # guppy parameters
+    parser.add_argument("--nucleotide_type", default="dna")
+    parser.add_argument("--model", default="hac")
 
     parser.add_argument("--virus_dir", default="/x/squiggalign_data/lambda")
     parser.add_argument("--other_dir", default="/x/squiggalign_data/human")
@@ -79,6 +95,8 @@ def parser():
     parser.add_argument("--trim_start", type=int, default=1000)
     parser.add_argument("--chunk_lengths", 
             default="1000,2000,3000,4000,5000,6000,7000")
+    parser.add_argument("--chunk_thresholds", 
+            default="5500,11000,15000,19000,24000,29000,34000")
     parser.add_argument("--max_virus_reads", type=int, default=10)
     parser.add_argument("--max_other_reads", type=int, default=10)
 
