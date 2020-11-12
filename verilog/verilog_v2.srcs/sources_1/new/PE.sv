@@ -37,7 +37,13 @@ module PE(
       output logic stop_bit,
          
       output [`DATA_OUT_WIDTH-1:0] diff,      
-      output logic [`DATA_OUT_WIDTH-1:0] score_wire
+      output logic [`DATA_OUT_WIDTH-1:0] score_wire,
+      output [`DATA_WIDTH-1:0] op_reference,
+      output [`DATA_WIDTH-1:0] l_query,
+      output logic [`DATA_WIDTH-1:0] l_query_r,
+      output [`DATA_WIDTH-1:0] query_o    ,
+      output  [`DATA_WIDTH-1:0] ip_ref ,
+      output  logic [`DATA_WIDTH-1:0] ip_reference_r
 //      output [2:0] min_state
        );
   
@@ -50,13 +56,35 @@ module PE(
 //      logic [`DATA_OUT_WIDTH-1:0] score_wire;
       wire [2:0] min_state;
       wire stop_wire;
-   
-
-   
-
-  //absolute delta score computation between reference and query
-  assign diff= (query>ip_reference)?(query-ip_reference):(ip_reference-query);
+      //wire [`DATA_WIDTH-1:0] ip_ref;
+      //wire[`DATA_WIDTH-1:0] l_query; //locked query value
+      //logic [`DATA_WIDTH-1:0] l_query_r; //register locked query value
+      
+  //stream query    
+  always @(posedge activate) begin
+  l_query_r<=query;
+  end
   
+  //stream reference
+  always @(posedge clk) begin
+
+  ip_reference_r<=ip_reference;     
+  end
+  
+  
+  //wires for registered output from ref and query
+  assign ip_ref=ip_reference_r;
+  assign op_reference=ip_ref;
+  
+  assign l_query=l_query_r;
+  assign op_reference = ip_reference_r;
+  
+  assign query_o=query;
+  
+  
+  //absolute delta score computation between reference and query
+  assign diff= (l_query>ip_ref)?(l_query-ip_ref):(ip_ref-l_query);
+   
 
   //state calculations for finding minimum among neighbors.
   assign min_state[2]=diag<top;
@@ -92,13 +120,14 @@ module PE(
           //update sequentially
           curr_op<=score_wire;
           stop_bit<=stop_wire;
-          prev_op<=curr_op;
-          
+          prev_op<=curr_op;   
+                     
        end //}
-
+    
         
         
         
- end //}
+     end //}
+     
 
 endmodule : PE

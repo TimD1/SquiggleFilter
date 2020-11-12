@@ -26,3 +26,158 @@ launch_simulation
 launch_simulation
 launch_simulation
 source testbench.tcl
+set_property BOARD_PART_REPO_PATHS {{C:/Users/Harisankar Sadasivan/AppData/Roaming/Xilinx/Vivado/2019.1/xhub/board_store} C:/verilog_v3/{C:Xilinxivado-boards-masterivado-boards-master C:/verilog_v3/ewoard_files"}} [current_project]
+set_param board.repoPaths {{C:/Users/Harisankar Sadasivan/AppData/Roaming/Xilinx/Vivado/2019.1/xhub/board_store} C:/verilog_v3/{C:Xilinxivado-boards-masterivado-boards-master C:/verilog_v3/ewoard_files"}}
+set_property part xc7a200tsbv484-1 [current_project]
+set_property BOARD_PART_REPO_PATHS {{C:/Users/Harisankar Sadasivan/AppData/Roaming/Xilinx/Vivado/2019.1/xhub/board_store} C:/verilog_v3/{C:Xilinxivado-boards-masterivado-boards-master C:/verilog_v3/ewoard_files"}} [current_project]
+set_param board.repoPaths {{C:/Users/Harisankar Sadasivan/AppData/Roaming/Xilinx/Vivado/2019.1/xhub/board_store} C:/verilog_v3/{C:Xilinxivado-boards-masterivado-boards-master C:/verilog_v3/ewoard_files"}}
+create_ip -name div_gen -vendor xilinx.com -library ip -version 5.1 -module_name div_gen_0 -dir c:/verilog_v3/verilog_v2.srcs/sources_1/ip
+set_property -dict [list CONFIG.algorithm_type {Radix2} CONFIG.divisor_width {13} CONFIG.fractional_width {2} CONFIG.dividend_and_quotient_width {16} CONFIG.divisor_width {13} CONFIG.remainder_type {Fractional} CONFIG.fractional_width {2} CONFIG.operand_sign {Signed} CONFIG.latency {22}] [get_ips div_gen_0]
+generate_target {instantiation_template} [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci]
+set_property generate_synth_checkpoint false [get_files  c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci]
+generate_target all [get_files  c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci]
+export_ip_user_files -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci] -directory C:/verilog_v3/verilog_v2.ip_user_files/sim_scripts -ip_user_files_dir C:/verilog_v3/verilog_v2.ip_user_files -ipstatic_source_dir C:/verilog_v3/verilog_v2.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/verilog_v3/verilog_v2.cache/compile_simlib/modelsim} {questa=C:/verilog_v3/verilog_v2.cache/compile_simlib/questa} {riviera=C:/verilog_v3/verilog_v2.cache/compile_simlib/riviera} {activehdl=C:/verilog_v3/verilog_v2.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+set_property -dict [list CONFIG.dividend_and_quotient_width {21} CONFIG.divisor_width {13} CONFIG.fractional_width {2} CONFIG.latency {27}] [get_ips div_gen_0]
+generate_target all [get_files  c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci]
+export_ip_user_files -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci] -directory C:/verilog_v3/verilog_v2.ip_user_files/sim_scripts -ip_user_files_dir C:/verilog_v3/verilog_v2.ip_user_files -ipstatic_source_dir C:/verilog_v3/verilog_v2.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/verilog_v3/verilog_v2.cache/compile_simlib/modelsim} {questa=C:/verilog_v3/verilog_v2.cache/compile_simlib/questa} {riviera=C:/verilog_v3/verilog_v2.cache/compile_simlib/riviera} {activehdl=C:/verilog_v3/verilog_v2.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+set_property -dict [list CONFIG.dividend_and_quotient_width {23} CONFIG.divisor_width {13} CONFIG.fractional_width {2} CONFIG.latency {29}] [get_ips div_gen_0]
+generate_target all [get_files  c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci]
+export_ip_user_files -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci] -directory C:/verilog_v3/verilog_v2.ip_user_files/sim_scripts -ip_user_files_dir C:/verilog_v3/verilog_v2.ip_user_files -ipstatic_source_dir C:/verilog_v3/verilog_v2.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/verilog_v3/verilog_v2.cache/compile_simlib/modelsim} {questa=C:/verilog_v3/verilog_v2.cache/compile_simlib/questa} {riviera=C:/verilog_v3/verilog_v2.cache/compile_simlib/riviera} {activehdl=C:/verilog_v3/verilog_v2.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+create_ip -name div_gen -vendor xilinx.com -library ip -version 5.1 -module_name div_gen_1 -dir c:/verilog_v3/verilog_v2.srcs/sources_1/ip
+set_property -dict [list CONFIG.dividend_and_quotient_width {21} CONFIG.divisor_width {13} CONFIG.operand_sign {Unsigned} CONFIG.fractional_width {13} CONFIG.latency {23}] [get_ips div_gen_1]
+generate_target {instantiation_template} [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_1/div_gen_1.xci]
+set_property generate_synth_checkpoint false [get_files  c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_1/div_gen_1.xci]
+generate_target all [get_files  c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_1/div_gen_1.xci]
+export_ip_user_files -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_1/div_gen_1.xci] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_1/div_gen_1.xci] -directory C:/verilog_v3/verilog_v2.ip_user_files/sim_scripts -ip_user_files_dir C:/verilog_v3/verilog_v2.ip_user_files -ipstatic_source_dir C:/verilog_v3/verilog_v2.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/verilog_v3/verilog_v2.cache/compile_simlib/modelsim} {questa=C:/verilog_v3/verilog_v2.cache/compile_simlib/questa} {riviera=C:/verilog_v3/verilog_v2.cache/compile_simlib/riviera} {activehdl=C:/verilog_v3/verilog_v2.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+set_property -dict [list CONFIG.dividend_and_quotient_width {21} CONFIG.remainder_type {Remainder} CONFIG.operand_sign {Unsigned} CONFIG.divisor_width {13} CONFIG.fractional_width {13} CONFIG.latency {23}] [get_ips div_gen_0]
+generate_target all [get_files  c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci]
+export_ip_user_files -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci] -directory C:/verilog_v3/verilog_v2.ip_user_files/sim_scripts -ip_user_files_dir C:/verilog_v3/verilog_v2.ip_user_files -ipstatic_source_dir C:/verilog_v3/verilog_v2.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/verilog_v3/verilog_v2.cache/compile_simlib/modelsim} {questa=C:/verilog_v3/verilog_v2.cache/compile_simlib/questa} {riviera=C:/verilog_v3/verilog_v2.cache/compile_simlib/riviera} {activehdl=C:/verilog_v3/verilog_v2.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+create_ip -name div_gen -vendor xilinx.com -library ip -version 5.1 -module_name div_gen_2 -dir c:/verilog_v3/verilog_v2.srcs/sources_1/ip
+set_property -dict [list CONFIG.dividend_and_quotient_width {14} CONFIG.divisor_width {5} CONFIG.operand_sign {Unsigned} CONFIG.fractional_width {5} CONFIG.latency {16}] [get_ips div_gen_2]
+generate_target {instantiation_template} [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_2/div_gen_2.xci]
+set_property generate_synth_checkpoint false [get_files  c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_2/div_gen_2.xci]
+generate_target all [get_files  c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_2/div_gen_2.xci]
+export_ip_user_files -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_2/div_gen_2.xci] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_2/div_gen_2.xci] -directory C:/verilog_v3/verilog_v2.ip_user_files/sim_scripts -ip_user_files_dir C:/verilog_v3/verilog_v2.ip_user_files -ipstatic_source_dir C:/verilog_v3/verilog_v2.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/verilog_v3/verilog_v2.cache/compile_simlib/modelsim} {questa=C:/verilog_v3/verilog_v2.cache/compile_simlib/questa} {riviera=C:/verilog_v3/verilog_v2.cache/compile_simlib/riviera} {activehdl=C:/verilog_v3/verilog_v2.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+set_property -dict [list CONFIG.dividend_and_quotient_width {15} CONFIG.divisor_width {5} CONFIG.fractional_width {5} CONFIG.latency {17}] [get_ips div_gen_2]
+generate_target all [get_files  c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_2/div_gen_2.xci]
+export_ip_user_files -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_2/div_gen_2.xci] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_2/div_gen_2.xci] -directory C:/verilog_v3/verilog_v2.ip_user_files/sim_scripts -ip_user_files_dir C:/verilog_v3/verilog_v2.ip_user_files -ipstatic_source_dir C:/verilog_v3/verilog_v2.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/verilog_v3/verilog_v2.cache/compile_simlib/modelsim} {questa=C:/verilog_v3/verilog_v2.cache/compile_simlib/questa} {riviera=C:/verilog_v3/verilog_v2.cache/compile_simlib/riviera} {activehdl=C:/verilog_v3/verilog_v2.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+set_property -dict [list CONFIG.dividend_and_quotient_width {14} CONFIG.divisor_width {5} CONFIG.fractional_width {5} CONFIG.latency {16}] [get_ips div_gen_2]
+generate_target all [get_files  c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_2/div_gen_2.xci]
+export_ip_user_files -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_2/div_gen_2.xci] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_2/div_gen_2.xci] -directory C:/verilog_v3/verilog_v2.ip_user_files/sim_scripts -ip_user_files_dir C:/verilog_v3/verilog_v2.ip_user_files -ipstatic_source_dir C:/verilog_v3/verilog_v2.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/verilog_v3/verilog_v2.cache/compile_simlib/modelsim} {questa=C:/verilog_v3/verilog_v2.cache/compile_simlib/questa} {riviera=C:/verilog_v3/verilog_v2.cache/compile_simlib/riviera} {activehdl=C:/verilog_v3/verilog_v2.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+set_property -dict [list CONFIG.dividend_and_quotient_width {13} CONFIG.divisor_width {5} CONFIG.fractional_width {5} CONFIG.latency {15}] [get_ips div_gen_2]
+generate_target all [get_files  c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_2/div_gen_2.xci]
+export_ip_user_files -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_2/div_gen_2.xci] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_2/div_gen_2.xci] -directory C:/verilog_v3/verilog_v2.ip_user_files/sim_scripts -ip_user_files_dir C:/verilog_v3/verilog_v2.ip_user_files -ipstatic_source_dir C:/verilog_v3/verilog_v2.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/verilog_v3/verilog_v2.cache/compile_simlib/modelsim} {questa=C:/verilog_v3/verilog_v2.cache/compile_simlib/questa} {riviera=C:/verilog_v3/verilog_v2.cache/compile_simlib/riviera} {activehdl=C:/verilog_v3/verilog_v2.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+create_ip -name div_gen -vendor xilinx.com -library ip -version 5.1 -module_name div_gen_3 -dir c:/verilog_v3/verilog_v2.srcs/sources_1/ip
+set_property -dict [list CONFIG.divisor_width {13} CONFIG.operand_sign {Unsigned} CONFIG.fractional_width {13} CONFIG.latency {18}] [get_ips div_gen_3]
+generate_target {instantiation_template} [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_3/div_gen_3.xci]
+set_property generate_synth_checkpoint false [get_files  c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_3/div_gen_3.xci]
+generate_target all [get_files  c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_3/div_gen_3.xci]
+export_ip_user_files -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_3/div_gen_3.xci] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_3/div_gen_3.xci] -directory C:/verilog_v3/verilog_v2.ip_user_files/sim_scripts -ip_user_files_dir C:/verilog_v3/verilog_v2.ip_user_files -ipstatic_source_dir C:/verilog_v3/verilog_v2.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/verilog_v3/verilog_v2.cache/compile_simlib/modelsim} {questa=C:/verilog_v3/verilog_v2.cache/compile_simlib/questa} {riviera=C:/verilog_v3/verilog_v2.cache/compile_simlib/riviera} {activehdl=C:/verilog_v3/verilog_v2.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+create_ip -name div_gen -vendor xilinx.com -library ip -version 5.1 -module_name div_gen_4 -dir c:/verilog_v3/verilog_v2.srcs/sources_1/ip
+set_property -dict [list CONFIG.dividend_and_quotient_width {19} CONFIG.divisor_width {13} CONFIG.operand_sign {Unsigned} CONFIG.fractional_width {13} CONFIG.latency {21}] [get_ips div_gen_4]
+generate_target {instantiation_template} [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_4/div_gen_4.xci]
+set_property generate_synth_checkpoint false [get_files  c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_4/div_gen_4.xci]
+generate_target all [get_files  c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_4/div_gen_4.xci]
+export_ip_user_files -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_4/div_gen_4.xci] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_4/div_gen_4.xci] -directory C:/verilog_v3/verilog_v2.ip_user_files/sim_scripts -ip_user_files_dir C:/verilog_v3/verilog_v2.ip_user_files -ipstatic_source_dir C:/verilog_v3/verilog_v2.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/verilog_v3/verilog_v2.cache/compile_simlib/modelsim} {questa=C:/verilog_v3/verilog_v2.cache/compile_simlib/questa} {riviera=C:/verilog_v3/verilog_v2.cache/compile_simlib/riviera} {activehdl=C:/verilog_v3/verilog_v2.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+export_ip_user_files -of_objects  [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_3/div_gen_3.xci] -no_script -reset -force -quiet
+remove_files  c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_3/div_gen_3.xci
+file delete -force c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_3
+create_ip -name mult_gen -vendor xilinx.com -library ip -version 12.0 -module_name mult_gen_0 -dir c:/verilog_v3/verilog_v2.srcs/sources_1/ip
+set_property -dict [list CONFIG.PortAType {Unsigned} CONFIG.PortAWidth {8} CONFIG.PortBType {Unsigned} CONFIG.PortBWidth {8} CONFIG.Multiplier_Construction {Use_LUTs} CONFIG.OutputWidthHigh {15} CONFIG.PipeStages {3}] [get_ips mult_gen_0]
+generate_target {instantiation_template} [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/mult_gen_0_1/mult_gen_0.xci]
+set_property generate_synth_checkpoint false [get_files  c:/verilog_v3/verilog_v2.srcs/sources_1/ip/mult_gen_0_1/mult_gen_0.xci]
+generate_target all [get_files  c:/verilog_v3/verilog_v2.srcs/sources_1/ip/mult_gen_0_1/mult_gen_0.xci]
+export_ip_user_files -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/mult_gen_0_1/mult_gen_0.xci] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/mult_gen_0_1/mult_gen_0.xci] -directory C:/verilog_v3/verilog_v2.ip_user_files/sim_scripts -ip_user_files_dir C:/verilog_v3/verilog_v2.ip_user_files -ipstatic_source_dir C:/verilog_v3/verilog_v2.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/verilog_v3/verilog_v2.cache/compile_simlib/modelsim} {questa=C:/verilog_v3/verilog_v2.cache/compile_simlib/questa} {riviera=C:/verilog_v3/verilog_v2.cache/compile_simlib/riviera} {activehdl=C:/verilog_v3/verilog_v2.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+set_property -dict [list CONFIG.dividend_and_quotient_width {29} CONFIG.divisor_width {13} CONFIG.fractional_width {13} CONFIG.latency {31}] [get_ips div_gen_4]
+generate_target all [get_files  c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_4/div_gen_4.xci]
+export_ip_user_files -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_4/div_gen_4.xci] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_4/div_gen_4.xci] -directory C:/verilog_v3/verilog_v2.ip_user_files/sim_scripts -ip_user_files_dir C:/verilog_v3/verilog_v2.ip_user_files -ipstatic_source_dir C:/verilog_v3/verilog_v2.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/verilog_v3/verilog_v2.cache/compile_simlib/modelsim} {questa=C:/verilog_v3/verilog_v2.cache/compile_simlib/questa} {riviera=C:/verilog_v3/verilog_v2.cache/compile_simlib/riviera} {activehdl=C:/verilog_v3/verilog_v2.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+set_property is_enabled false [get_files  {c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_1/div_gen_1.xci c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_2/div_gen_2.xci c:/verilog_v3/verilog_v2.srcs/sources_1/ip/div_gen_4/div_gen_4.xci c:/verilog_v3/verilog_v2.srcs/sources_1/ip/mult_gen_0_1/mult_gen_0.xci}]
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl
+close_sim
+launch_simulation
+source testbench.tcl

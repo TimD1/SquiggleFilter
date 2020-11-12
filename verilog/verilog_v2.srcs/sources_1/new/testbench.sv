@@ -16,7 +16,7 @@ module testbench();
    logic clk;
    logic rst;
    //logic [`DATA_OUT_WIDTH-1:0] rst_val;
-   logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] query ;
+   logic [`DATA_WIDTH-1:0] query ;
    logic [`DATA_WIDTH-1:0] reference ;     
    
    logic                   start;
@@ -36,9 +36,12 @@ module testbench();
    logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] ip_reference;
    logic [`CNTR_BITS-1:0] counter;
    logic [`QUERY_LEN-1:0] stop_bits;
-
-   
- 
+   logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] l_query;
+   logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] op_reference;
+   logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] l_query_r;
+   logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] query_o;
+   logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] ip_ref ;
+   logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] ip_reference_r;
    //   logic [`QUERY_LEN-1:0] early_stop;
    //   logic [`QUERY_LEN-1:0] normal_stop;
    // instantiate accelerator
@@ -58,7 +61,13 @@ module testbench();
                     .diff(diff),                    
                     .score_wire(score_wire),
                     .ip_reference(ip_reference),
-                    .counter(counter)
+                    .counter(counter),
+                    .op_reference(op_reference),
+                    .l_query(l_query),
+                    .l_query_r(l_query_r),
+                    .query_o(query_o),
+                    .ip_ref(ip_ref),
+                    .ip_reference_r(ip_reference_r)
 
 //                    .early_stop(early_stop),
 //                    .normal_stop(normal_stop)
@@ -94,15 +103,15 @@ module testbench();
 
    task read_from_rd();   
       //read input normalized squiggle from file
+      automatic int i=0;
       rd_file=$fopen("G:/My Drive/SquiggAlign/data/covid/trimmed_read.signal","r");
       if (rd_file) $display("file opened succesfully: %0d",rd_file);
       else $display("file NOT opened succesfully: %0d",rd_file);
       while(!$feof(rd_file)) begin
-        //@(posedge clk)
-        for(int i=0;i<`QUERY_LEN;i++) begin //{
-        $fscanf(rd_file,"%d\n",query[i]); 
-        end //}
-        break;
+        i+=1;
+        @(posedge clk)        
+        $fscanf(rd_file,"%d\n",query); 
+        if(i==`QUERY_LEN) break;    
       end
       $fclose(rd_file);    
    endtask : read_from_rd
