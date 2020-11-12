@@ -1,4 +1,7 @@
 matplotlib==3.0.3
 h5py
-git+https://github.com/rrwick/Porechop
-pomoxis
+#git+https://github.com/rrwick/Porechop
+#pomoxis
+pyguppyclient
+ont-fast5-api
+mappy==2.17
