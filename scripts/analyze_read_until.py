@@ -123,25 +123,6 @@ ref = None
 
 @njit()
 def sdtw(seq):
-    ''' Returns minimum alignment score for subsequence DTW. '''
-
-    # initialize cost matrix
-    print(ref, seq)
-    cost_mat = np.zeros((len(seq), len(ref)))
-    cost_mat[0, 0] = abs(seq[0]-ref[0])
-    for i in range(1, len(seq)):
-        cost_mat[i, 0] = cost_mat[i-1, 0] + abs(seq[i]-ref[0])
-
-    # compute entire cost matrix
-    for i in range(1, len(seq)):
-        for j in range(1, len(ref)):
-            cost_mat[i, j] = abs(seq[i]-ref[j]) + \
-                    min(cost_mat[i-1, j-1], cost_mat[i, j-1], cost_mat[i-1, j])
-    print(cost_mat[:,:10])
-    return np.min(cost_mat[-1,:])
-
-@njit()
-def sdtw2(seq):
     ''' Returns minimum alignment score for subsequence DTW, linear memory. '''
 
     # initialize cost matrix
@@ -193,7 +174,7 @@ def dtw_align(read_type, length, args):
 
     # align reads
     with mp.Pool() as pool:
-        dists = pool.map(sdtw2, reads)
+        dists = pool.map(sdtw, reads)
     return np.array(dists)
 
 ################################################################################
