@@ -5,3 +5,5 @@ h5py
 pyguppyclient
 ont-fast5-api
 mappy==2.17
+numba
+sklearn

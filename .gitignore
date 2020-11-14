@@ -1,5 +1,7 @@
 venv3/
 data/covid_strains
+data/accuracy
+img/accuracy
 data/*/*/
 results/*
 *.ipynb*
