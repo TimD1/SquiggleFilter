@@ -1,7 +1,7 @@
 //independent defines, tunable params before synthesis
 `define DATA_WIDTH 8
-`define QUERY_LEN 50
-`define REF_MAX_LEN 200
+`define QUERY_LEN 2
+`define REF_MAX_LEN 10
 `define DTW_THRESHOLD 100000
 
 
