@@ -16,6 +16,8 @@ from sklearn import metrics
 import pyguppyclient
 from pyguppyclient.decode import ReadData
 
+ref = None
+
 def yield_reads(folder):
     ''' Yields full-length reads from all FAST5 files in a directory. '''
     for filename in glob(f"{folder}/*.fast5"):
@@ -80,7 +82,7 @@ def rev_comp(bases):
     return bases.replace('A','t').replace('T','a') \
             .replace('G','c').replace('C','g').upper()[::-1]
 
-def load_model():
+def load_model(args):
     ''' Load k-mer model file into Python dict. '''
     kmer_model = {}
     with open(f"../data/{args.bp_type}_kmer_model.txt", 'r') as model_file:
@@ -89,6 +91,7 @@ def load_model():
             kmer_model[kmer] = float(current)
     return kmer_model
 
+@njit()
 def discrete_normalize(seq, bits=8, minval=-8, maxval=8):
     ''' 
     Approximate normalization which converts signal to integer of desired precision. 
@@ -112,8 +115,6 @@ def ref_signal(fasta, kmer_model):
 
 ################################################################################
 
-ref = None
-
 @njit()
 def sdtw(seq):
     ''' Returns minimum alignment score for subsequence DTW, linear memory. '''
@@ -134,38 +135,22 @@ def sdtw(seq):
 
 ################################################################################
 
-def dtw_align(read_type, length, args):
-    global ref
+def get_reference(args):
 
-    # get reference signal
-    ref_fasta = get_fasta(args.virus_dir + "/reference.fasta")
-    kmer_model = load_model()
+    # load fasta and generate reference squiggles
+    ref_fasta = get_fasta(f"{args.virus_dir}/reference.fasta")
+    kmer_model = load_model(args)
     fwd_ref_sig = ref_signal(ref_fasta, kmer_model)
     rev_ref_sig = ref_signal(rev_comp(ref_fasta), kmer_model)
     ref_sig = np.concatenate((fwd_ref_sig, rev_ref_sig))
-    ref = ref_sig
 
-    # preprocess all reads
-    reads = []
-    folder = args.virus_dir if read_type == "virus" else args.other_dir
-    max_reads = args.max_virus_reads if read_type == "virus" else args.max_other_reads
-    read_count = 0
-    for fast5_fn in glob(folder + "/fast5/*.fast5"):
-        fast5_file = h5py.File(fast5_fn, 'r')
-        for read_name in fast5_file:
-            signal = np.array(fast5_file[read_name]['Raw']['Signal'] \
-                        [:args.trim_start+length], dtype=np.int16)
-            signal = discrete_normalize(signal)
-            signal = signal[args.trim_start:]
-            if read_count >= max_reads: break
-            read_count += 1
-            reads.append(signal)
-        if read_count >= max_reads: break
-
-    # align reads
-    with mp.Pool() as pool:
-        dists = pool.map(sdtw, reads)
-    return np.array(dists)
+    # direct RNA seq on ssRNA should only need forward sequence
+    if args.bp_type == "dna":
+        return ref_sig
+    elif args.bp_type == "rna":
+        return fwd_ref_sig
+    else:
+        return ref_sig
 
 ################################################################################
 
@@ -198,17 +183,45 @@ def generate_bedfile(args):
     bedfile_fn = f"{args.virus_dir}/regions.bed"
     with open(bedfile_fn, 'w') as bedfile:
         for x in range(1, fasta_len, 1000):
-            bedfile.write(f"{contig}\t{x}\t{x+1000}\n")
+            bedfile.write(f"{contig}\t{x}\t{x+999}\n")
     return bedfile_fn
 
 ################################################################################
 
 def do_read_until(read, ru_queue, sam_queue, args):
+
+    # parse lengths and thresholds
     lengths = [int(l) for l in args.chunk_lengths.split(",")]
     thresholds = [int(t) for t in args.chunk_thresholds.split(",")]
 
+    if not args.basecall: # dtw
+        rejected = False
+        for length, threshold in zip(lengths, thresholds):
+
+            # extract region, normalize, calculate score
+            trimmed_read = read.copy()
+            trimmed_read.signal = \
+                    read.signal[:args.trim_start+length]
+            signal = discrete_normalize(signal)
+            signal = signal[args.trim_start:]
+            score = sdtw(trimmed_signal)
+
+            # reject read if too dissimilar
+            if score > threshold:
+                ru_queue.put(f"{read.read_id}\t{length}\t{score}\tFalse\n")
+                rejected = True
+                break
+
+        if not rejected:
+            ru_queue.put(f"{read.read_id}\t{len(read.signal)}\t{score}\tTrue\n")
+
+    else: # basecall-align
+
+
     ru_queue.put(f"{read.read_id}\t2\t3\n")
     return
+
+################################################################################
 
 def write_ru_data(ru_queue, ru_data_fn):
     '''
@@ -225,38 +238,44 @@ def write_ru_data(ru_queue, ru_data_fn):
 
 ################################################################################
 
+def write_sam_data(sam_queue, sam_data_fn):
+    '''
+    Writes all read-until data to file.
+    '''
+
+################################################################################
+
 def main(args):
+    global ref
 
+    # init
     validate(args)
-
     bedfile = generate_bedfile(args)
-
     target_coverage_met = False
+    ref = get_reference(args)
+
+    # perform read-until
     while not target_coverage_met:
+
+        # select next subset of data
         virus_reads = yield_reads(f"{args.virus_dir}/fast5")
         other_reads = yield_reads(f"{args.other_dir}/fast5")
-
         batch = [next(virus_reads)] + \
                 list(itertools.islice(other_reads, args.ratio))
 
-        # threads = []
-        # threads.append(mp.Process(target=do_read_until, 
-        #     args=(virus_reads.next(), args)))
-        # for other_read in itertools.islice(other_reads, args.ratio):
-        #     threads.append(mp.Process(target=do_read_until, 
-        #         args=(other_read, args)))
-        # for t in threads: t.start()
-        # for t in threads: t.join()
-
+        # create pool and queues
         with mp.Pool() as pool:
             manager = mp.Manager()
             sam_queue = manager.Queue()
             ru_queue = manager.Queue()
 
-            # sam_writer = pool.apply_async(write_sam, (args.sam_file))
+            # create writer threads for data output
+            sam_writer = pool.apply_async(write_sam_data, 
+                    (sam_queue, args.sam_file))
             ru_writer = pool.apply_async(write_ru_data, 
-                (ru_queue, args.ru_data_file))
+                    (ru_queue, args.ru_data_file))
 
+            # spawn worker threads to perform alignment
             jobs = []
             for read in batch:
                 job = pool.apply_async(do_read_until, 
@@ -264,16 +283,13 @@ def main(args):
                 jobs.append(job)
             for job in jobs: job.get()
 
-            # sam_queue.put('kill')
+            # teardown
+            sam_queue.put('kill')
             ru_queue.put('kill')
-            # sam_writer.get()
+            sam_writer.get()
             ru_writer.get()
-        break
-
 
         target_coverage_met = check_coverage_progress(args)
-
-
 
 ################################################################################
 
