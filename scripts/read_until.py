@@ -13,7 +13,7 @@ import pysam
 from numba import njit
 from sklearn import metrics
 
-import pyguppyclient
+import pyguppyclient as pgc
 from pyguppyclient.decode import ReadData
 
 ref = None
@@ -31,17 +31,20 @@ def yield_reads(folder):
 
 ################################################################################
 
+def get_aligner(args):
+    return mappy.Aligner(
+            fn_idx_in = f"{args.virus_dir}/reference.fasta",
+            preset = "map-ont",
+            best_n = 1
+    )
+
+################################################################################
+
 def basecall_align(read_type, length, args):
 
     folder = args.virus_dir if read_type == "virus" else args.other_dir
     max_reads = args.max_virus_reads if read_type == "virus" else args.max_other_reads
 
-    # initialize mappy aligner
-    aligner = mappy.Aligner(
-            fn_idx_in = args.virus_dir+"/reference.fasta",
-            preset = "map-ont",
-            best_n = 1
-    )
 
     # initialize guppy basecaller
     if args.bp_type == "dna":
@@ -51,7 +54,7 @@ def basecall_align(read_type, length, args):
 
     read_count = 0
     scores = np.zeros(max_reads)
-    with pyguppyclient.GuppyBasecallerClient(guppy_config, port=1234) as bc:
+    with pgc.GuppyBasecallerClient(guppy_config, port=1234) as bc:
         for fast5_fn in glob(folder + "/fast5/*.fast5"):
             for read in yield_read_chunks(fast5_fn, args.trim_start, length):
                 if read_type=="virus" and read.read_id not in [x.split()[0] for x in \
@@ -91,7 +94,6 @@ def load_model(args):
             kmer_model[kmer] = float(current)
     return kmer_model
 
-@njit()
 def discrete_normalize(seq, bits=8, minval=-8, maxval=8):
     ''' 
     Approximate normalization which converts signal to integer of desired precision. 
@@ -188,38 +190,33 @@ def generate_bedfile(args):
 
 ################################################################################
 
-def do_read_until(read, ru_queue, sam_queue, args):
+def do_dtw_read_until(read, ru_queue, args):
 
     # parse lengths and thresholds
     lengths = [int(l) for l in args.chunk_lengths.split(",")]
     thresholds = [int(t) for t in args.chunk_thresholds.split(",")]
+    rejected = False
+    for length, threshold in zip(lengths, thresholds):
 
-    if not args.basecall: # dtw
-        rejected = False
-        for length, threshold in zip(lengths, thresholds):
+        # extract region, normalize, calculate score
+        signal = read.signal[:args.trim_start+length]
+        signal = discrete_normalize(signal)
+        signal = signal[args.trim_start:]
+        score = sdtw(signal)
 
-            # extract region, normalize, calculate score
-            trimmed_read = read.copy()
-            trimmed_read.signal = \
-                    read.signal[:args.trim_start+length]
-            signal = discrete_normalize(signal)
-            signal = signal[args.trim_start:]
-            score = sdtw(trimmed_signal)
+        # reject read if too dissimilar
+        if score > threshold:
+            ru_queue.put(f"{read.read_id}\t{args.trim_start+length}" \
+                    "\t{score}\tFalse\n")
+            rejected = True
+            break
 
-            # reject read if too dissimilar
-            if score > threshold:
-                ru_queue.put(f"{read.read_id}\t{length}\t{score}\tFalse\n")
-                rejected = True
-                break
+    # read passes all checks, basecall and align
+    if not rejected:
+        ru_queue.put(f"{read.read_id}\t{len(read.signal)}\t{score}\tTrue\n")
+        return read
 
-        if not rejected:
-            ru_queue.put(f"{read.read_id}\t{len(read.signal)}\t{score}\tTrue\n")
-
-    else: # basecall-align
-
-
-    ru_queue.put(f"{read.read_id}\t2\t3\n")
-    return
+    return None
 
 ################################################################################
 
@@ -238,10 +235,13 @@ def write_ru_data(ru_queue, ru_data_fn):
 
 ################################################################################
 
-def write_sam_data(sam_queue, sam_data_fn):
+def write_sam_data(alignment, args):
     '''
-    Writes all read-until data to file.
+    Writes all alignment data to SAM file.
     '''
+    # with open(args.sam_file, 'w') as sam:
+    #     pass
+    return
 
 ################################################################################
 
@@ -253,6 +253,13 @@ def main(args):
     bedfile = generate_bedfile(args)
     target_coverage_met = False
     ref = get_reference(args)
+    aligner = get_aligner(args)
+    if args.bp_type == "dna":
+        guppy_config = \
+                f"/opt/ont/guppy/data/dna_r9.4.1_450bps_{args.model_type}.cfg"
+    else:
+        guppy_config = \
+                f"/opt/ont/guppy/data/rna_r9.4.1_70bps_{args.model_type}.cfg"
 
     # perform read-until
     while not target_coverage_met:
@@ -266,30 +273,39 @@ def main(args):
         # create pool and queues
         with mp.Pool() as pool:
             manager = mp.Manager()
-            sam_queue = manager.Queue()
             ru_queue = manager.Queue()
 
             # create writer threads for data output
-            sam_writer = pool.apply_async(write_sam_data, 
-                    (sam_queue, args.sam_file))
             ru_writer = pool.apply_async(write_ru_data, 
                     (ru_queue, args.ru_data_file))
 
             # spawn worker threads to perform alignment
             jobs = []
+            reads = []
             for read in batch:
-                job = pool.apply_async(do_read_until, 
-                        (read, ru_queue, sam_queue, args))
+                if not args.basecall:
+                    job = pool.apply_async(do_dtw_read_until, 
+                            (read, ru_queue, args))
                 jobs.append(job)
-            for job in jobs: job.get()
+            for job in jobs: reads.append(job.get())
+            reads = list(filter(None, reads))
+
+            # basecall all data
+            with pgc.GuppyBasecallerClient(guppy_config, port=1234) as basecaller:
+                for read in reads:
+                    called = basecaller.basecall(read)
+                    try:
+                        alignment = next(aligner.map(called.seq))
+                        write_sam_data(alignment, args)
+                    except(StopIteration):
+                        pass # no alignment, can ignore for read-until
 
             # teardown
-            sam_queue.put('kill')
             ru_queue.put('kill')
-            sam_writer.get()
             ru_writer.get()
 
-        target_coverage_met = check_coverage_progress(args)
+        break
+        # target_coverage_met = check_coverage_progress(args)
 
 ################################################################################
 
@@ -313,10 +329,14 @@ def parser():
 
     # read chunk selection parameters
     parser.add_argument("--trim_start", type=int, default=1000)
+    # parser.add_argument("--chunk_lengths", 
+    #         default="1000,2000,3000,4000,5000,6000,7000,8000,9000,10000")
+    # parser.add_argument("--chunk_thresholds", 
+    #         default="5500,11000,15000,19000,24000,29000,34000,39000,44000")
     parser.add_argument("--chunk_lengths", 
-            default="1000,2000,3000,4000,5000,6000,7000,8000,9000,10000")
+            default="1000")
     parser.add_argument("--chunk_thresholds", 
-            default="5500,11000,15000,19000,24000,29000,34000,39000,44000")
+            default="5500")
 
     return parser
 
