@@ -1,74 +1,73 @@
-/*
- * 
- * A systolic array implementation to compute the sDTW scores and thereafter find if alignment meets threshold requirements or not
- *
- */
+ //////////////////////////////////////////////////////////////////////////////////
+// Company: UofM
+// Engineer: Harisankar Sadasivan
+// 
+// Create Date: 11/01/2020 10:45:14 PM
+// Design Name: SquAl
+// Module Name: sDTW
+// Project Name: SquAl
+// Target Devices: FPGA
+// Tool Versions: 
+// Description: systolic array top for connecting, initializing and firing the PE's.
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
  
-`include "constants.vh"
-
+`ifndef CONSTANTS
+   `define CONSTANTS
+   `include "constants.vh"
+`endif  
+`timescale 1ns / 1ns
 module sDTW(input clk,
                      input rst, 
                      input start,
                      input [`DATA_WIDTH-1:0] query ,
                      input [`DATA_WIDTH-1:0] reference ,
-                     //input [`REF_SIZE_BITS:0] reference_length,
+                     input init_sig,                    
                      output logic result,
-                     output logic done,
-                     output [`QUERY_LEN-1:0] stop_bits,
-                     output [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		pe_op,
-                    output logic activate		[`QUERY_LEN-1:0],
-                    output                 [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		pe_prev_op,                    
-                    output [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0] diff,                    
-                    output [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0] score_wire,
-                    output logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] ip_reference,
-                    output logic [`CNTR_BITS-1:0] counter,
-                    output logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] op_reference,
-                    output [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] l_query,
-                    output logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] l_query_r,
-                    output [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] query_o,
-                    output [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] ip_ref ,
-                    output  logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] ip_reference_r
+                     output logic done                     
                     );
 	
-//    logic	activate		[`QUERY_LEN-1:0];
-//	wire	[`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		pe_op 		;
-//	wire	[`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		pe_prev_op 	;
-//	wire [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0] score_wire;
-//	logic	[`CNTR_BITS-1:0]		counter		; //TBD: check if width can be reduced 
-//	logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] ip_reference;
-	
-	//wire op_reference[`QUERY_LEN-1:0];
-    
-	// first PE declared separately since it has nothing on the left; just constants as inputs
-	
-	
-	//wire stop_sig; //signal stopping the systolic array, early or normal
-	//logic [`CNTR_BITS-1:0] counter;
-	//logic [`QUERY_LEN-1:0] early_stop, normal_stop;
+	//query initialization
+	logic [`QUERY_LEN-1:0] tmp_d; //pipeline registers for 2 clock init signal delay.
+	logic [`QUERY_LEN-1:0] init; //resgiter the init signal in each PE input
+	//PE firing
+	logic activate		[`QUERY_LEN-1:0];
+	logic [`CNTR_BITS-1:0] counter;
+    //PE interconnects
+	wire [`QUERY_LEN-1:0] stop_bits;
+    wire [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		pe_op;   
+    wire [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		pe_prev_op;      
+    wire [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] op_reference;  
+    wire [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] query_o;
+  
+
+
+    //First PE
 	PE first_col(	.activate(activate[0]),
 					.clk(clk),
 					.rst(rst),
-					
+					.init(init[0]),					
 					.left      (0),
-					.top       (pe_op[0]),
-					//.top       (pe_op[0]),
+					.top       (pe_op[0]),					
 					.diag      (0),
 					.ip_reference (reference),
 					.query     (query),
 					.curr_op(pe_op[0]),
 					.prev_op   (pe_prev_op[0]),
-					.stop_bit(stop_bits[0]),
-					.diff(diff[0]),
-					.score_wire(score_wire[0]),
+					.stop_bit(stop_bits[0]),					
 					.op_reference(op_reference[0]),
-					.query_o(query_o[0]),
-					.l_query_r(l_query_r[0]),
-					.l_query(l_query[0]),
-					.ip_ref(ip_ref[0]),
-					.ip_reference_r(ip_reference_r[0])
+					.query_o(query_o[0])
+					
+					
 				);
 
-	// except for first PE, all other PE's have a uniform connection pattern
+	// All other PE's
 
 	genvar i;
 	generate
@@ -76,7 +75,7 @@ module sDTW(input clk,
 			PE col(	.activate(activate[i]),
 					.clk(clk),
 					.rst(rst),
-					
+					.init(init[i]),
 					.left(pe_op[i-1]),
 					.top(pe_op[i]),
 					.diag(pe_prev_op[i-1]),
@@ -84,24 +83,20 @@ module sDTW(input clk,
 					.query(query_o[i-1]),
 					.curr_op(pe_op[i]),
 					.prev_op(pe_prev_op[i]),
-					.stop_bit(stop_bits[i]),
-					.diff(diff[i]),					
-					.score_wire(score_wire[i]),
+					.stop_bit(stop_bits[i]),				
 					.op_reference(op_reference[i]),
-					.query_o(query_o[i]),
-					.l_query_r(l_query_r[i]),
-					.l_query(l_query[i]),
-					.ip_ref(ip_ref[i]),
-					.ip_reference_r(ip_reference_r[i])
+					.query_o(query_o[i])				
+					
 				);
 		end
 	endgenerate
 
 
 
+	//on completion of the array
     always@(done) begin
      for(integer i=0; i<`QUERY_LEN; i++) begin //{
-				            activate[i] <= 0;
+			activate[i] <= 0;
 			
      end //}
      
@@ -156,17 +151,25 @@ module sDTW(input clk,
 			for(integer j=0; j<`QUERY_LEN; j++)
 			begin
 				activate[j] <= 0;	           
-	            
+	            tmp_d[j]<=0;
 			end
 			done<=0;
 			result<=0;
 			counter<=0;
-			//stop_sig<=0;
+			tmp_d<=0;
+					
 		end
-
-		else if(start)
+		//firing the array
+		else if(start==1 && init_sig==0)
 		begin
-
+            
+			if(init[`QUERY_LEN-1]==1) begin //{
+				init[0]<=0;	
+				for(int i=1;i<`QUERY_LEN;i++) begin //{
+				
+				init[i]<=0;
+				end //}
+			end //}
             //start first PE
             if(counter<`REF_MAX_LEN) begin
                 activate[0] <= 1;
@@ -187,13 +190,24 @@ module sDTW(input clk,
                 
                 end //}
 			end
-			//stream reference into the PE's
-            ip_reference[0]<=reference;
-            for(int i=1;i<`QUERY_LEN;i++)
-                ip_reference[i]<=ip_reference[i-1];
+
             counter<=counter+1;    
 				// propogate active high and active low to other PEs with one cycle delay
 		end
+		//intializing the PE's with query values in PE number of cycles.
+		else if(init_sig) begin
+			
+			
+			init[0]<=1;
+			
+
+			for(int i=1;i<`QUERY_LEN;i++) begin //{
+				tmp_d[i-1]<=init[i-1];
+				init[i]<=tmp_d[i-1];
+			end //}
+		 
+		end 
+
 
 		
 	end
