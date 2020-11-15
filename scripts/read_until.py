@@ -152,11 +152,11 @@ def generate_bedfile(args):
     fasta = pysam.FastaFile(fasta_fn)
     contig = fasta.references[0]
 
-    # generate regions of 1000bp (will enforce minimum avg coverage in each)
+    # generate regions, will enforce minimum avg coverage in each
     bedfile_fn = f"{args.virus_dir}/regions.bed"
     with open(bedfile_fn, 'w') as bedfile:
-        for x in range(1, fasta_len, 1000):
-            bedfile.write(f"{contig}\t{x}\t{x+999}\n")
+        for x in range(1, fasta_len, args.region_size):
+            bedfile.write(f"{contig}\t{x}\t{x+args.region_size-1}\n")
             nregions += 1
     return bedfile_fn
 
@@ -348,8 +348,8 @@ def main(args):
         # select next subset of data
         virus_reads = yield_reads(f"{args.virus_dir}/fast5")
         other_reads = yield_reads(f"{args.other_dir}/fast5")
-        batch = [next(virus_reads)] + \
-                list(itertools.islice(other_reads, args.ratio))
+        batch = list(itertools.islice(virus_reads, args.batch_size)) + \
+                list(itertools.islice(other_reads, args.ratio*args.batch_size))
 
         # create pool and queues
         with mp.Pool() as pool:
@@ -386,7 +386,7 @@ def main(args):
             ru_queue.put('kill')
             ru_writer.get()
 
-        nreads_total += 1 + args.ratio
+        nreads_total += (1 + args.ratio) * args.batch_size
         bam_file = generate_bam(args)
         done = update_coverage(bed_file, bam_file, args)
 
@@ -402,9 +402,13 @@ def parser():
     # read-until parameters
     parser.add_argument("--virus_dir", default="/x/squiggalign_data/lambda")
     parser.add_argument("--other_dir", default="/x/squiggalign_data/human")
-    parser.add_argument("--ratio", type=int, default=10)
-    parser.add_argument("--target_coverage", type=float, default=1)
+    parser.add_argument("--ratio", type=int, default=100)
     parser.add_argument("--basecall", action="store_true", default=False)
+
+    # run-until parameters
+    parser.add_argument("--target_coverage", type=float, default=1)
+    parser.add_argument("--region_size", type=int, default=5000)
+    parser.add_argument("--batch_size", type=int, default=10)
 
     # output data parameters
     parser.add_argument("--sam_file", default="read_until_alignments.sam")
