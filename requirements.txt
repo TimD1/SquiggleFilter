@@ -7,3 +7,4 @@ ont-fast5-api
 mappy==2.17
 numba
 sklearn
+pysam
