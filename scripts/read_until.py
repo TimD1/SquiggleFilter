@@ -2,7 +2,7 @@ import argparse
 import random
 import multiprocessing as mp
 import itertools
-import os, sys
+import os, sys, shutil
 
 from ont_fast5_api.fast5_interface import get_fast5_file
 from glob import glob
@@ -38,41 +38,6 @@ def get_aligner(args):
             preset = "map-ont",
             best_n = 1
     )
-
-################################################################################
-
-def basecall_align(read_type, length, args):
-
-    folder = args.virus_dir if read_type == "virus" else args.other_dir
-    max_reads = args.max_virus_reads if read_type == "virus" else args.max_other_reads
-
-
-    # initialize guppy basecaller
-    if args.bp_type == "dna":
-        guppy_config = f"/opt/ont/guppy/data/dna_r9.4.1_450bps_{args.model_type}.cfg"
-    else:
-        guppy_config = f"/opt/ont/guppy/data/rna_r9.4.1_70bps_{args.model_type}.cfg"
-
-    read_count = 0
-    scores = np.zeros(max_reads)
-    with pgc.GuppyBasecallerClient(guppy_config, port=1234) as bc:
-        for fast5_fn in glob(folder + "/fast5/*.fast5"):
-            for read in yield_read_chunks(fast5_fn, args.trim_start, length):
-                if read_type=="virus" and read.read_id not in [x.split()[0] for x in \
-                    open(folder+"/aligned/calls_to_ref.sam").readlines()]: continue
-                read_count += 1
-                if read_count >= max_reads: break
-                called = bc.basecall(read)
-                try:
-                    alignment = next(aligner.map(called.seq))
-                    scores[read_count] = alignment.mapq
-                except(StopIteration):
-                    pass # no alignment
-
-            if read_count >= max_reads: break
-
-        # return mapping scores
-        return scores
 
 ################################################################################
 
@@ -277,12 +242,49 @@ def write_sam_data(read_id, sequence, qstring, alignment, args):
             alignment.mapq,
             ''.join(softclip if alignment.strand == +1 else softclip[::-1]),
             '*', 0, 0,
-            sequence if alignment.strand == +1 else mappy.revcomp(sequence),
+            sequence if alignment.strand == +1 else rev_comp(sequence),
             qstring,
             'NM:i:%s' % alignment.NM,
             'MD:Z:%s' % alignment.MD,
         ])))
         sam_file.flush()
+    return
+
+################################################################################
+
+def generate_bam(args):
+
+    # index reference FASTA
+    ref_fasta = f"{args.virus_dir}/reference.fasta"
+    if not os.path.exists(f"{ref_fasta}.fai"):
+        pysam.faidx(ref_fasta)
+
+    # convert SAM to indexed and sorted BAM
+    # PySam bugs: https://github.com/pysam-developers/pysam/issues/677
+    prefix = os.path.splitext(args.sam_file)[0]
+    fh = open(f"{prefix}.bam", "w"); fh.close() # PySam bug workaround
+    pysam.view("-b", "-o", f"{prefix}.bam", f"{prefix}.sam", save_stdout=f"{prefix}.bam")
+    pysam.sort("-@", str(mp.cpu_count()), "-o", f"{prefix}s.bam", f"{prefix}.bam")
+    fh = open(f"{prefix}f.bam", "w"); fh.close() # PySam bug workaround
+    pysam.calmd("-b", f"{prefix}s.bam", ref_fasta, f"{prefix}f.bam", save_stdout=f"{prefix}f.bam")
+    print(pysam.index.usage())
+    pysam.index(f"{prefix}f.bam")
+
+    # rename files, remove temp data
+    os.remove(f"{prefix}.bam")
+    os.remove(f"{prefix}s.bam")
+    shutil.move(f"{prefix}f.bam", f"{prefix}.bam")
+    shutil.move(f"{prefix}f.bam.bai", f"{prefix}.bam.bai")
+
+    return f"{prefix}.bam"
+
+################################################################################
+
+def check_coverage_progress(args):
+
+    bam_file = generate_bam(args)
+    # stats = coverage_stats(bam_file)
+    # print_progress(stats)
     return
 
 ################################################################################
@@ -348,8 +350,8 @@ def main(args):
             ru_queue.put('kill')
             ru_writer.get()
 
+        target_coverage_met = check_coverage_progress(args)
         break
-        # target_coverage_met = check_coverage_progress(args)
 
 ################################################################################
 
@@ -363,7 +365,7 @@ def parser():
     # read-until parameters
     parser.add_argument("--virus_dir", default="/x/squiggalign_data/lambda")
     parser.add_argument("--other_dir", default="/x/squiggalign_data/human")
-    parser.add_argument("--ratio", type=int, default=100)
+    parser.add_argument("--ratio", type=int, default=10)
     parser.add_argument("--target_coverage", type=float, default=1)
     parser.add_argument("--basecall", action="store_true", default=False)
 
@@ -373,14 +375,10 @@ def parser():
 
     # read chunk selection parameters
     parser.add_argument("--trim_start", type=int, default=1000)
-    # parser.add_argument("--chunk_lengths", 
-    #         default="1000,2000,3000,4000,5000,6000,7000,8000,9000,10000")
-    # parser.add_argument("--chunk_thresholds", 
-    #         default="5500,11000,15000,19000,24000,29000,34000,39000,44000")
     parser.add_argument("--chunk_lengths", 
-            default="1000,2000")
+            default="1000,2000,3000,4000,5000,6000,7000,8000,9000,10000")
     parser.add_argument("--chunk_thresholds", 
-            default="5500,11000")
+            default="5500,11000,15000,19000,24000,29000,34000,39000,44000")
 
     return parser
 
