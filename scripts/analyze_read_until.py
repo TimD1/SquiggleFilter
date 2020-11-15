@@ -1,6 +1,7 @@
 import argparse
 import random
 import multiprocessing as mp
+import os
 
 from ont_fast5_api.fast5_interface import get_fast5_file
 from glob import glob
@@ -271,7 +272,7 @@ def print_cm(threshold, ba_virus_scores, ba_other_scores,
 
 ################################################################################
 
-def save_data(length, threshold, ba_virus_scores, ba_other_scores, 
+def save_scores(length, threshold, ba_virus_scores, ba_other_scores, 
         dtw_virus_scores, dtw_other_scores, args):
     np.save(args.out_data_dir + 
             f"/{args.max_virus_reads}reads_{length}sigs_ba_virus", ba_virus_scores)
@@ -283,6 +284,14 @@ def save_data(length, threshold, ba_virus_scores, ba_other_scores,
             f"/{args.max_virus_reads}reads_{length}sigs_dtw_other", dtw_other_scores)
     return
 
+def load_scores(read_type, method, length, args):
+    filename = f"{args.out_data_dir}/{args.max_virus_reads}reads_{length}sigs_{method}_{read_type}.npy"
+    if not os.path.exists(filename):
+        print(f"ERROR: cannot load scores from '{filename}', not found.")
+        exit(1)
+    else:
+        return np.load(filename)
+
 ################################################################################
 
 def main(args):
@@ -291,16 +300,23 @@ def main(args):
     for length, threshold in zip(lengths, thresholds):
 
         print(f"\nChunk length: {length}")
-        ba_virus_scores = basecall_align('virus', length, args)
-        ba_other_scores = basecall_align('other', length, args)
-
-        dtw_virus_scores = dtw_align('virus', length, args)
-        dtw_other_scores = dtw_align('other', length, args)
+        if args.load_scores:
+            ba_virus_scores = load_scores('virus', 'ba', length, args)
+            ba_other_scores = load_scores('other', 'ba', length, args)
+            dtw_virus_scores = load_scores('virus', 'dtw', length, args)
+            dtw_other_scores = load_scores('other', 'dtw', length, args)
+        else:
+            ba_virus_scores = basecall_align('virus', length, args)
+            ba_other_scores = basecall_align('other', length, args)
+            dtw_virus_scores = dtw_align('virus', length, args)
+            dtw_other_scores = dtw_align('other', length, args)
 
         if args.save_scores:
-            save_data(length, threshold, ba_virus_scores, ba_other_scores, 
+            print("Saving Scores...")
+            save_scores(length, threshold, ba_virus_scores, ba_other_scores, 
                     dtw_virus_scores, dtw_other_scores, args)
         if args.plot_results:
+            print("Plotting Results...")
             plot_data(length, threshold, ba_virus_scores, ba_other_scores, 
                     dtw_virus_scores, dtw_other_scores)
 
@@ -328,6 +344,7 @@ def parser():
     parser.add_argument("--max_virus_reads", type=int, default=1000)
     parser.add_argument("--max_other_reads", type=int, default=1000)
     parser.add_argument("--save_scores", action="store_true", default=False)
+    parser.add_argument("--load_scores", action="store_true", default=False)
     parser.add_argument("--plot_results", action="store_true", default=False)
 
     return parser
