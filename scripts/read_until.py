@@ -2,6 +2,7 @@ import argparse
 import random
 import multiprocessing as mp
 import itertools
+import os, sys
 
 from ont_fast5_api.fast5_interface import get_fast5_file
 from glob import glob
@@ -207,7 +208,7 @@ def do_dtw_read_until(read, ru_queue, args):
         # reject read if too dissimilar
         if score > threshold:
             ru_queue.put(f"{read.read_id}\t{args.trim_start+length}" \
-                    "\t{score}\tFalse\n")
+                    f"\t{score}\tFalse\n")
             rejected = True
             break
 
@@ -235,12 +236,53 @@ def write_ru_data(ru_queue, ru_data_fn):
 
 ################################################################################
 
-def write_sam_data(alignment, args):
+def write_sam_header(aligner, args):
+    '''
+    Writes SAM header to file, using aligner information.
+    (borrowed from https://github.com/nanoporetech/bonito io.py)
+    '''
+    with open(args.sam_file, 'w') as sam_file:
+        sam_file.write('%s\n' % os.linesep.join([
+            "\t".join([
+                '@SQ', 'SN:%s' % name, 'LN:%s' % len(aligner.seq(name))
+            ]) for name in aligner.seq_names
+        ]))
+
+        sam_file.write('%s\n' % "\t".join([
+            '@PG',
+            'ID:read-until',
+            'PN:read-until',
+            'VN:%s' "0.0.0",
+            'CL:%s' % ' '.join(sys.argv),
+        ]))
+        sam_file.flush()
+
+def write_sam_data(read_id, sequence, qstring, alignment, args):
     '''
     Writes all alignment data to SAM file.
+    (borrowed from https://github.com/nanoporetech/bonito io.py)
     '''
-    # with open(args.sam_file, 'w') as sam:
-    #     pass
+    with open(args.sam_file, 'a') as sam_file:
+        softclip = [
+            '%sS' % alignment.q_st if alignment.q_st else '',
+            alignment.cigar_str,
+            '%sS' % (len(sequence) - alignment.q_en) if \
+                    len(sequence) - alignment.q_en else ''
+        ]
+        sam_file.write("%s\n" % "\t".join(map(str, [
+            read_id,
+            0 if alignment.strand == +1 else 16,
+            alignment.ctg,
+            alignment.r_st + 1,
+            alignment.mapq,
+            ''.join(softclip if alignment.strand == +1 else softclip[::-1]),
+            '*', 0, 0,
+            sequence if alignment.strand == +1 else mappy.revcomp(sequence),
+            qstring,
+            'NM:i:%s' % alignment.NM,
+            'MD:Z:%s' % alignment.MD,
+        ])))
+        sam_file.flush()
     return
 
 ################################################################################
@@ -254,6 +296,7 @@ def main(args):
     target_coverage_met = False
     ref = get_reference(args)
     aligner = get_aligner(args)
+    write_sam_header(aligner, args)
     if args.bp_type == "dna":
         guppy_config = \
                 f"/opt/ont/guppy/data/dna_r9.4.1_450bps_{args.model_type}.cfg"
@@ -296,7 +339,8 @@ def main(args):
                     called = basecaller.basecall(read)
                     try:
                         alignment = next(aligner.map(called.seq))
-                        write_sam_data(alignment, args)
+                        write_sam_data(read.read_id, called.seq, 
+                                called.qual, alignment, args)
                     except(StopIteration):
                         pass # no alignment, can ignore for read-until
 
@@ -319,7 +363,7 @@ def parser():
     # read-until parameters
     parser.add_argument("--virus_dir", default="/x/squiggalign_data/lambda")
     parser.add_argument("--other_dir", default="/x/squiggalign_data/human")
-    parser.add_argument("--ratio", type=int, default=10)
+    parser.add_argument("--ratio", type=int, default=100)
     parser.add_argument("--target_coverage", type=float, default=1)
     parser.add_argument("--basecall", action="store_true", default=False)
 
@@ -334,9 +378,9 @@ def parser():
     # parser.add_argument("--chunk_thresholds", 
     #         default="5500,11000,15000,19000,24000,29000,34000,39000,44000")
     parser.add_argument("--chunk_lengths", 
-            default="1000")
+            default="1000,2000")
     parser.add_argument("--chunk_thresholds", 
-            default="5500")
+            default="5500,11000")
 
     return parser
 
