@@ -274,18 +274,35 @@ def print_cm(threshold, ba_virus_scores, ba_other_scores,
 
 def save_scores(length, threshold, ba_virus_scores, ba_other_scores, 
         dtw_virus_scores, dtw_other_scores, args):
-    np.save(args.out_data_dir + 
-            f"/{args.max_virus_reads}reads_{length}sigs_ba_virus", ba_virus_scores)
-    np.save(args.out_data_dir + 
-            f"/{args.max_virus_reads}reads_{length}sigs_ba_other", ba_other_scores)
-    np.save(args.out_data_dir + 
-            f"/{args.max_virus_reads}reads_{length}sigs_dtw_virus", dtw_virus_scores)
-    np.save(args.out_data_dir + 
-            f"/{args.max_virus_reads}reads_{length}sigs_dtw_other", dtw_other_scores)
+
+    # save raw scores
+    np.save(f"{args.acc_dir}/{length}sigs_ba_virus_scores", 
+            ba_virus_scores)
+    np.save(f"{args.acc_dir}/{length}sigs_ba_other_scores", 
+            ba_other_scores)
+    np.save(f"{args.acc_dir}/{length}sigs_dtw_virus_scores", 
+            dtw_virus_scores)
+    np.save(f"{args.acc_dir}/{length}sigs_dtw_other_scores", 
+            dtw_other_scores)
+
+    # save accuracy
+    ba_virus_discard_rate = sum(ba_virus_scores < 1) / len(ba_virus_scores)
+    np.save(f"{args.acc_dir}/{length}sigs_ba_virus_discard_rate", 
+            ba_virus_discard_rate)
+    ba_other_discard_rate = sum(ba_other_scores < 1) / len(ba_other_scores)
+    np.save(f"{args.acc_dir}/{length}sigs_ba_other_discard_rate", 
+            ba_other_discard_rate)
+    dtw_virus_discard_rate = sum(dtw_virus_scores > threshold) / len(dtw_virus_scores)
+    np.save(f"{args.acc_dir}/{length}sigs_dtw_virus_discard_rate", 
+            dtw_virus_discard_rate)
+    dtw_other_discard_rate = sum(dtw_other_scores > threshold) / len(dtw_other_scores)
+    np.save(f"{args.acc_dir}/{length}sigs_dtw_other_discard_rate", 
+            dtw_other_discard_rate)
+
     return
 
 def load_scores(read_type, method, length, args):
-    filename = f"{args.out_data_dir}/{args.max_virus_reads}reads_{length}sigs_{method}_{read_type}.npy"
+    filename = f"{args.acc_dir}/{length}sigs_{method}_{read_type}_scores.npy"
     if not os.path.exists(filename):
         print(f"ERROR: cannot load scores from '{filename}', not found.")
         exit(1)
@@ -334,7 +351,7 @@ def parser():
 
     parser.add_argument("--virus_dir", default="/x/squiggalign_data/lambda")
     parser.add_argument("--other_dir", default="/x/squiggalign_data/human")
-    parser.add_argument("--out_data_dir", default="/home/timdunn/SquiggAlign/data/accuracy")
+    parser.add_argument("--acc_dir", default="/home/timdunn/SquiggAlign/data/accuracy")
 
     parser.add_argument("--trim_start", type=int, default=1000)
     parser.add_argument("--chunk_lengths", 
