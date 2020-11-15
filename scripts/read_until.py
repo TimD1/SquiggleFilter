@@ -19,6 +19,9 @@ import pyguppyclient as pgc
 from pyguppyclient.decode import ReadData
 
 ref = None
+nregions = 0
+nreads_total = 0
+nreads_mapped = 0
 
 def yield_reads(folder):
     ''' Yields full-length reads from all FAST5 files in a directory. '''
@@ -141,6 +144,7 @@ def generate_bedfile(args):
     ''' 
     Generate BED-file for ensuring minimum read-until depth over each region.
     '''
+    global nregions
 
     # extract reference length and contig name from reference FASTA
     fasta_fn = f"{args.virus_dir}/reference.fasta"
@@ -148,11 +152,12 @@ def generate_bedfile(args):
     fasta = pysam.FastaFile(fasta_fn)
     contig = fasta.references[0]
 
-    # generate regions of 1000bp (will enforce minimum avg coverage in each)
+    # generate regions, will enforce minimum avg coverage in each
     bedfile_fn = f"{args.virus_dir}/regions.bed"
     with open(bedfile_fn, 'w') as bedfile:
-        for x in range(1, fasta_len, 1000):
-            bedfile.write(f"{contig}\t{x}\t{x+999}\n")
+        for x in range(1, fasta_len, args.region_size):
+            bedfile.write(f"{contig}\t{x}\t{x+args.region_size-1}\n")
+            nregions += 1
     return bedfile_fn
 
 ################################################################################
@@ -192,7 +197,7 @@ def write_ru_data(ru_queue, ru_data_fn):
     Writes all read-until data to file.
     '''
 
-    with open(ru_data_fn, 'w') as ru_data:
+    with open(ru_data_fn, 'a') as ru_data:
         while True:
             data = ru_queue.get()
             if data == "kill": break
@@ -228,6 +233,8 @@ def write_sam_data(read_id, sequence, qstring, alignment, args):
     Writes all alignment data to SAM file.
     (borrowed from https://github.com/nanoporetech/bonito io.py)
     '''
+    global nreads_mapped
+    nreads_mapped += 1
     with open(args.sam_file, 'a') as sam_file:
         softclip = [
             '%sS' % alignment.q_st if alignment.q_st else '',
@@ -254,6 +261,9 @@ def write_sam_data(read_id, sequence, qstring, alignment, args):
 ################################################################################
 
 def generate_bam(args):
+    '''
+    Converts SAM file to indexed and sorted BAM.
+    '''
 
     # index reference FASTA
     ref_fasta = f"{args.virus_dir}/reference.fasta"
@@ -279,45 +289,67 @@ def generate_bam(args):
 
 ################################################################################
 
-def coverage_stats(bed_file, bam_file):
-    sp.call(["samtools", "bedcov", bed_file, bam_file])
+def update_coverage(bed_file, bam_file, args):
 
-################################################################################
+    # read coverage in each region
+    proc = sp.Popen(["samtools", "bedcov", bed_file, bam_file], 
+                stdout=sp.PIPE)
+    bedcov = proc.stdout.read()
 
-def check_coverage_progress(bed_file, args):
+    # print overview
+    os.system('clear')
+    print("Run-Until Update")
 
-    bam_file = generate_bam(args)
-    stats = coverage_stats(bed_file, bam_file)
-    # print_progress(stats)
-    return
+    # calculate distribution of coverages
+    print("\n  Regions", end="")
+    regions_per_line = 4
+    covs = [0] * (args.target_coverage+1)
+    for idx, region in enumerate(bedcov.decode('ascii').split('\n')[:-1]):
+        if not idx % regions_per_line:
+            print("\n", end ="")
+        contig, start, stop, bases = region.split()
+        cov = float(bases)/(float(stop)-float(start)+1)
+        covs[min(args.target_coverage, int(cov))] += 1
+        print(f"\treg {idx}:\t{cov}x", end="")
+
+    # print read-until update to screen
+    print("\n\n  Coverage")
+    for cov, regions in enumerate(covs):
+        print(f"\tcoverage {cov}: {regions}")
+
+    print("\n  Overview")
+    print(f"\t{nreads_mapped} of {nreads_total} reads mapped")
+    print(f"\t{covs[-1]} of {nregions} regions covered")
+
+    # stop read until once target met in all regions
+    return covs[-1] == nregions
 
 ################################################################################
 
 def main(args):
-    global ref
+    global ref, nreads_total
 
     # init
     validate(args)
-    bedfile = generate_bedfile(args)
-    target_coverage_met = False
+    done = False
+    bed_file = generate_bedfile(args)
     ref = get_reference(args)
     aligner = get_aligner(args)
     write_sam_header(aligner, args)
+    fh = open(args.ru_data_file, 'w'); fh.close()
     if args.bp_type == "dna":
-        guppy_config = \
-                f"/opt/ont/guppy/data/dna_r9.4.1_450bps_{args.model_type}.cfg"
+        guppy_config = f"dna_r9.4.1_450bps_{args.model_type}.cfg"
     else:
-        guppy_config = \
-                f"/opt/ont/guppy/data/rna_r9.4.1_70bps_{args.model_type}.cfg"
+        guppy_config = f"rna_r9.4.1_70bps_{args.model_type}.cfg"
 
     # perform read-until
-    while not target_coverage_met:
+    while not done:
 
         # select next subset of data
         virus_reads = yield_reads(f"{args.virus_dir}/fast5")
         other_reads = yield_reads(f"{args.other_dir}/fast5")
-        batch = [next(virus_reads)] + \
-                list(itertools.islice(other_reads, args.ratio))
+        batch = list(itertools.islice(virus_reads, args.batch_size)) + \
+                list(itertools.islice(other_reads, args.ratio*args.batch_size))
 
         # create pool and queues
         with mp.Pool() as pool:
@@ -354,8 +386,9 @@ def main(args):
             ru_queue.put('kill')
             ru_writer.get()
 
-        target_coverage_met = check_coverage_progress(bedfile, args)
-        break
+        nreads_total += (1 + args.ratio) * args.batch_size
+        bam_file = generate_bam(args)
+        done = update_coverage(bed_file, bam_file, args)
 
 ################################################################################
 
@@ -369,9 +402,13 @@ def parser():
     # read-until parameters
     parser.add_argument("--virus_dir", default="/x/squiggalign_data/lambda")
     parser.add_argument("--other_dir", default="/x/squiggalign_data/human")
-    parser.add_argument("--ratio", type=int, default=10)
-    parser.add_argument("--target_coverage", type=float, default=1)
+    parser.add_argument("--ratio", type=int, default=100)
     parser.add_argument("--basecall", action="store_true", default=False)
+
+    # run-until parameters
+    parser.add_argument("--target_coverage", type=float, default=1)
+    parser.add_argument("--region_size", type=int, default=5000)
+    parser.add_argument("--batch_size", type=int, default=10)
 
     # output data parameters
     parser.add_argument("--sam_file", default="read_until_alignments.sam")
