@@ -3,6 +3,7 @@ import random
 import multiprocessing as mp
 import itertools
 import os, sys, shutil
+import subprocess as sp
 
 from ont_fast5_api.fast5_interface import get_fast5_file
 from glob import glob
@@ -257,18 +258,16 @@ def generate_bam(args):
     # index reference FASTA
     ref_fasta = f"{args.virus_dir}/reference.fasta"
     if not os.path.exists(f"{ref_fasta}.fai"):
-        pysam.faidx(ref_fasta)
+        sp.call(["samtools", "faidx", ref_fasta])
 
     # convert SAM to indexed and sorted BAM
-    # PySam bugs: https://github.com/pysam-developers/pysam/issues/677
     prefix = os.path.splitext(args.sam_file)[0]
-    fh = open(f"{prefix}.bam", "w"); fh.close() # PySam bug workaround
-    pysam.view("-b", "-o", f"{prefix}.bam", f"{prefix}.sam", save_stdout=f"{prefix}.bam")
-    pysam.sort("-@", str(mp.cpu_count()), "-o", f"{prefix}s.bam", f"{prefix}.bam")
-    fh = open(f"{prefix}f.bam", "w"); fh.close() # PySam bug workaround
-    pysam.calmd("-b", f"{prefix}s.bam", ref_fasta, f"{prefix}f.bam", save_stdout=f"{prefix}f.bam")
-    print(pysam.index.usage())
-    pysam.index(f"{prefix}f.bam")
+    sp.run(["samtools", "view", "-b", f"-o{prefix}.bam", f"{prefix}.sam"])
+    sp.run(["samtools", "sort", f"-@ {mp.cpu_count()}", f"-o{prefix}s.bam", 
+        f"{prefix}.bam"])
+    sp.run(["samtools", "calmd", "-b", f"{prefix}s.bam", ref_fasta], 
+            stdout=open(f"{prefix}f.bam", 'w'), stderr=sp.DEVNULL)
+    sp.run(["samtools", "index", f"-@ {mp.cpu_count()}", f"{prefix}f.bam"])
 
     # rename files, remove temp data
     os.remove(f"{prefix}.bam")
@@ -280,10 +279,15 @@ def generate_bam(args):
 
 ################################################################################
 
-def check_coverage_progress(args):
+def coverage_stats(bed_file, bam_file):
+    sp.call(["samtools", "bedcov", bed_file, bam_file])
+
+################################################################################
+
+def check_coverage_progress(bed_file, args):
 
     bam_file = generate_bam(args)
-    # stats = coverage_stats(bam_file)
+    stats = coverage_stats(bed_file, bam_file)
     # print_progress(stats)
     return
 
@@ -350,7 +354,7 @@ def main(args):
             ru_queue.put('kill')
             ru_writer.get()
 
-        target_coverage_met = check_coverage_progress(args)
+        target_coverage_met = check_coverage_progress(bedfile, args)
         break
 
 ################################################################################
