@@ -5,3 +5,4 @@ img/accuracy
 data/*/*/
 results/*
 *.ipynb*
+*.txt
