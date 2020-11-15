@@ -9,7 +9,7 @@
 module sDTW(input clk,
                      input rst, 
                      input start,
-                     input [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] query ,
+                     input [`DATA_WIDTH-1:0] query ,
                      input [`DATA_WIDTH-1:0] reference ,
                      //input [`REF_SIZE_BITS:0] reference_length,
                      output logic result,
@@ -21,7 +21,13 @@ module sDTW(input clk,
                     output [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0] diff,                    
                     output [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0] score_wire,
                     output logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] ip_reference,
-                    output logic [`CNTR_BITS-1:0] counter
+                    output logic [`CNTR_BITS-1:0] counter,
+                    output logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] op_reference,
+                    output [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] l_query,
+                    output logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] l_query_r,
+                    output [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] query_o,
+                    output [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] ip_ref ,
+                    output  logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] ip_reference_r
                     );
 	
 //    logic	activate		[`QUERY_LEN-1:0];
@@ -47,14 +53,19 @@ module sDTW(input clk,
 					.top       (pe_op[0]),
 					//.top       (pe_op[0]),
 					.diag      (0),
-					.ip_reference (ip_reference[0]),
-					.query     (query[0]),
+					.ip_reference (reference),
+					.query     (query),
 					.curr_op(pe_op[0]),
 					.prev_op   (pe_prev_op[0]),
 					.stop_bit(stop_bits[0]),
 					.diff(diff[0]),
-					.score_wire(score_wire[0])
-					//.op_reference(op_reference[0])
+					.score_wire(score_wire[0]),
+					.op_reference(op_reference[0]),
+					.query_o(query_o[0]),
+					.l_query_r(l_query_r[0]),
+					.l_query(l_query[0]),
+					.ip_ref(ip_ref[0]),
+					.ip_reference_r(ip_reference_r[0])
 				);
 
 	// except for first PE, all other PE's have a uniform connection pattern
@@ -69,14 +80,19 @@ module sDTW(input clk,
 					.left(pe_op[i-1]),
 					.top(pe_op[i]),
 					.diag(pe_prev_op[i-1]),
-					.ip_reference(ip_reference[i]),
-					.query(query[i]),
+					.ip_reference(op_reference[i-1]),
+					.query(query_o[i-1]),
 					.curr_op(pe_op[i]),
 					.prev_op(pe_prev_op[i]),
 					.stop_bit(stop_bits[i]),
 					.diff(diff[i]),					
-					.score_wire(score_wire[i])
-					//.op_reference(op_reference[i])
+					.score_wire(score_wire[i]),
+					.op_reference(op_reference[i]),
+					.query_o(query_o[i]),
+					.l_query_r(l_query_r[i]),
+					.l_query(l_query[i]),
+					.ip_ref(ip_ref[i]),
+					.ip_reference_r(ip_reference_r[i])
 				);
 		end
 	endgenerate

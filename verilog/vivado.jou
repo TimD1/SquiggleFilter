@@ -2,27 +2,18 @@
 # Vivado v2019.1 (64-bit)
 # SW Build 2552052 on Fri May 24 14:49:42 MDT 2019
 # IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
-# Start of session at: Tue Nov 10 13:33:39 2020
-# Process ID: 15380
-# Current directory: C:/verilog_v3
-# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent7692 C:\verilog_v3\verilog_v2.xpr
-# Log file: C:/verilog_v3/vivado.log
-# Journal file: C:/verilog_v3\vivado.jou
+# Start of session at: Thu Nov 12 18:54:26 2020
+# Process ID: 20796
+# Current directory: G:/My Drive/SquiggAlign/verilog
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent11300 G:\My Drive\SquiggAlign\verilog\verilog_v2.xpr
+# Log file: G:/My Drive/SquiggAlign/verilog/vivado.log
+# Journal file: G:/My Drive/SquiggAlign/verilog\vivado.jou
 #-----------------------------------------------------------
 start_gui
-open_project C:/verilog_v3/verilog_v2.xpr
-launch_simulation
-launch_simulation
+open_project {G:/My Drive/SquiggAlign/verilog/verilog_v2.xpr}
 launch_simulation
 source testbench.tcl
 close_sim
 launch_simulation
 source testbench.tcl
 close_sim
-launch_simulation
-source testbench.tcl
-close_sim
-launch_simulation
-launch_simulation
-launch_simulation
-source testbench.tcl

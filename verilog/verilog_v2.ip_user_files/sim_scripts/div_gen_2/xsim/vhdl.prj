@@ -1,0 +1,4 @@
+vhdl xil_defaultlib  \
+"../../../../verilog_v2.srcs/sources_1/ip/div_gen_2/sim/div_gen_2.vhd" \
+
+nosort
