@@ -34,7 +34,8 @@ def yield_reads(folder):
                 channel_info = read.handle[read.global_key + 'channel_id'].attrs
                 scaling = channel_info['range'] / channel_info['digitisation']
                 offset = int(channel_info['offset'])
-                yield ReadData(raw, read.read_id, scaling=scaling, offset=offset)
+                yield (filename, ReadData(raw, read.read_id, 
+                    scaling=scaling, offset=offset))
 
 ################################################################################
 
@@ -167,6 +168,7 @@ def generate_bedfile(args):
 def do_dtw_read_until(read, ru_queue, args):
 
     # parse lengths and thresholds
+    filename, read = read
     lengths = [int(l) for l in args.chunk_lengths.split(",")]
     thresholds = [int(t) for t in args.chunk_thresholds.split(",")]
     rejected = False
@@ -184,14 +186,15 @@ def do_dtw_read_until(read, ru_queue, args):
 
         # reject read if too dissimilar
         if score > threshold:
-            ru_queue.put(f"{read.read_id}\t{args.trim_start+length}" \
-                    f"\t{score}\tFalse\n")
+            ru_queue.put(f"{filename}\t{read.read_id}\t" \
+                    f"{args.trim_start+length}\t{score}\tFalse\n")
             rejected = True
             break
 
     # read passes all checks, basecall and align
     if not rejected:
-        ru_queue.put(f"{read.read_id}\t{len(read.signal)}\t{score}\tTrue\n")
+        ru_queue.put(f"{filename}\t{read.read_id}" \
+                f"\t{len(read.signal)}\t{score}\tTrue\n")
         return read
 
     return None
@@ -347,13 +350,13 @@ def main(args):
         guppy_config = f"dna_r9.4.1_450bps_{args.model_type}.cfg"
     else:
         guppy_config = f"rna_r9.4.1_70bps_{args.model_type}.cfg"
+    virus_reads = yield_reads(f"{args.virus_dir}/fast5")
+    other_reads = yield_reads(f"{args.other_dir}/fast5")
 
     # perform read-until
     while not done:
 
         # select next subset of data
-        virus_reads = yield_reads(f"{args.virus_dir}/fast5")
-        other_reads = yield_reads(f"{args.other_dir}/fast5")
         batch = list(itertools.islice(virus_reads, args.batch_size)) + \
                 list(itertools.islice(other_reads, args.ratio*args.batch_size))
 
