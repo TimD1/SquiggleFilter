@@ -4,6 +4,7 @@ import multiprocessing as mp
 import itertools
 import os, sys, shutil
 import subprocess as sp
+import time
 
 from ont_fast5_api.fast5_interface import get_fast5_file
 from glob import glob
@@ -23,16 +24,44 @@ nregions = 0
 nreads_total = 0
 nreads_mapped = 0
 
-def yield_reads(folder):
+class TimerError(Exception):
+    ''' Custom exception for incorrect Timer usage. '''
+
+class Timer():
+    def __init__(self):
+        self._time = 0
+        self._running = False
+
+    def start(self):
+        if self._running: raise TimerError("Cannot start a running timer.")
+        self._start_time = time.perf_counter()
+        self._running = True
+
+    def stop(self):
+        if not self._running: raise TimerError("Cannot stop a stopped timer.")
+        elapsed_time = time.perf_counter() - self._start_time
+        self._time += elapsed_time
+        self._running = False
+
+    def elapsed(self):
+        return self._time
+
+################################################################################
+
+def yield_reads(folder, is_virus):
     ''' Yields full-length reads from all FAST5 files in a directory. '''
     for filename in glob(f"{folder}/*.fast5"):
         with get_fast5_file(filename, 'r') as f5_fh:
-            for read in f5_fh.get_reads():
+            reads = list(f5_fh.get_reads())
+            random.seed(42)
+            random.shuffle(reads)
+            for read in reads:
                 raw = read.handle[read.raw_dataset_name][:]
                 channel_info = read.handle[read.global_key + 'channel_id'].attrs
                 scaling = channel_info['range'] / channel_info['digitisation']
                 offset = int(channel_info['offset'])
-                yield ReadData(raw, read.read_id, scaling=scaling, offset=offset)
+                yield (is_virus, filename, ReadData(raw, read.read_id, 
+                    scaling=scaling, offset=offset))
 
 ################################################################################
 
@@ -126,7 +155,7 @@ def get_reference(args):
 
 ################################################################################
 
-def validate(args):
+def init(args):
 
     basepair_types = ["dna", "rna"]
     if args.bp_type not in basepair_types:
@@ -137,6 +166,19 @@ def validate(args):
     if args.model_type not in model_types:
         print(f"ERROR: 'args.model_type' must be one of {model_types}.")
         exit(1)
+
+    if args.ru_data_file == "default":
+        args.ru_data_file = f"{args.virus_dir}/read_until_data.txt"
+
+    if args.fastq_file == "default":
+        os.makedirs(f"{args.virus_dir}/fastq", exist_ok=True)
+        args.fastq_file = f"{args.virus_dir}/fastq/all.fastq"
+
+    if args.sam_file == "default":
+        os.makedirs(f"{args.virus_dir}/aligned", exist_ok=True)
+        args.sam_file = f"{args.virus_dir}/aligned/calls_to_ref.sam"
+
+    return args
 
 ################################################################################
 
@@ -156,19 +198,24 @@ def generate_bedfile(args):
     bedfile_fn = f"{args.virus_dir}/regions.bed"
     with open(bedfile_fn, 'w') as bedfile:
         for x in range(1, fasta_len, args.region_size):
-            bedfile.write(f"{contig}\t{x}\t{x+args.region_size-1}\n")
+            bedfile.write(f"{contig}\t{x}\t{min(x+args.region_size-1, fasta_len)}\n")
             nregions += 1
     return bedfile_fn
 
 ################################################################################
 
-def do_dtw_read_until(read, ru_queue, args):
+def do_dtw_read_until(read_data, ru_queue, args):
 
     # parse lengths and thresholds
+    is_virus, filename, read = read_data
     lengths = [int(l) for l in args.chunk_lengths.split(",")]
     thresholds = [int(t) for t in args.chunk_thresholds.split(",")]
     rejected = False
     for length, threshold in zip(lengths, thresholds):
+
+        # accept read if we've seen it all
+        if len(read.signal) < args.trim_start+length:
+            break
 
         # extract region, normalize, calculate score
         signal = read.signal[:args.trim_start+length]
@@ -178,14 +225,15 @@ def do_dtw_read_until(read, ru_queue, args):
 
         # reject read if too dissimilar
         if score > threshold:
-            ru_queue.put(f"{read.read_id}\t{args.trim_start+length}" \
-                    f"\t{score}\tFalse\n")
+            ru_queue.put(f"{is_virus}\t{filename}\t{read.read_id}\t" \
+                    f"{args.trim_start+length}\t{score}\tFalse\n")
             rejected = True
             break
 
     # read passes all checks, basecall and align
     if not rejected:
-        ru_queue.put(f"{read.read_id}\t{len(read.signal)}\t{score}\tTrue\n")
+        ru_queue.put(f"{is_virus}\t{filename}\t{read.read_id}\t" \
+                f"{len(read.signal)}\t{score}\tTrue\n")
         return read
 
     return None
@@ -198,6 +246,8 @@ def write_ru_data(ru_queue, ru_data_fn):
     '''
 
     with open(ru_data_fn, 'a') as ru_data:
+        ru_data.write("is_virus\tsource_fast5\tread_id\t"
+                "final_len\tlast_score\tkeep\n")
         while True:
             data = ru_queue.get()
             if data == "kill": break
@@ -258,6 +308,12 @@ def write_sam_data(read_id, sequence, qstring, alignment, args):
         sam_file.flush()
     return
 
+def write_fastq_data(read_id, sequence, qstring, args):
+    with open(args.fastq_file, 'a') as fastq_file:
+        fastq_file.write(f"@{read_id}\n{sequence}\n+\n{qstring}\n")
+        fastq_file.flush()
+    return
+
 ################################################################################
 
 def generate_bam(args):
@@ -310,7 +366,7 @@ def update_coverage(bed_file, bam_file, args):
         contig, start, stop, bases = region.split()
         cov = float(bases)/(float(stop)-float(start)+1)
         covs[min(args.target_coverage, int(cov))] += 1
-        print(f"\treg {idx}:\t{cov}x", end="")
+        print(f"\treg {idx}:\t{cov:.3f}x", end="")
 
     # print read-until update to screen
     print("\n\n  Coverage")
@@ -330,65 +386,88 @@ def main(args):
     global ref, nreads_total
 
     # init
-    validate(args)
+    args = init(args)
     done = False
     bed_file = generate_bedfile(args)
     ref = get_reference(args)
     aligner = get_aligner(args)
     write_sam_header(aligner, args)
     fh = open(args.ru_data_file, 'w'); fh.close()
+    fh = open(args.fastq_file, 'w'); fh.close()
     if args.bp_type == "dna":
         guppy_config = f"dna_r9.4.1_450bps_{args.model_type}.cfg"
     else:
         guppy_config = f"rna_r9.4.1_70bps_{args.model_type}.cfg"
+    virus_reads = yield_reads(f"{args.virus_dir}/fast5", True)
+    other_reads = yield_reads(f"{args.other_dir}/fast5", False)
 
-    # perform read-until
-    while not done:
+    dtw_timer = Timer()
+    bc_timer = Timer()
+    aln_timer = Timer()
 
-        # select next subset of data
-        virus_reads = yield_reads(f"{args.virus_dir}/fast5")
-        other_reads = yield_reads(f"{args.other_dir}/fast5")
-        batch = list(itertools.islice(virus_reads, args.batch_size)) + \
-                list(itertools.islice(other_reads, args.ratio*args.batch_size))
+    with mp.Pool() as pool:
 
-        # create pool and queues
-        with mp.Pool() as pool:
-            manager = mp.Manager()
-            ru_queue = manager.Queue()
+        # create writer thread for data output
+        manager = mp.Manager()
+        ru_queue = manager.Queue()
+        ru_writer = pool.apply_async(write_ru_data, 
+                (ru_queue, args.ru_data_file))
 
-            # create writer threads for data output
-            ru_writer = pool.apply_async(write_ru_data, 
-                    (ru_queue, args.ru_data_file))
+        # perform read-until
+        while not done:
 
-            # spawn worker threads to perform alignment
+            # select next subset of data
+            batch = list(itertools.islice(virus_reads, args.batch_size)) + \
+                    list(itertools.islice(other_reads, args.ratio*args.batch_size))
+
+            # spawn DTW worker threads
+            dtw_timer.start()
             jobs = []
             reads = []
-            for read in batch:
-                if not args.basecall:
-                    job = pool.apply_async(do_dtw_read_until, 
-                            (read, ru_queue, args))
+            for read_data in batch:
+                job = pool.apply_async(do_dtw_read_until, 
+                        (read_data, ru_queue, args))
                 jobs.append(job)
             for job in jobs: reads.append(job.get())
             reads = list(filter(None, reads))
+            dtw_timer.stop()
 
-            # basecall all data
             with pgc.GuppyBasecallerClient(guppy_config, port=1234) as basecaller:
+                # basecall
+                bc_timer.start()
+                calls = []
                 for read in reads:
-                    called = basecaller.basecall(read)
+                    call = basecaller.basecall(read)
+                    calls.append(call)
+                bc_timer.stop()
+
+                # align
+                aln_timer.start()
+                alns = []
+                for read, call in zip(reads, calls):
                     try:
-                        alignment = next(aligner.map(called.seq))
-                        write_sam_data(read.read_id, called.seq, 
-                                called.qual, alignment, args)
+                        alignment = next(aligner.map(call.seq))
+                        alns.append(alignment)
                     except(StopIteration):
                         pass # no alignment, can ignore for read-until
+                aln_timer.stop()
 
-            # teardown
-            ru_queue.put('kill')
-            ru_writer.get()
+                for read, call, aln in zip(reads, calls, alns):
+                    write_fastq_data(read.read_id, call.seq, call.qual, args)
+                    write_sam_data(read.read_id, call.seq, call.qual, aln, args)
 
-        nreads_total += (1 + args.ratio) * args.batch_size
-        bam_file = generate_bam(args)
-        done = update_coverage(bed_file, bam_file, args)
+            nreads_total += (1 + args.ratio) * args.batch_size
+            bam_file = generate_bam(args)
+            done = update_coverage(bed_file, bam_file, args)
+            done = done or nreads_total > args.max_reads
+
+        # stop read-until writer
+        ru_queue.put('kill')
+        ru_writer.get()
+
+    print(f"\nDTW Timer:\t{dtw_timer.elapsed()} seconds")
+    print(f"Guppy Timer:\t{bc_timer.elapsed()} seconds")
+    print(f"Minimap2 Timer:\t{aln_timer.elapsed()} seconds")
 
 ################################################################################
 
@@ -402,17 +481,19 @@ def parser():
     # read-until parameters
     parser.add_argument("--virus_dir", default="/x/squiggalign_data/lambda")
     parser.add_argument("--other_dir", default="/x/squiggalign_data/human")
-    parser.add_argument("--ratio", type=int, default=100)
     parser.add_argument("--basecall", action="store_true", default=False)
+    parser.add_argument("--ratio", type=int, default=10)
 
     # run-until parameters
-    parser.add_argument("--target_coverage", type=float, default=1)
-    parser.add_argument("--region_size", type=int, default=5000)
+    parser.add_argument("--target_coverage", type=int, default=1)
+    parser.add_argument("--max_reads", type=int, default=300)
+    parser.add_argument("--region_size", type=int, default=10000)
     parser.add_argument("--batch_size", type=int, default=10)
 
     # output data parameters
-    parser.add_argument("--sam_file", default="read_until_alignments.sam")
-    parser.add_argument("--ru_data_file", default="read_until_data.txt")
+    parser.add_argument("--ru_data_file", default="default")
+    parser.add_argument("--fastq_file", default="default")
+    parser.add_argument("--sam_file", default="default")
 
     # read chunk selection parameters
     parser.add_argument("--trim_start", type=int, default=1000)
