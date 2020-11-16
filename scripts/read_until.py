@@ -117,22 +117,23 @@ def ref_signal(fasta, kmer_model):
 ################################################################################
 
 @njit()
-def sdtw(seq):
+def sdtw(seq, prev_row, start=False):
     ''' Returns minimum alignment score for subsequence DTW, linear memory. '''
 
     # initialize cost matrix
-    cost_mat_prev = np.zeros(len(ref))
+    cost_mat_prev = prev_row[:]
     cost_mat_curr = np.zeros(len(ref))
 
     # compute entire cost matrix
-    cost_mat_prev[0] = abs(seq[0]-ref[0])
+    if start:
+        cost_mat_prev[0] = abs(seq[0]-ref[0])
     for i in range(1, len(seq)):
         cost_mat_curr[0] = cost_mat_prev[0] + abs(seq[i]-ref[0])
         for j in range(1, len(ref)):
             cost_mat_curr[j] = abs(seq[i]-ref[j]) + \
                 min(cost_mat_prev[j-1], cost_mat_curr[j-1], cost_mat_prev[j])
         cost_mat_prev[:] = cost_mat_curr[:]
-    return np.min(cost_mat_curr)
+    return cost_mat_curr
 
 ################################################################################
 
@@ -211,6 +212,9 @@ def do_dtw_read_until(read_data, ru_queue, args):
     lengths = [int(l) for l in args.chunk_lengths.split(",")]
     thresholds = [int(t) for t in args.chunk_thresholds.split(",")]
     rejected = False
+    prev_length = 0
+    prev_row = np.zeros(len(ref))
+    first_dtw = True
     for length, threshold in zip(lengths, thresholds):
 
         # accept read if we've seen it all
@@ -220,8 +224,9 @@ def do_dtw_read_until(read_data, ru_queue, args):
         # extract region, normalize, calculate score
         signal = read.signal[:args.trim_start+length]
         signal = discrete_normalize(signal)
-        signal = signal[args.trim_start:]
-        score = sdtw(signal)
+        signal = signal[args.trim_start+prev_length:]
+        row = sdtw(signal, prev_row, first_dtw)
+        score = np.min(row)
 
         # reject read if too dissimilar
         if score > threshold:
@@ -229,6 +234,9 @@ def do_dtw_read_until(read_data, ru_queue, args):
                     f"{args.trim_start+length}\t{score}\tFalse\n")
             rejected = True
             break
+        prev_row[:] = row[:]
+        prev_length = length
+        first_dtw = False
 
     # read passes all checks, basecall and align
     if not rejected:
