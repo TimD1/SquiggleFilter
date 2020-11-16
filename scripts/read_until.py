@@ -27,7 +27,9 @@ def yield_reads(folder):
     ''' Yields full-length reads from all FAST5 files in a directory. '''
     for filename in glob(f"{folder}/*.fast5"):
         with get_fast5_file(filename, 'r') as f5_fh:
-            for read in f5_fh.get_reads():
+            reads = list(f5_fh.get_reads())
+            random.shuffle(reads)
+            for read in reads:
                 raw = read.handle[read.raw_dataset_name][:]
                 channel_info = read.handle[read.global_key + 'channel_id'].attrs
                 scaling = channel_info['range'] / channel_info['digitisation']
@@ -156,7 +158,7 @@ def generate_bedfile(args):
     bedfile_fn = f"{args.virus_dir}/regions.bed"
     with open(bedfile_fn, 'w') as bedfile:
         for x in range(1, fasta_len, args.region_size):
-            bedfile.write(f"{contig}\t{x}\t{x+args.region_size-1}\n")
+            bedfile.write(f"{contig}\t{x}\t{min(x+args.region_size-1, fasta_len)}\n")
             nregions += 1
     return bedfile_fn
 
@@ -169,6 +171,10 @@ def do_dtw_read_until(read, ru_queue, args):
     thresholds = [int(t) for t in args.chunk_thresholds.split(",")]
     rejected = False
     for length, threshold in zip(lengths, thresholds):
+
+        # accept read if we've seen it all
+        if len(read.signal) < args.trim_start+length:
+            break
 
         # extract region, normalize, calculate score
         signal = read.signal[:args.trim_start+length]
@@ -402,12 +408,12 @@ def parser():
     # read-until parameters
     parser.add_argument("--virus_dir", default="/x/squiggalign_data/lambda")
     parser.add_argument("--other_dir", default="/x/squiggalign_data/human")
-    parser.add_argument("--ratio", type=int, default=100)
     parser.add_argument("--basecall", action="store_true", default=False)
+    parser.add_argument("--ratio", type=int, default=10)
 
     # run-until parameters
     parser.add_argument("--target_coverage", type=float, default=1)
-    parser.add_argument("--region_size", type=int, default=5000)
+    parser.add_argument("--region_size", type=int, default=10000)
     parser.add_argument("--batch_size", type=int, default=10)
 
     # output data parameters
