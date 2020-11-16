@@ -1,20 +1,20 @@
+`include "constants.vh"
 
-`define MAX_VAL 4'b0100
-`define MIN_VAL 4'b1100
 
 module mad_normalizer(
     input clk,
     input rst,
-    input [23:0] mad,
+    input [`DATA_WIDTH-1:0] mad,
 
-    input [23:0] in_sample,
+    input [`DATA_WIDTH-1:0] in_sample,
     input in_sample_valid,
 
-    output logic [7:0] out_norm_val,
+    output logic [`DATA_WIDTH-1:0] out_norm_val,
     output logic out_norm_valid
 );
 
-        
+    
+
     logic [23:0] norm_val;
     logic norm_val_valid;
 
@@ -26,10 +26,10 @@ module mad_normalizer(
 
     div_gen_0 MEAN_DIV1 (
       .aclk(clk),                                       // input wire aclk
-      .s_axis_divisor_tvalid(in_sample_valid),    // input wire s_axis_divisor_tvalid
-      .s_axis_divisor_tdata(mad[15:0]),                 // input wire [15 : 0] s_axis_divisor_tdata
-      .s_axis_dividend_tvalid(in_sample_valid),   // input wire s_axis_dividend_tvalid
-      .s_axis_dividend_tdata(in_sample),          // input wire [23 : 0] s_axis_dividend_tdata
+      .s_axis_divisor_tvalid(in_sample_valid),          // input wire s_axis_divisor_tvalid
+      .s_axis_divisor_tdata(mad),                       // input wire [15 : 0] s_axis_divisor_tdata
+      .s_axis_dividend_tvalid(in_sample_valid),         // input wire s_axis_dividend_tvalid
+      .s_axis_dividend_tdata(in_sample),                // input wire [23 : 0] s_axis_dividend_tdata
       .m_axis_dout_tvalid(norm_val_valid),              // output wire m_axis_dout_tvalid
       .m_axis_dout_tdata(norm_val)                      // output wire [23 : 0] m_axis_dout_tdata
     );

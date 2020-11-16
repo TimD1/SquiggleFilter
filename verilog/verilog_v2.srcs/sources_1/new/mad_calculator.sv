@@ -8,36 +8,36 @@ module mad_calculator(
     input in_sample_valid,
     input last_sample_sent,
 
-    input [23:0] in_mean,
+    input [`DATA_WIDTH-1:0] in_mean,
     output logic ready,
 
 
-    output logic [7:0] out_sample,
+    output logic [`DATA_WIDTH-1:0] out_sample,
     output logic out_sample_valid,
 
-    output logic [23:0] out_mad
+    output logic [`QUOTIENT_WIDTH-1:0] out_mad
 
 );
 
     
     logic start_accumulating;
-    logic [23:0] accumulated_mad;
+    logic [`DIVIDEND_WIDTH-1:0] accumulated_mad;
 
-    logic [15:0] common_divisor;
+    logic [`DATA_WIDTH-1:0] common_divisor;
 
     assign common_divisor[$clog2(QUERY_LEN)-1:0] = QUERY_LEN;
     assign common_divisor[15:$clog2(QUERY_LEN)] = 'h0;
 
 
-    logic [31:0] temp_query_len;
+    logic [`DATA_WIDTH-1:0] temp_query_len;
 
     logic ready;
 
     logic IN_MEM_wea;
     logic IN_MEM_ena;
     logic [$clog2(QUERY_LEN)-1:0] IN_MEM_addr;
-    logic [23:0] IN_MEM_da;
-    logic [23:0] IN_MEM_qa;
+    logic [`DATA_WIDTH-1:0] IN_MEM_da;
+    logic [`DATA_WIDTH-1:0] IN_MEM_qa;
 
 
     logic mean_valid_q;
@@ -60,7 +60,7 @@ module mad_calculator(
         end
     end
 
-    bram_rw #(.WIDTH(24), .ADDR_WIDTH($clog2(QUERY_LEN)), .DEPTH(QUERY_LEN), PIPELINE(0), .MEMORY_TYPE("auto")) IN_MEM (
+    bram_rw #(.WIDTH(`DATA_WIDTH), .ADDR_WIDTH($clog2(QUERY_LEN)), .DEPTH(QUERY_LEN), PIPELINE(0), .MEMORY_TYPE("auto")) IN_MEM (
        .clk(clk),
        .wea(IN_MEM_wea),
        .ena(IN_MEM_ena),
@@ -167,13 +167,13 @@ module mad_calculator(
       .s_axis_dividend_tvalid(accumulated_sum_valid),  // input wire s_axis_dividend_tvalid
       .s_axis_dividend_tdata(accumulated_sum),    // input wire [23 : 0] s_axis_dividend_tdata
       .m_axis_dout_tvalid(out_mean_valid),          // output wire m_axis_dout_tvalid
-      .m_axis_dout_tdata(out_mean)             // output wire [23 : 0] m_axis_dout_tdata
+      .m_axis_dout_tdata(out_mad)             // output wire [39 : 0] m_axis_dout_tdata
     );
 
    
     always_ff @(posedge clk or posedge rst) begin
         if(rst) begin
-            out_sample <= 8'h0;
+            out_sample <= 'h0;
             out_sample_valid <= 1'b0;
         end
         else begin
