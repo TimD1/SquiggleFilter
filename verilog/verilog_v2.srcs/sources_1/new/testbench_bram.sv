@@ -18,7 +18,11 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-`include "constants.vh"
+`ifndef CONSTANTS
+   `define CONSTANTS
+   `include "constants.vh"
+`endif  
+
 
 
 module testbench_bram();

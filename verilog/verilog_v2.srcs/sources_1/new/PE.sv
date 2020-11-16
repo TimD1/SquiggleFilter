@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+`timescale 1ns / 1ns
 //////////////////////////////////////////////////////////////////////////////////
 // Company: UofM
 // Engineer: Harisankar Sadasivan
@@ -9,7 +9,7 @@
 // Project Name: SquAl
 // Target Devices: FPGA
 // Tool Versions: 
-// Description: 
+// Description: defines the PE in the systolic array (warper) for SquAl
 // 
 // Dependencies: 
 // 
@@ -18,8 +18,11 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-//includ global defines
-`include "constants.vh"
+//include global defines
+`ifndef CONSTANTS
+   `define CONSTANTS
+   `include "constants.vh"
+`endif  
 
 //Processing element of the systolic array
 module PE(
@@ -32,56 +35,46 @@ module PE(
       input activate,      
       input [`DATA_OUT_WIDTH-1:0] top,
       input [`DATA_OUT_WIDTH-1:0] left,
-      input [`DATA_OUT_WIDTH-1:0] diag,                  
+      input [`DATA_OUT_WIDTH-1:0] diag,     
+      input init,             
       output logic[`DATA_OUT_WIDTH-1:0] prev_op, output logic[`DATA_OUT_WIDTH-1:0] curr_op,
       output logic stop_bit,
-         
-      output [`DATA_OUT_WIDTH-1:0] diff,      
-      output logic [`DATA_OUT_WIDTH-1:0] score_wire,
-      output [`DATA_WIDTH-1:0] op_reference,
-      output [`DATA_WIDTH-1:0] l_query,
-      output logic [`DATA_WIDTH-1:0] l_query_r,
-      output [`DATA_WIDTH-1:0] query_o    ,
-      output  [`DATA_WIDTH-1:0] ip_ref ,
-      output  logic [`DATA_WIDTH-1:0] ip_reference_r
-//      output [2:0] min_state
+      output [`DATA_WIDTH-1:0] query_o , 
+      output [`DATA_WIDTH-1:0] op_reference         
        );
   
 
 
   
      
+     //internal logic and wires
+    logic [`DATA_WIDTH-1:0] query_o_r;
+    logic [1:0] set_bit=0;
+    wire stop_wire;
+    wire [`DATA_OUT_WIDTH-1:0] diff;      
+    logic [`DATA_OUT_WIDTH-1:0] score_wire;
+    wire [`DATA_WIDTH-1:0] l_query;
+    logic [`DATA_WIDTH-1:0] l_query_r;       
+    wire  [`DATA_WIDTH-1:0] ip_ref ;
+    logic [`DATA_WIDTH-1:0] ip_reference_r;
+    wire [2:0] min_state;
 
-//      wire [`DATA_OUT_WIDTH-1:0] diff;
-//      logic [`DATA_OUT_WIDTH-1:0] score_wire;
-      wire [2:0] min_state;
-      wire stop_wire;
-      //wire [`DATA_WIDTH-1:0] ip_ref;
-      //wire[`DATA_WIDTH-1:0] l_query; //locked query value
-      //logic [`DATA_WIDTH-1:0] l_query_r; //register locked query value
-      
-  //stream query    
-  always @(posedge activate) begin
-  l_query_r<=query;
-  end
-  
-  //stream reference
+
+  //register streaming reference
   always @(posedge clk) begin
 
-  ip_reference_r<=ip_reference;     
+    ip_reference_r<=ip_reference;     
   end
   
   
   //wires for registered output from ref and query
   assign ip_ref=ip_reference_r;
   assign op_reference=ip_ref;
-  
-  assign l_query=l_query_r;
   assign op_reference = ip_reference_r;
   
-  assign query_o=query;
-  
-  
+  assign l_query=l_query_r;
+  assign query_o=query_o_r;
+
   //absolute delta score computation between reference and query
   assign diff= (l_query>ip_ref)?(l_query-ip_ref):(ip_ref-l_query);
    
@@ -105,29 +98,44 @@ module PE(
   endcase 
   end 
 
- assign stop_wire= (score_wire>=`DTW_THRESHOLD);
+  //stopping score line
+  assign stop_wire= (score_wire>=`DTW_THRESHOLD);
  
     always_ff @(posedge clk) begin //{}
-       //sync reset
-       if(rst) begin //{
+       
+       if(rst) begin //{  //sync reset
           curr_op<=`MAX_VAL;
           prev_op<=curr_op;
           stop_bit<=0;
+          set_bit<=0;
+          l_query_r<=0;
+          query_o_r<=0;
           
 
        end //}
-       else if(activate) begin //{
-          //update sequentially
-          curr_op<=score_wire;
-          stop_bit<=stop_wire;
-          prev_op<=curr_op;   
-                     
-       end //}
+       
+       
     
         
         
         
      end //}
-     
+     always_ff @(posedge clk) begin //{
+      if(init) begin //{ //PE initialization 
+          if(set_bit<2'b1) begin
+            l_query_r<=query;
+            set_bit<=set_bit+1;
+          end
+          else query_o_r<=query;
+       end //}
+     end //}
+     always_ff @(posedge clk) begin //{
+          if(activate) begin //{ //Firing the PE
+          //update sequentially
+          curr_op<=score_wire;
+          stop_bit<=stop_wire;
+          prev_op<=curr_op;                       
+       end //}
+     end  
 
 endmodule : PE

@@ -1,16 +1,17 @@
 //independent defines, tunable params before synthesis
-`define DATA_WIDTH 16
+`define DATA_WIDTH 10 // need to re-configure IP's too if this change
 `define DIVIDEND_WIDTH 24
 `define QUOTIENT_WIDTH 40
-
-`define QUERY_LEN 2
-`define REF_MAX_LEN 10
-`define DTW_THRESHOLD 100000
+`define QUERY_LEN 50
+`define REF_MAX_LEN 200
+`define DTW_THRESHOLD 10
+`define BRAM_ADDR_WIDTH `DATA_WIDTH
 
 
 //dependent defines
 
 `define REF_SIZE_BITS ($clog2(`REF_MAX_LEN)+1)
+`define QUERY_SIZE_BITS ($clog2(`QUERY_LEN)+1)
 `define MAX_IP_VAL {`DATA_WIDTH{1'b1}}
 
 

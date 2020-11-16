@@ -18,7 +18,11 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-`include "constants.vh"
+`ifndef CONSTANTS
+   `define CONSTANTS
+   `include "constants.vh"
+`endif  
+
 
 module testbench_PE();
    logic clk;
@@ -37,8 +41,8 @@ module testbench_PE();
    logic [2:0] min_state;
       
        //logic signed [`DATA_OUT_WIDTH-1:0] P;
-       logic [`DATA_OUT_WIDTH-1:0] score_wire;
-PE pe(.clk(clk),      
+      logic [`DATA_OUT_WIDTH-1:0] score_wire;
+      PE pe(.clk(clk),      
       .rst(rst),
       .query(q),
       .ip_reference(ir),
@@ -51,10 +55,10 @@ PE pe(.clk(clk),
       .prev_op(buff_op), .curr_op(curr_op),     
       .diff(diff),
       .min_state(min_state),
-	  //.P(P),
-	  .score_wire(score_wire)
+	    //.P(P),
+	    .score_wire(score_wire)
       
-    );
+     );
     
      always begin
       #5
