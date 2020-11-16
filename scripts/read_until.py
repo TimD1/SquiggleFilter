@@ -155,7 +155,7 @@ def get_reference(args):
 
 ################################################################################
 
-def validate(args):
+def init(args):
 
     basepair_types = ["dna", "rna"]
     if args.bp_type not in basepair_types:
@@ -166,6 +166,19 @@ def validate(args):
     if args.model_type not in model_types:
         print(f"ERROR: 'args.model_type' must be one of {model_types}.")
         exit(1)
+
+    if args.ru_data_file == "default":
+        args.ru_data_file = f"{args.virus_dir}/read_until_data.txt"
+
+    if args.fastq_file == "default":
+        os.makedirs(f"{args.virus_dir}/fastq", exist_ok=True)
+        args.fastq_file = f"{args.virus_dir}/fastq/all.fastq"
+
+    if args.sam_file == "default":
+        os.makedirs(f"{args.virus_dir}/aligned", exist_ok=True)
+        args.sam_file = f"{args.virus_dir}/aligned/calls_to_ref.sam"
+
+    return args
 
 ################################################################################
 
@@ -295,6 +308,12 @@ def write_sam_data(read_id, sequence, qstring, alignment, args):
         sam_file.flush()
     return
 
+def write_fastq_data(read_id, sequence, qstring, args):
+    with open(args.fastq_file, 'a') as fastq_file:
+        fastq_file.write(f"@{read_id}\n{sequence}\n+\n{qstring}\n")
+        fastq_file.flush()
+    return
+
 ################################################################################
 
 def generate_bam(args):
@@ -367,13 +386,14 @@ def main(args):
     global ref, nreads_total
 
     # init
-    validate(args)
+    args = init(args)
     done = False
     bed_file = generate_bedfile(args)
     ref = get_reference(args)
     aligner = get_aligner(args)
     write_sam_header(aligner, args)
     fh = open(args.ru_data_file, 'w'); fh.close()
+    fh = open(args.fastq_file, 'w'); fh.close()
     if args.bp_type == "dna":
         guppy_config = f"dna_r9.4.1_450bps_{args.model_type}.cfg"
     else:
@@ -423,14 +443,18 @@ def main(args):
 
                 # align
                 aln_timer.start()
+                alns = []
                 for read, call in zip(reads, calls):
                     try:
                         alignment = next(aligner.map(call.seq))
-                        write_sam_data(read.read_id, call.seq, 
-                                call.qual, alignment, args)
+                        alns.append(alignment)
                     except(StopIteration):
                         pass # no alignment, can ignore for read-until
                 aln_timer.stop()
+
+                for read, call, aln in zip(reads, calls, alns):
+                    write_fastq_data(read.read_id, call.seq, call.qual, args)
+                    write_sam_data(read.read_id, call.seq, call.qual, aln, args)
 
             nreads_total += (1 + args.ratio) * args.batch_size
             bam_file = generate_bam(args)
@@ -467,8 +491,9 @@ def parser():
     parser.add_argument("--batch_size", type=int, default=10)
 
     # output data parameters
-    parser.add_argument("--sam_file", default="read_until_alignments.sam")
-    parser.add_argument("--ru_data_file", default="read_until_data.txt")
+    parser.add_argument("--ru_data_file", default="default")
+    parser.add_argument("--fastq_file", default="default")
+    parser.add_argument("--sam_file", default="default")
 
     # read chunk selection parameters
     parser.add_argument("--trim_start", type=int, default=1000)
