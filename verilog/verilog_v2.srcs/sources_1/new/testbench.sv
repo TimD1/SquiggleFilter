@@ -38,7 +38,7 @@ module testbench();
    logic [`DATA_WIDTH-1:0] reference ;     
    
    logic                   start;
-   logic                   done = 0;
+   logic                   done;
 
    logic  result;
    logic[`DATA_OUT_WIDTH-1:0] expected_result=0;

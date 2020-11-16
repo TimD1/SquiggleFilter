@@ -37,7 +37,7 @@ module sDTW(input clk,
 	logic [`QUERY_LEN-1:0] tmp_d; //pipeline registers for 2 clock init signal delay.
 	logic [`QUERY_LEN-1:0] init; //resgiter the init signal in each PE input
 	//PE firing
-	logic activate		[`QUERY_LEN-1:0];
+	logic [`QUERY_LEN-1:0] activate;
 	logic [`CNTR_BITS-1:0] counter;
     //PE interconnects
 	wire [`QUERY_LEN-1:0] stop_bits;
@@ -94,22 +94,41 @@ module sDTW(input clk,
 
 
 	//on completion of the array
-    always@(done) begin
-     for(integer i=0; i<`QUERY_LEN; i++) begin //{
-			activate[i] <= 0;
+//    always@(done) begin
+//     for(integer i=0; i<`QUERY_LEN; i++) begin //{
+//			activate[i] <= 0;
 			
-     end //}
+//     end //}
      
      
      
-    end
-	// logic for sDTW early abandon
+//    end
+//	// logic for sDTW early abandon
+//	always_ff @(posedge clk)
+//	begin
+
+		
+			
+			     			 
+//	end
+	
+//	//logic for normal & early sDTW thresholding
+//	always_ff @(posedge clk)
+//	begin
+	
+	
+	        
+			
+			
+//    end
+    
+    
+	// control logic
 	always_ff @(posedge clk)
 	begin
-
-			
+        	
 			//comparing wrt threshold
-			 if(counter>`QUERY_LEN) begin //{
+			if(counter>`QUERY_LEN && counter!=`QUERY_LEN+`REF_MAX_LEN) begin //{
 			        
                      //AND-ing to do early stop
                      if(&stop_bits[`QUERY_LEN-1:0]==1) begin//{
@@ -118,14 +137,7 @@ module sDTW(input clk,
                          result<=0;
                      end //}
 			 end //}
-			
-			     			 
-	end
-	
-	//logic for normal sDTW thresholding
-	always_ff @(posedge clk)
-	begin
-	        if (counter==`QUERY_LEN+`REF_MAX_LEN) begin
+	        else if (counter==`QUERY_LEN+`REF_MAX_LEN) begin
 			     done<=1;
 			   
 			    
@@ -136,23 +148,10 @@ module sDTW(input clk,
 			     end //}
 			end
 			
-			
-			
-    end
-    
-    
-	// control logic
-	always_ff @(posedge clk)
-	begin
-
 	    //sync reset
 		if(rst)
 		begin
-			for(integer j=0; j<`QUERY_LEN; j++)
-			begin
-				activate[j] <= 0;	           
-	            tmp_d[j]<=0;
-			end
+			activate<=0;
 			done<=0;
 			result<=0;
 			counter<=0;
@@ -164,31 +163,34 @@ module sDTW(input clk,
 		begin
             
 			if(init[`QUERY_LEN-1]==1) begin //{
-				init[0]<=0;	
-				for(int i=1;i<`QUERY_LEN;i++) begin //{
+				//init[0]<=0;	
+//				for(int i=0;i<`QUERY_LEN;i++) begin //{
 				
-				init[i]<=0;
-				end //}
+//				init[i]<=0;
+//				end //}
+                init <=0;
 			end //}
             //start first PE
             if(counter<`REF_MAX_LEN) begin
-                activate[0] <= 1;
+                //activate[0] <= 1;
     
                 //fire consecutive PE's in consecutive cycles
-                for(integer j=1; j<`QUERY_LEN; j++) begin //{
-                    activate[j] <= activate[j-1];
+//                for(integer j=1; j<`QUERY_LEN; j++) begin //{
+//                    activate[j] <= activate[j-1];
                 
-                end //}
+//                end //}
+                activate<={activate[`QUERY_LEN-2:0],1'b1};
 			end 
 			//inactivate PE's at the end of computation
 			else begin
-                activate[0] <= 0;
+//                activate[0] <= 0;
     
-                //fire consecutive PE's in consecutive cycles
-                for(integer j=1; j<`QUERY_LEN; j++) begin //{
-                    activate[j] <= activate[j-1];
+//                //fire consecutive PE's in consecutive cycles
+//                for(integer j=1; j<`QUERY_LEN; j++) begin //{
+//                    activate[j] <= activate[j-1];
                 
-                end //}
+//                end //}
+                activate<={activate[`QUERY_LEN-2:0],1'b0};
 			end
 
             counter<=counter+1;    
@@ -198,15 +200,24 @@ module sDTW(input clk,
 		else if(init_sig) begin
 			
 			
-			init[0]<=1;
+//			init[0]<=1;
 			
 
-			for(int i=1;i<`QUERY_LEN;i++) begin //{
-				tmp_d[i-1]<=init[i-1];
-				init[i]<=tmp_d[i-1];
-			end //}
+//			for(int i=1;i<`QUERY_LEN;i++) begin //{
+//				tmp_d[i-1]<=init[i-1];
+//				init[i]<=tmp_d[i-1];
+//			end //}
+            tmp_d<=init;
+            init<={tmp_d[`QUERY_LEN-2:0],1'b1};
 		 
 		end 
+		else if(done) begin//{
+//		  for(integer i=0; i<`QUERY_LEN; i++) begin //{
+//			activate[i] <= 0;
+			
+//          end //}
+          activate<=0;
+		end//}
 
 
 		
