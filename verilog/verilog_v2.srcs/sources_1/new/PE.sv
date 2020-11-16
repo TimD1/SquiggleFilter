@@ -113,26 +113,29 @@ module PE(
           
 
        end //}
-       else if(init) begin //{ //PE initialization 
-          if(set_bit<2'b1) begin
-            l_query_r<=query;
-            set_bit<=set_bit+1;
-          end
-          else query_o_r<=query;
-       end //}
-       else if(activate) begin //{ //Firing the PE
-          //update sequentially
-          curr_op<=score_wire;
-          stop_bit<=stop_wire;
-          prev_op<=curr_op;   
-                     
-       end //}
+       
        
     
         
         
         
      end //}
-     
+     always_ff @(posedge clk) begin //{
+      if(init) begin //{ //PE initialization 
+          if(set_bit<2'b1) begin
+            l_query_r<=query;
+            set_bit<=set_bit+1;
+          end
+          else query_o_r<=query;
+       end //}
+     end //}
+     always_ff @(posedge clk) begin //{
+          if(activate) begin //{ //Firing the PE
+          //update sequentially
+          curr_op<=score_wire;
+          stop_bit<=stop_wire;
+          prev_op<=curr_op;                       
+       end //}
+     end  
 
 endmodule : PE
