@@ -25,17 +25,17 @@ module mad_calculator(
 
     logic [15:0] common_divisor;
 
-    assign common_divisor[$clog2(QUERY_LEN)-1:0] = QUERY_LEN;
-    assign common_divisor[15:$clog2(QUERY_LEN)] = 'h0;
+    assign common_divisor[`QUERY_SIZE_BITS-2:0] = `QUERY_LEN;
+    assign common_divisor[15:`QUERY_SIZE_BITS-1] = 'h0;
 
 
     logic [31:0] temp_query_len;
 
-    logic ready;
+    //logic ready;
 
     logic IN_MEM_wea;
     logic IN_MEM_ena;
-    logic [$clog2(QUERY_LEN)-1:0] IN_MEM_addr;
+    logic [`QUERY_SIZE_BITS-2:0] IN_MEM_addr;
     logic [23:0] IN_MEM_da;
     logic [23:0] IN_MEM_qa;
 
@@ -45,7 +45,7 @@ module mad_calculator(
 
     assign ready = start_accumulating;
 
-    always_ff @(posegde clk or posedge rst) begin
+    always_ff @(posedge clk or posedge rst) begin
         if(rst) begin
             mean_valid_q <= 1'b0;
         end
@@ -60,11 +60,11 @@ module mad_calculator(
         end
     end
 
-    bram_rw #(.WIDTH(24), .ADDR_WIDTH($clog2(QUERY_LEN)), .DEPTH(QUERY_LEN), PIPELINE(0), .MEMORY_TYPE("auto")) IN_MEM (
+    bram_rw #(.WIDTH(24), .ADDR_WIDTH(`QUERY_SIZE_BITS-1), .DEPTH(`QUERY_LEN), PIPELINE(0), .MEMORY_TYPE("auto")) IN_MEM (
        .clk(clk),
        .wea(IN_MEM_wea),
        .ena(IN_MEM_ena),
-       .addra(IN_MEM_addra),
+       .addra(IN_MEM_addr),
        .da(IN_MEM_da),
        .qa(IN_MEM_qa)
     );
@@ -78,11 +78,11 @@ module mad_calculator(
             start_accumulating <= 1'b1;
         end
         else begin
-            if(start_accumulating && IN_MEM_addr == QUERY_LEN) begin
+            if(start_accumulating && IN_MEM_addr == `QUERY_LEN) begin
                 start_accumulating <= 1'b0;
             end
 
-            if(!start_accumulating && IN_MEM_addr == QUERY_LEN) begin
+            if(!start_accumulating && IN_MEM_addr == `QUERY_LEN) begin
                 start_accumulating <= 1'b1;
             end
         end

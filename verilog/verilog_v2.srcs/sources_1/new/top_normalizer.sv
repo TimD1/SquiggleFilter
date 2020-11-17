@@ -64,7 +64,7 @@ mad_normalizer MAD_NORMALIZER(
     .rst(rst),
     .mad(out_mad),
 
-    .in_sample({16'h0,mad_sample},
+    .in_sample({16'h0,mad_sample}),
     .in_sample_valid(mad_sample_valid),
 
     .out_norm_val(out_sample),
