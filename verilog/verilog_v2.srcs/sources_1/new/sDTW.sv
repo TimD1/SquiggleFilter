@@ -68,7 +68,7 @@ module sDTW(input clk,
 				);
 
 	// All other PE's
-
+    `ifndef SYNTH 
 	genvar i;
 	generate
 		for (i=1; i<`QUERY_LEN; i++) begin : pe_systolic
@@ -90,7 +90,90 @@ module sDTW(input clk,
 				);
 		end
 	endgenerate
-
+	`else
+	genvar i;
+	generate
+		for (i=1; i<1000; i++) begin : pe_systolic
+			PE col(	.activate(activate[i]),
+					.clk(clk),
+					.rst(rst),
+					.init(init[i]),
+					.left(pe_op[i-1]),
+					.top(pe_op[i]),
+					.diag(pe_prev_op[i-1]),
+					.ip_reference(op_reference[i-1]),
+					.query(query_o[i-1]),
+					.curr_op(pe_op[i]),
+					.prev_op(pe_prev_op[i]),
+					.stop_bit(stop_bits[i]),				
+					.op_reference(op_reference[i]),
+					.query_o(query_o[i])				
+					
+				);
+		end
+	endgenerate
+	
+	generate
+		for (i=2000; i<3000; i++) begin : pe_systolic1
+			PE col(	.activate(activate[i]),
+					.clk(clk),
+					.rst(rst),
+					.init(init[i]),
+					.left(pe_op[i-1]),
+					.top(pe_op[i]),
+					.diag(pe_prev_op[i-1]),
+					.ip_reference(op_reference[i-1]),
+					.query(query_o[i-1]),
+					.curr_op(pe_op[i]),
+					.prev_op(pe_prev_op[i]),
+					.stop_bit(stop_bits[i]),				
+					.op_reference(op_reference[i]),
+					.query_o(query_o[i])				
+					
+				);
+		end
+	endgenerate
+	generate
+		for (i=3000; i<4000; i++) begin : pe_systolic2
+			PE col(	.activate(activate[i]),
+					.clk(clk),
+					.rst(rst),
+					.init(init[i]),
+					.left(pe_op[i-1]),
+					.top(pe_op[i]),
+					.diag(pe_prev_op[i-1]),
+					.ip_reference(op_reference[i-1]),
+					.query(query_o[i-1]),
+					.curr_op(pe_op[i]),
+					.prev_op(pe_prev_op[i]),
+					.stop_bit(stop_bits[i]),				
+					.op_reference(op_reference[i]),
+					.query_o(query_o[i])				
+					
+				);
+		end
+	endgenerate
+	generate
+		for (i=4000; i<`QUERY_LEN; i++) begin : pe_systolic3
+			PE col(	.activate(activate[i]),
+					.clk(clk),
+					.rst(rst),
+					.init(init[i]),
+					.left(pe_op[i-1]),
+					.top(pe_op[i]),
+					.diag(pe_prev_op[i-1]),
+					.ip_reference(op_reference[i-1]),
+					.query(query_o[i-1]),
+					.curr_op(pe_op[i]),
+					.prev_op(pe_prev_op[i]),
+					.stop_bit(stop_bits[i]),				
+					.op_reference(op_reference[i]),
+					.query_o(query_o[i])				
+					
+				);
+		end
+	endgenerate
+    `endif
 
 
 	//on completion of the array

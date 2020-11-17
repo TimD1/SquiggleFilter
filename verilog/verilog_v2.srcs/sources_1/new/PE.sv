@@ -70,7 +70,7 @@ module PE(
 
     //wires for registered output from ref and query
     assign ip_ref=ip_reference_r;
-    assign op_reference=ip_ref;
+
     assign op_reference = ip_reference_r;
 
     assign l_query=l_query_r;
