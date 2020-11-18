@@ -103,9 +103,9 @@ architecture tb of tb_div_gen_1 is
 
   -- Breakout signals. These signals are the application-specific operands which
   -- become subfields of the TDATA fields.
-  signal dividend : std_logic_vector(20 downto 0) := (others => '0');
+  signal dividend : std_logic_vector(23 downto 0) := (others => '0');
   signal divisor  : std_logic_vector(12 downto 0) := (others => '0');
-  signal quotient : std_logic_vector(20 downto 0) := (others => '0');
+  signal quotient : std_logic_vector(23 downto 0) := (others => '0');
   signal remainder : std_logic_vector(12 downto 0) := (others => '0');
   -----------------------------------------------------------------------
   -- DUT output signals
@@ -129,7 +129,7 @@ architecture tb of tb_div_gen_1 is
   -----------------------------------------------------------------------
 
   constant IP_dividend_DEPTH : integer := 30;
-  constant IP_dividend_WIDTH : integer := 21;
+  constant IP_dividend_WIDTH : integer := 24;
   constant IP_divisor_DEPTH : integer := 32;
   constant IP_divisor_WIDTH : integer := 13;
   subtype T_IP_dividend_ENTRY is std_logic_vector(IP_dividend_WIDTH-1 downto 0);
@@ -274,7 +274,7 @@ begin
       if dividend_tvalid_nxt /= '1' then
         s_axis_dividend_tdata <= (others => INVALID);
       else
-        -- TDATA: This holds the dividend operand. It is 21 bits wide and byte-aligned with the operand in the LSBs
+        -- TDATA: This holds the dividend operand. It is 24 bits wide and byte-aligned with the operand in the LSBs
         s_axis_dividend_tdata <= std_logic_vector(resize(signed(IP_dividend_DATA(ip_dividend_index)),24));
       end if;
 
@@ -340,9 +340,9 @@ begin
   -----------------------------------------------------------------------
 
   divisor  <= s_axis_divisor_tdata(12 downto 0);
-  dividend <= s_axis_dividend_tdata(20 downto 0);
+  dividend <= s_axis_dividend_tdata(23 downto 0);
   remainder <= m_axis_dout_tdata(12 downto 0);
-  quotient  <= m_axis_dout_tdata(36 downto 16);
+  quotient  <= m_axis_dout_tdata(39 downto 16);
 
 end tb;
 

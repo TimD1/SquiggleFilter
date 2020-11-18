@@ -1,6 +1,6 @@
 
 *** Running vivado
-    with args -log testbench.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source testbench.tcl
+    with args -log sDTW.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source sDTW.tcl
 
 
 ****** Vivado v2019.1 (64-bit)
@@ -9,141 +9,330 @@
     ** Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 
 Sourcing tcl script 'C:/Users/Harisankar Sadasivan/AppData/Roaming/Xilinx/Vivado/Vivado_init.tcl'
-source testbench.tcl -notrace
+source sDTW.tcl -notrace
 WARNING: [Board 49-91] Board repository path '{C:Xilinxivado-boards-masterivado-boards-master
 ewoard_files"}' does not exist, it will not be used to search board files.
-Command: synth_design -top testbench -part xc7a12ticsg325-1L
+Command: synth_design -top sDTW -part xc7a200tsbv484-1
 Starting synth_design
-Attempting to get a license for feature 'Synthesis' and/or device 'xc7a12ti'
-INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a12ti'
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a200t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a200t'
 INFO: Launching helper process for spawning children vivado processes
-INFO: Helper process launched with PID 14076 
+INFO: Helper process launched with PID 4788 
 ---------------------------------------------------------------------------------
-Starting Synthesize : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 443.777 ; gain = 155.301
+Starting Synthesize : Time (s): cpu = 00:00:04 ; elapsed = 00:00:04 . Memory (MB): peak = 443.102 ; gain = 152.172
 ---------------------------------------------------------------------------------
-INFO: [Synth 8-6157] synthesizing module 'testbench' [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:9]
-WARNING: [Synth 8-6896] event control except as first statement of always block inside initial block, initial block items will be ignored [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:126]
-INFO: [Synth 8-6157] synthesizing module 'sDTW' [C:/verilog_v3/verilog_v2.srcs/sources_1/new/sDTW.sv:9]
-INFO: [Synth 8-6157] synthesizing module 'PE' [C:/verilog_v3/verilog_v2.srcs/sources_1/new/PE.sv:25]
-INFO: [Synth 8-6155] done synthesizing module 'PE' (1#1) [C:/verilog_v3/verilog_v2.srcs/sources_1/new/PE.sv:25]
-INFO: [Synth 8-6155] done synthesizing module 'sDTW' (2#1) [C:/verilog_v3/verilog_v2.srcs/sources_1/new/sDTW.sv:9]
-CRITICAL WARNING: [Synth 8-5972] variable 'done' cannot be written by both continuous and procedural assignments [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:50]
-WARNING: [Synth 8-85] always block has no event control specified [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:107]
-WARNING: [Synth 8-3848] Net rst in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:17]
-WARNING: [Synth 8-3848] Net query[4999] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4998] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4997] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4996] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4995] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4994] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4993] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4992] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4991] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4990] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4989] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4988] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4987] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4986] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4985] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4984] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4983] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4982] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4981] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4980] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4979] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4978] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4977] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4976] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4975] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4974] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4973] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4972] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4971] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4970] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4969] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4968] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4967] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4966] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4965] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4964] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4963] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4962] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4961] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4960] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4959] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4958] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4957] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4956] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4955] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4954] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4953] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4952] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4951] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4950] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4949] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4948] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4947] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4946] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4945] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4944] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4943] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4942] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4941] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4940] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4939] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4938] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4937] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4936] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4935] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4934] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4933] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4932] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4931] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4930] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4929] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4928] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4927] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4926] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4925] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4924] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4923] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4922] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4921] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4920] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4919] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4918] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4917] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4916] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4915] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4914] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4913] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4912] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4911] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4910] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4909] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4908] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4907] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4906] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4905] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4904] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4903] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4902] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-WARNING: [Synth 8-3848] Net query[4901] in module/entity testbench does not have driver. [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:19]
-INFO: [Common 17-14] Message 'Synth 8-3848' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
-INFO: [Synth 8-6155] done synthesizing module 'testbench' (3#1) [C:/verilog_v3/verilog_v2.srcs/sources_1/new/testbench.sv:9]
+INFO: [Synth 8-6157] synthesizing module 'sDTW' [C:/verilog/verilog_v2.srcs/sources_1/new/sDTW.sv:26]
+INFO: [Synth 8-6157] synthesizing module 'PE' [C:/verilog/verilog_v2.srcs/sources_1/new/PE.sv:28]
+INFO: [Synth 8-6155] done synthesizing module 'PE' (1#1) [C:/verilog/verilog_v2.srcs/sources_1/new/PE.sv:28]
+INFO: [Synth 8-6155] done synthesizing module 'sDTW' (2#1) [C:/verilog/verilog_v2.srcs/sources_1/new/sDTW.sv:26]
 ---------------------------------------------------------------------------------
-Finished Synthesize : Time (s): cpu = 00:04:21 ; elapsed = 00:04:22 . Memory (MB): peak = 1343.566 ; gain = 1055.090
+Finished Synthesize : Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 506.738 ; gain = 215.809
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:04:26 ; elapsed = 00:04:29 . Memory (MB): peak = 1343.566 ; gain = 1055.090
+Finished Constraint Validation : Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 506.738 ; gain = 215.809
 ---------------------------------------------------------------------------------
-INFO: [Synth 8-5580] Multithreading enabled for synth_design using a maximum of 2 processes.
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
-Loading part: xc7a12ticsg325-1L
-INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/verilog_v3/verilog_v2.srcs/sources_1/new/PE.sv:57]
-INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/verilog_v3/verilog_v2.srcs/sources_1/new/PE.sv:66]
+Loading part: xc7a200tsbv484-1
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:14:35 ; elapsed = 00:14:38 . Memory (MB): peak = 1343.566 ; gain = 1055.090
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 506.738 ; gain = 215.809
 ---------------------------------------------------------------------------------
+INFO: [Device 21-403] Loading part xc7a200tsbv484-1
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/verilog/verilog_v2.srcs/sources_1/new/PE.sv:80]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/verilog/verilog_v2.srcs/sources_1/new/PE.sv:90]
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 506.738 ; gain = 215.809
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+No constraint files found.
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     16 Bit       Adders := 50    
+	   3 Input      8 Bit       Adders := 50    
+	   2 Input      1 Bit       Adders := 50    
++---Registers : 
+	               50 Bit    Registers := 3     
+	               16 Bit    Registers := 100   
+	                8 Bit    Registers := 150   
+	                1 Bit    Registers := 52    
++---Muxes : 
+	   5 Input     50 Bit        Muxes := 1     
+	   4 Input     50 Bit        Muxes := 1     
+	   2 Input     50 Bit        Muxes := 3     
+	   4 Input     16 Bit        Muxes := 50    
+	   2 Input      8 Bit        Muxes := 100   
+	   2 Input      1 Bit        Muxes := 53    
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Hierarchical Component Statistics 
+---------------------------------------------------------------------------------
+Hierarchical RTL Component report 
+Module sDTW 
+Detailed RTL Component Info : 
++---Registers : 
+	               50 Bit    Registers := 3     
+	                1 Bit    Registers := 2     
++---Muxes : 
+	   5 Input     50 Bit        Muxes := 1     
+	   4 Input     50 Bit        Muxes := 1     
+	   2 Input     50 Bit        Muxes := 3     
+	   2 Input      1 Bit        Muxes := 53    
+Module PE 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     16 Bit       Adders := 1     
+	   3 Input      8 Bit       Adders := 1     
+	   2 Input      1 Bit       Adders := 1     
++---Registers : 
+	               16 Bit    Registers := 2     
+	                8 Bit    Registers := 3     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   4 Input     16 Bit        Muxes := 1     
+	   2 Input      8 Bit        Muxes := 2     
+---------------------------------------------------------------------------------
+Finished RTL Hierarchical Component Statistics
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 740 (col length:100)
+BRAMs: 730 (col length: RAMB18 100 RAMB36 50)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+Warning: Parallel synthesis criteria is not met 
+INFO: [Synth 8-3886] merging instance 'first_col/curr_op_reg[9]' (FDSE) to 'first_col/curr_op_reg[15]'
+INFO: [Synth 8-3886] merging instance 'first_col/curr_op_reg[8]' (FDSE) to 'first_col/curr_op_reg[15]'
+INFO: [Synth 8-3886] merging instance 'first_col/curr_op_reg[14]' (FDSE) to 'first_col/curr_op_reg[15]'
+INFO: [Synth 8-3886] merging instance 'first_col/curr_op_reg[10]' (FDSE) to 'first_col/curr_op_reg[15]'
+INFO: [Synth 8-3886] merging instance 'first_col/curr_op_reg[11]' (FDSE) to 'first_col/curr_op_reg[15]'
+INFO: [Synth 8-3886] merging instance 'first_col/curr_op_reg[12]' (FDSE) to 'first_col/curr_op_reg[15]'
+INFO: [Synth 8-3886] merging instance 'first_col/curr_op_reg[13]' (FDSE) to 'first_col/curr_op_reg[15]'
+INFO: [Synth 8-3886] merging instance 'first_col/prev_op_reg[8]' (FDSE) to 'first_col/prev_op_reg[9]'
+INFO: [Synth 8-3886] merging instance 'first_col/prev_op_reg[9]' (FDSE) to 'first_col/prev_op_reg[10]'
+INFO: [Synth 8-3886] merging instance 'first_col/prev_op_reg[10]' (FDSE) to 'first_col/prev_op_reg[11]'
+INFO: [Synth 8-3886] merging instance 'first_col/prev_op_reg[11]' (FDSE) to 'first_col/prev_op_reg[12]'
+INFO: [Synth 8-3886] merging instance 'first_col/prev_op_reg[12]' (FDSE) to 'first_col/prev_op_reg[13]'
+INFO: [Synth 8-3886] merging instance 'first_col/prev_op_reg[13]' (FDSE) to 'first_col/prev_op_reg[14]'
+INFO: [Synth 8-3886] merging instance 'first_col/prev_op_reg[14]' (FDSE) to 'first_col/prev_op_reg[15]'
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:18 ; elapsed = 00:00:19 . Memory (MB): peak = 749.695 ; gain = 458.766
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 749.695 ; gain = 458.766
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:22 ; elapsed = 00:00:23 . Memory (MB): peak = 776.230 ; gain = 485.301
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:25 ; elapsed = 00:00:25 . Memory (MB): peak = 780.934 ; gain = 490.004
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:25 ; elapsed = 00:00:25 . Memory (MB): peak = 780.934 ; gain = 490.004
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:25 ; elapsed = 00:00:25 . Memory (MB): peak = 780.934 ; gain = 490.004
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:25 ; elapsed = 00:00:25 . Memory (MB): peak = 780.934 ; gain = 490.004
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:25 ; elapsed = 00:00:25 . Memory (MB): peak = 780.934 ; gain = 490.004
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:25 ; elapsed = 00:00:25 . Memory (MB): peak = 780.934 ; gain = 490.004
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-------+------+
+|      |Cell   |Count |
++------+-------+------+
+|1     |BUFG   |     1|
+|2     |CARRY4 |   644|
+|3     |LUT1   |     1|
+|4     |LUT2   |   901|
+|5     |LUT3   |   368|
+|6     |LUT4   |  2732|
+|7     |LUT5   |    87|
+|8     |LUT6   |   877|
+|9     |FDRE   |  1409|
+|10    |FDSE   |  1570|
+|11    |IBUF   |    20|
+|12    |OBUF   |     2|
++------+-------+------+
+
+Report Instance Areas: 
++------+------------------------+-------+------+
+|      |Instance                |Module |Cells |
++------+------------------------+-------+------+
+|1     |top                     |       |  8612|
+|2     |  first_col             |PE     |   125|
+|3     |  \pe_systolic[10].col  |PE_0   |   170|
+|4     |  \pe_systolic[11].col  |PE_1   |   170|
+|5     |  \pe_systolic[12].col  |PE_2   |   170|
+|6     |  \pe_systolic[13].col  |PE_3   |   170|
+|7     |  \pe_systolic[14].col  |PE_4   |   171|
+|8     |  \pe_systolic[15].col  |PE_5   |   170|
+|9     |  \pe_systolic[16].col  |PE_6   |   170|
+|10    |  \pe_systolic[17].col  |PE_7   |   171|
+|11    |  \pe_systolic[18].col  |PE_8   |   170|
+|12    |  \pe_systolic[19].col  |PE_9   |   170|
+|13    |  \pe_systolic[1].col   |PE_10  |   180|
+|14    |  \pe_systolic[20].col  |PE_11  |   171|
+|15    |  \pe_systolic[21].col  |PE_12  |   170|
+|16    |  \pe_systolic[22].col  |PE_13  |   172|
+|17    |  \pe_systolic[23].col  |PE_14  |   171|
+|18    |  \pe_systolic[24].col  |PE_15  |   171|
+|19    |  \pe_systolic[25].col  |PE_16  |   172|
+|20    |  \pe_systolic[26].col  |PE_17  |   170|
+|21    |  \pe_systolic[27].col  |PE_18  |   170|
+|22    |  \pe_systolic[28].col  |PE_19  |   170|
+|23    |  \pe_systolic[29].col  |PE_20  |   170|
+|24    |  \pe_systolic[2].col   |PE_21  |   171|
+|25    |  \pe_systolic[30].col  |PE_22  |   170|
+|26    |  \pe_systolic[31].col  |PE_23  |   171|
+|27    |  \pe_systolic[32].col  |PE_24  |   170|
+|28    |  \pe_systolic[33].col  |PE_25  |   171|
+|29    |  \pe_systolic[34].col  |PE_26  |   171|
+|30    |  \pe_systolic[35].col  |PE_27  |   170|
+|31    |  \pe_systolic[36].col  |PE_28  |   171|
+|32    |  \pe_systolic[37].col  |PE_29  |   170|
+|33    |  \pe_systolic[38].col  |PE_30  |   171|
+|34    |  \pe_systolic[39].col  |PE_31  |   171|
+|35    |  \pe_systolic[3].col   |PE_32  |   171|
+|36    |  \pe_systolic[40].col  |PE_33  |   171|
+|37    |  \pe_systolic[41].col  |PE_34  |   171|
+|38    |  \pe_systolic[42].col  |PE_35  |   171|
+|39    |  \pe_systolic[43].col  |PE_36  |   171|
+|40    |  \pe_systolic[44].col  |PE_37  |   170|
+|41    |  \pe_systolic[45].col  |PE_38  |   170|
+|42    |  \pe_systolic[46].col  |PE_39  |   171|
+|43    |  \pe_systolic[47].col  |PE_40  |   170|
+|44    |  \pe_systolic[48].col  |PE_41  |   171|
+|45    |  \pe_systolic[49].col  |PE_42  |    84|
+|46    |  \pe_systolic[4].col   |PE_43  |   171|
+|47    |  \pe_systolic[5].col   |PE_44  |   170|
+|48    |  \pe_systolic[6].col   |PE_45  |   170|
+|49    |  \pe_systolic[7].col   |PE_46  |   170|
+|50    |  \pe_systolic[8].col   |PE_47  |   170|
+|51    |  \pe_systolic[9].col   |PE_48  |   171|
++------+------------------------+-------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:25 ; elapsed = 00:00:25 . Memory (MB): peak = 780.934 ; gain = 490.004
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 0 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:25 ; elapsed = 00:00:25 . Memory (MB): peak = 780.934 ; gain = 490.004
+Synthesis Optimization Complete : Time (s): cpu = 00:00:25 ; elapsed = 00:00:25 . Memory (MB): peak = 780.934 ; gain = 490.004
+INFO: [Project 1-571] Translating synthesized netlist
+INFO: [Netlist 29-17] Analyzing 644 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.002 . Memory (MB): peak = 847.594 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+INFO: [Common 17-83] Releasing license: Synthesis
+29 Infos, 1 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:32 ; elapsed = 00:00:33 . Memory (MB): peak = 847.594 ; gain = 556.664
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.002 . Memory (MB): peak = 847.594 ; gain = 0.000
+WARNING: [Constraints 18-5210] No constraints selected for write.
+Resolution: This message can indicate that there are no constraints for the design, or it can indicate that the used_in flags are set such that the constraints are ignored. This later case is used when running synth_design to not write synthesis constraints to the resulting checkpoint. Instead, project constraints are read when the synthesized design is opened.
+INFO: [Common 17-1381] The checkpoint 'C:/verilog/verilog_v2.runs/synth_1/sDTW.dcp' has been generated.
+INFO: [runtcl-4] Executing : report_utilization -file sDTW_utilization_synth.rpt -pb sDTW_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Wed Nov 18 00:15:23 2020...

@@ -24,7 +24,7 @@ else
 fi
 export LD_LIBRARY_PATH
 
-HD_PWD='C:/verilog_v3/verilog_v2.runs/synth_1'
+HD_PWD='C:/verilog/verilog_v2.runs/synth_1'
 cd "$HD_PWD"
 
 HD_LOG=runme.log
@@ -40,4 +40,4 @@ EAStep()
      fi
 }
 
-EAStep vivado -log testbench.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source testbench.tcl
+EAStep vivado -log sDTW.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source sDTW.tcl

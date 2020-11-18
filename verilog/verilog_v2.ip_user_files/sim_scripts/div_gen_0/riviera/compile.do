@@ -61,6 +61,6 @@ vcom -work div_gen_v5_1_15 -93 \
 "../../../ipstatic/hdl/div_gen_v5_1_vh_rfs.vhd" \
 
 vcom -work xil_defaultlib -93 \
-"../../../../verilog_v2.srcs/sources_1/ip/div_gen_0/sim/div_gen_0.vhd" \
+"../../../ip/div_gen_0/sim/div_gen_0.vhd" \
 
 

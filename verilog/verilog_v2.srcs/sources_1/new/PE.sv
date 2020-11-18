@@ -39,7 +39,7 @@ module PE(
     input init,             
     output logic[`DATA_OUT_WIDTH-1:0] prev_op, 
     output logic[`DATA_OUT_WIDTH-1:0] curr_op,
-    output logic stop_bit,
+    //output logic stop_bit,
     output [`DATA_WIDTH-1:0] query_o , 
     output [`DATA_WIDTH-1:0] op_reference         
 );
@@ -100,20 +100,20 @@ module PE(
     end 
 
     //stopping score line
-    assign stop_wire= (score_wire>=`DTW_THRESHOLD);
+    //assign stop_wire= (score_wire>=`DTW_THRESHOLD);
  
     always_ff @(posedge clk) begin //{}
 
         if(rst) begin //{  //sync reset
             curr_op<=`MAX_VAL;
             prev_op<=`MAX_VAL;
-            stop_bit<=0;
+            //stop_bit<=0;
         end //}
         else begin
             if(activate) begin //{ //Firing the PE
                 //update sequentially
                 curr_op<=score_wire;
-                stop_bit<=stop_wire;
+                //stop_bit<=stop_wire;
                 prev_op<=curr_op;                       
             end //}
         end

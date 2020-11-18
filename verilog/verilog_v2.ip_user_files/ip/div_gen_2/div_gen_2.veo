@@ -57,9 +57,9 @@
 div_gen_2 your_instance_name (
   .aclk(aclk),                                      // input wire aclk
   .s_axis_divisor_tvalid(s_axis_divisor_tvalid),    // input wire s_axis_divisor_tvalid
-  .s_axis_divisor_tdata(s_axis_divisor_tdata),      // input wire [23 : 0] s_axis_divisor_tdata
+  .s_axis_divisor_tdata(s_axis_divisor_tdata),      // input wire [15 : 0] s_axis_divisor_tdata
   .s_axis_dividend_tvalid(s_axis_dividend_tvalid),  // input wire s_axis_dividend_tvalid
-  .s_axis_dividend_tdata(s_axis_dividend_tdata),    // input wire [15 : 0] s_axis_dividend_tdata
+  .s_axis_dividend_tdata(s_axis_dividend_tdata),    // input wire [23 : 0] s_axis_dividend_tdata
   .m_axis_dout_tvalid(m_axis_dout_tvalid),          // output wire m_axis_dout_tvalid
   .m_axis_dout_tdata(m_axis_dout_tdata)            // output wire [39 : 0] m_axis_dout_tdata
 );
