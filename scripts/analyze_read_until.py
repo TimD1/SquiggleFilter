@@ -54,11 +54,16 @@ def init(args):
     else:
         args.port = 2345
 
-    # parse input lengths and thresholds
-    lengths = [int(l) for l in args.chunk_lengths.split(",")]
-    thresholds = [int(t) for t in args.chunk_thresholds.split(",")]
+    if args.basetype[-3:].lower() == "dna":
+        args.ru_lengths = list(range(1000, 10001, 1000))
+        args.ru_thresholds = [
+                5500, 11000, 15000, 19000, 24000, 
+                29000, 34000, 39000, 44000, 48000]
+    else:
+        args.ru_lengths = list(range(2000, 20001, 2000))
+        args.ru_thresholds = [x*5 for x in args.ru_lengths] 
 
-    return lengths, thresholds, args
+    return args
 
 ################################################################################
 
@@ -111,7 +116,7 @@ def rev_comp(bases):
     return bases.replace('A','t').replace('T','a') \
             .replace('G','c').replace('C','g').upper()[::-1]
 
-def load_model():
+def load_model(args):
     ''' Load k-mer model file into Python dict. '''
     kmer_model = {}
     with open(f"{args.main_dir}/{args.basetype[-3:].lower()}_kmer_model.txt", 'r') as model_file:
@@ -133,7 +138,7 @@ def discrete_normalize(seq, bits=8, minval=-8, maxval=8):
     norm_seq = ( (norm_seq - minval) * ((2**(bits)-1)/(maxval-minval)) ).astype(int)
     return norm_seq
 
-def ref_signal(fasta, kmer_model):
+def ref_signal(fasta, kmer_model, args):
     ''' Convert reference FASTA to expected reference signal (z-scores). '''
     signal = np.zeros(len(fasta))
     k = 6 if args.basetype[-3:].lower() == "dna" else 5
@@ -170,11 +175,14 @@ def dtw_align(read_type, length, args):
 
     # get reference signal
     ref_fasta = get_fasta(args.virus_dir + "/reference.fasta")
-    kmer_model = load_model()
-    fwd_ref_sig = ref_signal(ref_fasta, kmer_model)
-    rev_ref_sig = ref_signal(rev_comp(ref_fasta), kmer_model)
+    kmer_model = load_model(args)
+    fwd_ref_sig = ref_signal(ref_fasta, kmer_model, args)
+    rev_ref_sig = ref_signal(rev_comp(ref_fasta), kmer_model, args)
     ref_sig = np.concatenate((fwd_ref_sig, rev_ref_sig))
-    ref = ref_sig
+    if args.basetype[-3:].lower() == "dna":
+        ref = ref_sig
+    else:
+        ref = fwd_ref_sig
 
     # preprocess all reads
     reads = []
@@ -272,9 +280,6 @@ def print_cm(threshold, ba_virus_scores, ba_other_scores,
         dtw_virus_scores, dtw_other_scores):
 
     print("\nBasecall-Align")
-    # print(ba_virus_scores)
-    # print(ba_other_scores)
-
     ba_pred = [x >= 1 for x in ba_virus_scores] + \
               [x >= 1 for x in ba_other_scores]
     ba_truth = [True]*len(ba_virus_scores) + [False]*len(ba_other_scores)
@@ -282,9 +287,6 @@ def print_cm(threshold, ba_virus_scores, ba_other_scores,
     print(ba_cm)
 
     print("\nDTW-Align")
-    # print(dtw_virus_scores)
-    # print(dtw_other_scores)
-
     dtw_pred = [x < threshold for x in dtw_virus_scores] + \
               [x < threshold for x in dtw_other_scores]
     dtw_truth = [True]*len(dtw_virus_scores) + [False]*len(dtw_other_scores)
@@ -334,8 +336,8 @@ def load_scores(read_type, method, length, args):
 
 def main(args):
 
-    lengths, thresholds, args = init(args)
-    for length, threshold in zip(lengths, thresholds):
+    args = init(args)
+    for length, threshold in zip(args.ru_lengths, args.ru_thresholds):
 
         print(f"\nChunk length: {length}")
         if args.load_scores:
@@ -376,13 +378,8 @@ def parser():
     parser.add_argument("--model", default="hac")
 
     parser.add_argument("--trim_start", type=int, default=1000)
-    parser.add_argument("--chunk_lengths", 
-            default="1000,2000,3000,4000,5000,6000,7000")
-    parser.add_argument("--chunk_thresholds", 
-            default="5500,11000,15000,19000,24000,29000,34000")
-
-    parser.add_argument("--max_virus_reads", type=int, default=10)
-    parser.add_argument("--max_other_reads", type=int, default=10)
+    parser.add_argument("--max_virus_reads", type=int, default=100)
+    parser.add_argument("--max_other_reads", type=int, default=100)
 
     parser.add_argument("--save_scores", action="store_true", default=False)
     parser.add_argument("--load_scores", action="store_true", default=False)
