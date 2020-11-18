@@ -1,0 +1,13 @@
+# compile vhdl design source files
+vhdl xil_defaultlib  \
+"../../../../verilog_v2.ip_user_files/ip/div_gen_0/sim/div_gen_0.vhd" \
+"../../../../verilog_v2.ip_user_files/ip/div_gen_0/demo_tb/tb_div_gen_0.vhd" \
+"../../../../verilog_v2.srcs/sources_1/ip/div_gen_1/sim/div_gen_1.vhd" \
+"../../../../verilog_v2.srcs/sources_1/ip/div_gen_1/demo_tb/tb_div_gen_1.vhd" \
+"../../../../verilog_v2.srcs/sources_1/ip/div_gen_2/sim/div_gen_2.vhd" \
+"../../../../verilog_v2.srcs/sources_1/ip/div_gen_2/demo_tb/tb_div_gen_2.vhd" \
+"../../../../verilog_v2.srcs/sources_1/ip/div_gen_3/sim/div_gen_3.vhd" \
+"../../../../verilog_v2.srcs/sources_1/ip/div_gen_3/demo_tb/tb_div_gen_3.vhd" \
+
+# Do not sort compile order
+nosort

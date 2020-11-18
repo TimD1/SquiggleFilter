@@ -1,4 +1,8 @@
-`include "constants.vh"
+`ifndef CONSTANTS
+   `define CONSTANTS
+   `include "constants.vh"
+`endif  
+`timescale 1ns / 1ns
 
 module mean_calculator(
     input rst,
@@ -6,8 +10,9 @@ module mean_calculator(
 
     input [`DATA_WIDTH-1:0] in_sample,
     input in_sample_valid,
+    input [`DATA_WIDTH-1:0] IN_MEM_qa,
 
-    output logic [23:0] out_mean,
+    output logic [`DATA_OUT_WIDTH-1:0] out_mean,
     output logic out_mean_valid,
     output logic last_sample_sent,
 
@@ -23,29 +28,29 @@ module mean_calculator(
     logic start_sending;
     logic start_accumulating;
 
-    logic [23:0] accumulated_sum;
+    logic [`DATA_OUT_WIDTH-1:0] accumulated_sum;
 
     logic [15:0] common_divisor;
 
-    assign common_divisor[$clog2(QUERY_LEN)-1:0] = QUERY_LEN;
-    assign common_divisor[15:$clog2(QUERY_LEN)] = 'h0;
+    assign common_divisor[`QUERY_SIZE_BITS-1:0] = `QUERY_LEN;
+    assign common_divisor[15:`QUERY_SIZE_BITS] = 'h0;
 
 
     logic [31:0] temp_query_len;
 
-    logic ready;
+    //logic ready;
 
     logic IN_MEM_wea;
     logic IN_MEM_ena;
-    logic [$clog2(QUERY_LEN)-1:0] IN_MEM_addr;
-    logic [7:0] IN_MEM_da;
-    logic [7:0] IN_MEM_qa;
+    logic [`QUERY_SIZE_BITS-1:0] IN_MEM_addr;
+    logic [`DATA_WIDTH-1:0] IN_MEM_da;
+    //logic [`DATA_WIDTH-1:0] IN_MEM_qa;
 
 
     logic mean_valid_q;
 
 
-    always_ff @(posegde clk or posedge rst) begin
+    always_ff @(posedge clk or posedge rst) begin
         if(rst) begin
             mean_valid_q <= 1'b0;
         end
@@ -65,14 +70,14 @@ module mean_calculator(
 
 
 
-    bram_rw #(.WIDTH(8), .ADDR_WIDTH($clog2(QUERY_LEN)), .DEPTH(QUERY_LEN), PIPELINE(0), .MEMORY_TYPE("auto")) IN_MEM (
-       .clk(clk),
-       .wea(IN_MEM_wea),
-       .ena(IN_MEM_ena),
-       .addra(IN_MEM_addra),
-       .da(IN_MEM_da),
-       .qa(IN_MEM_qa)
-    );
+//    bram_rw #(.WIDTH(8), .ADDR_WIDTH($clog2(QUERY_LEN)), .DEPTH(QUERY_LEN), PIPELINE(0), .MEMORY_TYPE("auto")) IN_MEM (
+//       .clk(clk),
+//       .wea(IN_MEM_wea),
+//       .ena(IN_MEM_ena),
+//       .addra(IN_MEM_addra),
+//       .da(IN_MEM_da),
+//       .qa(IN_MEM_qa)
+//    );
 
 
     assign ready = start_accumulating;
@@ -83,11 +88,11 @@ module mean_calculator(
             start_accumulating <= 1'b1;
         end
         else begin
-            if(start_accumulating && IN_MEM_addr == QUERY_LEN) begin
+            if(start_accumulating && IN_MEM_addr == `QUERY_LEN) begin
                 start_accumulating <= 1'b0;
             end
 
-            if(!start_accumulating && IN_MEM_addr == QUERY_LEN) begin
+            if(!start_accumulating && IN_MEM_addr == `QUERY_LEN) begin
                 start_accumulating <= 1'b1;
             end
         end
@@ -100,7 +105,7 @@ module mean_calculator(
         else begin
             last_sample_sent <= 1'b0;
 
-            if(!start_accumulating && IN_MEM_addr == QUERY_LEN) begin
+            if(!start_accumulating && IN_MEM_addr == `QUERY_LEN) begin
                 last_sample_sent <= 1'b1;
             end
         end
@@ -147,7 +152,7 @@ module mean_calculator(
                 IN_MEM_addr <= IN_MEM_addr + 1'b1;
             end
 
-            if(IN_MEM_addr == QUERY_LEN) begin
+            if(IN_MEM_addr == `QUERY_LEN) begin
                 IN_MEM_addr <= 'h0;
             end
         end
@@ -174,13 +179,14 @@ module mean_calculator(
         else begin
             accumulated_sum_valid <= 1'b0;
 
-            if(start_accumulating && IN_MEM_addr == QUERY_LEN) begin
+            if(start_accumulating && IN_MEM_addr == `QUERY_LEN) begin
                 accumulated_sum_valid <= 1'b1;
             end
         end
     end
 
-
+    wire [39:0] out_wire;
+    assign out_mean= out_wire[39:16];
     div_gen_0 MEAN_DIV1 (
       .aclk(clk),                                       // input wire aclk
       .s_axis_divisor_tvalid(accumulated_sum_valid),    // input wire s_axis_divisor_tvalid
@@ -188,7 +194,7 @@ module mean_calculator(
       .s_axis_dividend_tvalid(accumulated_sum_valid),  // input wire s_axis_dividend_tvalid
       .s_axis_dividend_tdata(accumulated_sum),    // input wire [23 : 0] s_axis_dividend_tdata
       .m_axis_dout_tvalid(out_mean_valid),          // output wire m_axis_dout_tvalid
-      .m_axis_dout_tdata(out_mean)             // output wire [23 : 0] m_axis_dout_tdata
+      .m_axis_dout_tdata(out_wire)             // output wire [23 : 0] m_axis_dout_tdata
     );
 
    

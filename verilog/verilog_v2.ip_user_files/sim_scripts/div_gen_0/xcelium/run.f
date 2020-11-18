@@ -32,6 +32,6 @@
   "../../../ipstatic/hdl/div_gen_v5_1_vh_rfs.vhd" \
 -endlib
 -makelib xcelium_lib/xil_defaultlib \
-  "../../../../verilog_v2.srcs/sources_1/ip/div_gen_0/sim/div_gen_0.vhd" \
+  "../../../ip/div_gen_0/sim/div_gen_0.vhd" \
 -endlib
 
