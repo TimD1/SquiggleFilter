@@ -1,5 +1,8 @@
-`include "constants.vh"
-
+`ifndef CONSTANTS
+   `define CONSTANTS
+   `include "constants.vh"
+`endif  
+`timescale 1ns / 1ns
 module top_normalizer(
     input clk,
     input rst,
