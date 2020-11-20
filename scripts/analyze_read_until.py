@@ -29,11 +29,41 @@ def yield_read_chunks(filename, start, length):
 
 def init(args):
 
-    # parse input lengths and thresholds
-    lengths = [int(l) for l in args.chunk_lengths.split(",")]
-    thresholds = [int(t) for t in args.chunk_thresholds.split(",")]
+    basetypes = ["RNA", "DNA", "rtDNA"]
+    if args.basetype not in basetypes:
+        print(f"ERROR: base type '{args.basetype}' not in {basetypes}.")
+        exit(1)
 
-    return lengths, thresholds
+    args.virus_dir = f"{args.main_dir}/{args.virus_species}/" \
+                     f"{args.basetype}/{args.virus_dataset}"
+    args.other_dir = f"{args.main_dir}/{args.other_species}/" \
+                     f"{args.basetype}/{args.other_dataset}"
+    args.score_dir = f"{args.main_dir}/scores/{args.basetype}/" \
+                     f"{args.virus_species}{args.virus_dataset}_" \
+                     f"{args.other_species}{args.other_dataset}"
+    args.img_dir = f"{args.main_dir}/img/{args.basetype}/" \
+                     f"{args.virus_species}{args.virus_dataset}_" \
+                     f"{args.other_species}{args.other_dataset}"
+    if args.save_scores:
+        os.makedirs(args.score_dir, exist_ok=True)
+    if args.plot_results:
+        os.makedirs(args.img_dir, exist_ok=True)
+
+    if args.basetype[-3:].lower() == "dna":
+        args.port = 1234
+    else:
+        args.port = 2345
+
+    if args.basetype[-3:].lower() == "dna":
+        args.ru_lengths = list(range(1000, 10001, 1000))
+        args.ru_thresholds = [
+                5500, 11000, 15000, 19000, 24000, 
+                29000, 34000, 39000, 44000, 48000]
+    else:
+        args.ru_lengths = list(range(2000, 20001, 2000))
+        args.ru_thresholds = [x*5 for x in args.ru_lengths] 
+
+    return args
 
 ################################################################################
 
@@ -50,18 +80,16 @@ def basecall_align(read_type, length, args):
     )
 
     # initialize guppy basecaller
-    if args.nucleotide_type == "dna":
+    if args.basetype[-3:].lower() == "dna":
         guppy_config = f"/opt/ont/guppy/data/dna_r9.4.1_450bps_{args.model}.cfg"
     else:
         guppy_config = f"/opt/ont/guppy/data/rna_r9.4.1_70bps_{args.model}.cfg"
 
     read_count = 0
     scores = np.zeros(max_reads)
-    with pyguppyclient.GuppyBasecallerClient(guppy_config, port=1234) as bc:
+    with pyguppyclient.GuppyBasecallerClient(guppy_config, port=args.port) as bc:
         for fast5_fn in glob(folder + "/fast5/*.fast5"):
             for read in yield_read_chunks(fast5_fn, args.trim_start, length):
-                if read_type=="virus" and read.read_id not in [x.split()[0] for x in \
-                    open(folder+"/aligned/calls_to_ref.sam").readlines()]: continue
                 read_count += 1
                 if read_count >= max_reads: break
                 called = bc.basecall(read)
@@ -88,10 +116,10 @@ def rev_comp(bases):
     return bases.replace('A','t').replace('T','a') \
             .replace('G','c').replace('C','g').upper()[::-1]
 
-def load_model():
+def load_model(args):
     ''' Load k-mer model file into Python dict. '''
     kmer_model = {}
-    with open(f"../data/{args.nucleotide_type}_kmer_model.txt", 'r') as model_file:
+    with open(f"{args.main_dir}/{args.basetype[-3:].lower()}_kmer_model.txt", 'r') as model_file:
         for line in model_file:
             kmer, current = line.split()
             kmer_model[kmer] = float(current)
@@ -110,10 +138,10 @@ def discrete_normalize(seq, bits=8, minval=-8, maxval=8):
     norm_seq = ( (norm_seq - minval) * ((2**(bits)-1)/(maxval-minval)) ).astype(int)
     return norm_seq
 
-def ref_signal(fasta, kmer_model):
+def ref_signal(fasta, kmer_model, args):
     ''' Convert reference FASTA to expected reference signal (z-scores). '''
     signal = np.zeros(len(fasta))
-    k = 6 if args.nucleotide_type == "dna" else 5
+    k = 6 if args.basetype[-3:].lower() == "dna" else 5
     for kmer_start in range(len(fasta)-k):
         signal[kmer_start] = kmer_model[fasta[kmer_start:kmer_start+k]]
     return discrete_normalize(signal*100)
@@ -147,11 +175,14 @@ def dtw_align(read_type, length, args):
 
     # get reference signal
     ref_fasta = get_fasta(args.virus_dir + "/reference.fasta")
-    kmer_model = load_model()
-    fwd_ref_sig = ref_signal(ref_fasta, kmer_model)
-    rev_ref_sig = ref_signal(rev_comp(ref_fasta), kmer_model)
+    kmer_model = load_model(args)
+    fwd_ref_sig = ref_signal(ref_fasta, kmer_model, args)
+    rev_ref_sig = ref_signal(rev_comp(ref_fasta), kmer_model, args)
     ref_sig = np.concatenate((fwd_ref_sig, rev_ref_sig))
-    ref = ref_sig
+    if args.basetype[-3:].lower() == "dna":
+        ref = ref_sig
+    else:
+        ref = fwd_ref_sig
 
     # preprocess all reads
     reads = []
@@ -164,8 +195,6 @@ def dtw_align(read_type, length, args):
             signal = np.array(fast5_file[read_name]['Raw']['Signal'] \
                         [:args.trim_start+length], dtype=np.int16)
             if len(signal) < args.trim_start+length: continue
-            if read_type=="virus" and read_name[5:] not in [x.split()[0] for x in \
-                    open(folder+"/aligned/calls_to_ref.sam").readlines()]: continue
             signal = discrete_normalize(signal)
             signal = signal[args.trim_start:]
             if read_count >= max_reads: break
@@ -187,11 +216,11 @@ def plot_data(length, threshold, ba_virus, ba_other, dtw_virus, dtw_other):
     ax.set_xlim((0, 61))
     ax.hist(ba_virus, bins=list(range(61)), facecolor='r', alpha=0.5)
     ax.hist(ba_other, bins=list(range(61)), facecolor='g', alpha=0.5)
-    ax.legend(['COVID', 'Human'])
+    ax.legend([f'{args.virus_species}', f'{args.other_species}'])
     ax.set_xlabel('MiniMap Map Quality')
     ax.set_ylabel('Read Count')
     ax.set_title(f"Basecall-Align MapQ: {length} signals")
-    fig.savefig(f"../img/accuracy/ba_hist_{length}.png")
+    fig.savefig(f"{args.img_dir}/ba_hist_{length}.png")
 
     # plot raw DTW Histograms
     fig, ax = plt.subplots()
@@ -200,12 +229,12 @@ def plot_data(length, threshold, ba_virus, ba_other, dtw_virus, dtw_other):
             facecolor='r', alpha=0.5)
     ax.hist(dtw_other, bins=list(range(0,threshold*2, 1000)), 
             facecolor='g', alpha=0.5)
-    ax.legend(['COVID', 'Human'])
+    ax.legend([f'{args.virus_species}', f'{args.other_species}'])
     ax.set_xlabel('DTW Alignment Score')
     ax.set_ylabel('Read Count')
     ax.axvline(threshold, color='k', linestyle='--')
     ax.set_title(f"DTW-Align Score: {length} signals")
-    fig.savefig(f"../img/accuracy/dtw_hist_{length}.png")
+    fig.savefig(f"{args.img_dir}/dtw_hist_{length}.png")
 
     # create thresholds for plotting
     ba_thresholds = np.linspace(
@@ -228,22 +257,22 @@ def plot_data(length, threshold, ba_virus, ba_other, dtw_virus, dtw_other):
     # plot basecall-align discard rate
     fig, ax = plt.subplots()
     ax.plot(ba_virus_discard_rate, ba_other_discard_rate, marker='o', alpha=0.5)
-    ax.set_xlabel('Virus Discard Rate')
-    ax.set_ylabel('Human Discard Rate')
+    ax.set_xlabel(f'{args.virus_species} Discard Rate')
+    ax.set_ylabel(f'{args.other_species} Discard Rate')
     ax.set_title(f'Basecall-Align Accuracy: {length} signals')
     ax.set_xlim((-0.1, 1.1))
     ax.set_ylim((-0.1, 1.1))
-    fig.savefig(f'../img/accuracy/ba_discard_{length}.png')
+    fig.savefig(f'{args.img_dir}/ba_discard_{length}.png')
 
     # plot dtw-align discard rate
     fig, ax = plt.subplots()
     ax.plot(dtw_virus_discard_rate, dtw_other_discard_rate, marker='o', alpha=0.5)
-    ax.set_xlabel('Virus Discard Rate')
-    ax.set_ylabel('Human Discard Rate')
+    ax.set_xlabel(f'{args.virus_species} Discard Rate')
+    ax.set_ylabel(f'{args.other_species} Discard Rate')
     ax.set_title(f'DTW-Align Accuracy: {length} signals')
     ax.set_xlim((-0.1, 1.1))
     ax.set_ylim((-0.1, 1.1))
-    fig.savefig(f'../img/accuracy/dtw_discard_{length}.png')
+    fig.savefig(f'{args.img_dir}/dtw_discard_{length}.png')
 
 ################################################################################
 
@@ -251,9 +280,6 @@ def print_cm(threshold, ba_virus_scores, ba_other_scores,
         dtw_virus_scores, dtw_other_scores):
 
     print("\nBasecall-Align")
-    # print(ba_virus_scores)
-    # print(ba_other_scores)
-
     ba_pred = [x >= 1 for x in ba_virus_scores] + \
               [x >= 1 for x in ba_other_scores]
     ba_truth = [True]*len(ba_virus_scores) + [False]*len(ba_other_scores)
@@ -261,9 +287,6 @@ def print_cm(threshold, ba_virus_scores, ba_other_scores,
     print(ba_cm)
 
     print("\nDTW-Align")
-    # print(dtw_virus_scores)
-    # print(dtw_other_scores)
-
     dtw_pred = [x < threshold for x in dtw_virus_scores] + \
               [x < threshold for x in dtw_other_scores]
     dtw_truth = [True]*len(dtw_virus_scores) + [False]*len(dtw_other_scores)
@@ -276,33 +299,33 @@ def save_scores(length, threshold, ba_virus_scores, ba_other_scores,
         dtw_virus_scores, dtw_other_scores, args):
 
     # save raw scores
-    np.save(f"{args.acc_dir}/{length}sigs_ba_virus_scores", 
+    np.save(f"{args.score_dir}/{length}sigs_ba_virus_scores", 
             ba_virus_scores)
-    np.save(f"{args.acc_dir}/{length}sigs_ba_other_scores", 
+    np.save(f"{args.score_dir}/{length}sigs_ba_other_scores", 
             ba_other_scores)
-    np.save(f"{args.acc_dir}/{length}sigs_dtw_virus_scores", 
+    np.save(f"{args.score_dir}/{length}sigs_dtw_virus_scores", 
             dtw_virus_scores)
-    np.save(f"{args.acc_dir}/{length}sigs_dtw_other_scores", 
+    np.save(f"{args.score_dir}/{length}sigs_dtw_other_scores", 
             dtw_other_scores)
 
     # save accuracy
     ba_virus_discard_rate = sum(ba_virus_scores < 1) / len(ba_virus_scores)
-    np.save(f"{args.acc_dir}/{length}sigs_ba_virus_discard_rate", 
+    np.save(f"{args.score_dir}/{length}sigs_ba_virus_discard_rate", 
             ba_virus_discard_rate)
     ba_other_discard_rate = sum(ba_other_scores < 1) / len(ba_other_scores)
-    np.save(f"{args.acc_dir}/{length}sigs_ba_other_discard_rate", 
+    np.save(f"{args.score_dir}/{length}sigs_ba_other_discard_rate", 
             ba_other_discard_rate)
     dtw_virus_discard_rate = sum(dtw_virus_scores > threshold) / len(dtw_virus_scores)
-    np.save(f"{args.acc_dir}/{length}sigs_dtw_virus_discard_rate", 
+    np.save(f"{args.score_dir}/{length}sigs_dtw_virus_discard_rate", 
             dtw_virus_discard_rate)
     dtw_other_discard_rate = sum(dtw_other_scores > threshold) / len(dtw_other_scores)
-    np.save(f"{args.acc_dir}/{length}sigs_dtw_other_discard_rate", 
+    np.save(f"{args.score_dir}/{length}sigs_dtw_other_discard_rate", 
             dtw_other_discard_rate)
 
     return
 
 def load_scores(read_type, method, length, args):
-    filename = f"{args.acc_dir}/{length}sigs_{method}_{read_type}_scores.npy"
+    filename = f"{args.score_dir}/{length}sigs_{method}_{read_type}_scores.npy"
     if not os.path.exists(filename):
         print(f"ERROR: cannot load scores from '{filename}', not found.")
         exit(1)
@@ -313,8 +336,8 @@ def load_scores(read_type, method, length, args):
 
 def main(args):
 
-    lengths, thresholds = init(args)
-    for length, threshold in zip(lengths, thresholds):
+    args = init(args)
+    for length, threshold in zip(args.ru_lengths, args.ru_thresholds):
 
         print(f"\nChunk length: {length}")
         if args.load_scores:
@@ -345,21 +368,19 @@ def main(args):
 def parser():
     parser = argparse.ArgumentParser()
 
-    # guppy parameters
-    parser.add_argument("--nucleotide_type", default="dna")
+    parser.add_argument("--main_dir", default="/home/timdunn/SquiggAlign/data")
+    parser.add_argument("--basetype", default="RNA")
+    parser.add_argument("--virus_species", default="covid")
+    parser.add_argument("--other_species", default="human")
+    parser.add_argument("--virus_dataset", default="0")
+    parser.add_argument("--other_dataset", default="0")
+
     parser.add_argument("--model", default="hac")
 
-    parser.add_argument("--virus_dir", default="/x/squiggalign_data/lambda")
-    parser.add_argument("--other_dir", default="/x/squiggalign_data/human")
-    parser.add_argument("--acc_dir", default="/home/timdunn/SquiggAlign/data/accuracy")
-
     parser.add_argument("--trim_start", type=int, default=1000)
-    parser.add_argument("--chunk_lengths", 
-            default="1000,2000,3000,4000,5000,6000,7000")
-    parser.add_argument("--chunk_thresholds", 
-            default="5500,11000,15000,19000,24000,29000,34000")
-    parser.add_argument("--max_virus_reads", type=int, default=1000)
-    parser.add_argument("--max_other_reads", type=int, default=1000)
+    parser.add_argument("--max_virus_reads", type=int, default=100)
+    parser.add_argument("--max_other_reads", type=int, default=100)
+
     parser.add_argument("--save_scores", action="store_true", default=False)
     parser.add_argument("--load_scores", action="store_true", default=False)
     parser.add_argument("--plot_results", action="store_true", default=False)

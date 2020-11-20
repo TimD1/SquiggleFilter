@@ -5,6 +5,7 @@ import itertools
 import os, sys, shutil
 import subprocess as sp
 import time
+import copy
 
 from ont_fast5_api.fast5_interface import get_fast5_file
 from glob import glob
@@ -117,22 +118,23 @@ def ref_signal(fasta, kmer_model):
 ################################################################################
 
 @njit()
-def sdtw(seq):
+def sdtw(seq, prev_row, start=False):
     ''' Returns minimum alignment score for subsequence DTW, linear memory. '''
 
     # initialize cost matrix
-    cost_mat_prev = np.zeros(len(ref))
+    cost_mat_prev = prev_row[:]
     cost_mat_curr = np.zeros(len(ref))
 
     # compute entire cost matrix
-    cost_mat_prev[0] = abs(seq[0]-ref[0])
+    if start:
+        cost_mat_prev[0] = abs(seq[0]-ref[0])
     for i in range(1, len(seq)):
         cost_mat_curr[0] = cost_mat_prev[0] + abs(seq[i]-ref[0])
         for j in range(1, len(ref)):
             cost_mat_curr[j] = abs(seq[i]-ref[j]) + \
                 min(cost_mat_prev[j-1], cost_mat_curr[j-1], cost_mat_prev[j])
         cost_mat_prev[:] = cost_mat_curr[:]
-    return np.min(cost_mat_curr)
+    return cost_mat_curr
 
 ################################################################################
 
@@ -211,6 +213,9 @@ def do_dtw_read_until(read_data, ru_queue, args):
     lengths = [int(l) for l in args.chunk_lengths.split(",")]
     thresholds = [int(t) for t in args.chunk_thresholds.split(",")]
     rejected = False
+    prev_length = 0
+    prev_row = np.zeros(len(ref))
+    first_dtw = True
     for length, threshold in zip(lengths, thresholds):
 
         # accept read if we've seen it all
@@ -220,8 +225,9 @@ def do_dtw_read_until(read_data, ru_queue, args):
         # extract region, normalize, calculate score
         signal = read.signal[:args.trim_start+length]
         signal = discrete_normalize(signal)
-        signal = signal[args.trim_start:]
-        score = sdtw(signal)
+        signal = signal[args.trim_start+prev_length:]
+        row = sdtw(signal, prev_row, first_dtw)
+        score = np.min(row)
 
         # reject read if too dissimilar
         if score > threshold:
@@ -229,6 +235,9 @@ def do_dtw_read_until(read_data, ru_queue, args):
                     f"{args.trim_start+length}\t{score}\tFalse\n")
             rejected = True
             break
+        prev_row[:] = row[:]
+        prev_length = length
+        first_dtw = False
 
     # read passes all checks, basecall and align
     if not rejected:
@@ -382,6 +391,20 @@ def update_coverage(bed_file, bam_file, args):
 
 ################################################################################
 
+def merge_calls(call_chunk, new_call_chunk):
+    ''' Merge consecutive read chunks called by Guppy. '''
+    if call_chunk is None: 
+        return new_call_chunk
+    else:
+        full_call = call_chunk
+        full_call.seq += new_call_chunk.seq
+        full_call.seqlen += len(new_call_chunk.seq)
+        full_call.qual += new_call_chunk.qual
+        full_call.events += new_call_chunk.events
+        return full_call
+
+################################################################################
+
 def main(args):
     global ref, nreads_total
 
@@ -420,41 +443,83 @@ def main(args):
             batch = list(itertools.islice(virus_reads, args.batch_size)) + \
                     list(itertools.islice(other_reads, args.ratio*args.batch_size))
 
-            # spawn DTW worker threads
-            dtw_timer.start()
-            jobs = []
-            reads = []
-            for read_data in batch:
-                job = pool.apply_async(do_dtw_read_until, 
-                        (read_data, ru_queue, args))
-                jobs.append(job)
-            for job in jobs: reads.append(job.get())
-            reads = list(filter(None, reads))
-            dtw_timer.stop()
+            if not args.basecall:
+                ########################
+                ######## DTW ###########
+                ########################
 
-            with pgc.GuppyBasecallerClient(guppy_config, port=1234) as basecaller:
-                # basecall
-                bc_timer.start()
-                calls = []
-                for read in reads:
-                    call = basecaller.basecall(read)
-                    calls.append(call)
-                bc_timer.stop()
+                # spawn DTW worker threads
+                dtw_timer.start()
+                jobs = []
+                reads = []
+                for read_data in batch:
+                    job = pool.apply_async(do_dtw_read_until, 
+                            (read_data, ru_queue, args))
+                    jobs.append(job)
+                for job in jobs: reads.append(job.get())
+                reads = list(filter(None, reads))
+                dtw_timer.stop()
 
-                # align
-                aln_timer.start()
-                alns = []
-                for read, call in zip(reads, calls):
-                    try:
-                        alignment = next(aligner.map(call.seq))
-                        alns.append(alignment)
-                    except(StopIteration):
-                        pass # no alignment, can ignore for read-until
-                aln_timer.stop()
+                with pgc.GuppyBasecallerClient(guppy_config, port=1234) as basecaller:
+                    # basecall
+                    bc_timer.start()
+                    calls = []
+                    for read in reads:
+                        call = basecaller.basecall(read)
+                        calls.append(call)
+                    bc_timer.stop()
 
-                for read, call, aln in zip(reads, calls, alns):
-                    write_fastq_data(read.read_id, call.seq, call.qual, args)
-                    write_sam_data(read.read_id, call.seq, call.qual, aln, args)
+                    # align
+                    aln_timer.start()
+                    alns = []
+                    for call in calls:
+                        try:
+                            alignment = next(aligner.map(call.seq))
+                            alns.append(alignment)
+                        except(StopIteration):
+                            pass # no alignment, can ignore for read-until
+                    aln_timer.stop()
+
+                    for read, call, aln in zip(reads, calls, alns):
+                        write_fastq_data(read.read_id, call.seq, call.qual, args)
+                        write_sam_data(read.read_id, call.seq, call.qual, aln, args)
+
+            else:
+                ########################
+                ####### Basecall #######
+                ########################
+
+                with pgc.GuppyBasecallerClient(guppy_config, port=1234) as basecaller:
+                    for read_idx, (is_virus, filename, read) in enumerate(batch):
+                        full_call = None
+                        rejected = False
+                        prev_length = 0
+                        for length in [int(l) for l in args.chunk_lengths.split(",")]:
+                            # basecall
+                            read_chunk = copy.deepcopy(read)
+                            read_chunk.signal = read.signal[prev_length:args.trim_start+length]
+                            bc_timer.start()
+                            call = basecaller.basecall(read_chunk)
+                            bc_timer.stop()
+                            full_call = merge_calls(full_call, call)
+
+                            # align
+                            aln_timer.start()
+                            try:
+                                aln = next(aligner.map(full_call.seq))
+                            except(StopIteration):
+                                rejected = True
+                                ru_queue.put(f"{is_virus}\t{filename}\t{read.read_id}\t" \
+                                        f"{len(read_chunk.signal)}\t0\tFalse\n")
+                            aln_timer.stop()
+                            if rejected: break
+
+                        if not rejected:
+                            ru_queue.put(f"{is_virus}\t{filename}\t{read.read_id}\t" \
+                                    f"{len(read.signal)}\t{aln.mapq}\tTrue\n")
+                            prev_length = args.trim_start + length
+                            write_fastq_data(read.read_id, full_call.seq, full_call.qual, args)
+                            write_sam_data(read.read_id, full_call.seq, full_call.qual, aln, args)
 
             nreads_total += (1 + args.ratio) * args.batch_size
             bam_file = generate_bam(args)
