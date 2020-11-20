@@ -5,7 +5,7 @@
 // 
 // Create Date: 11/01/2020 10:45:14 PM
 // Design Name: SquAl
-// Module Name: PE
+// Module Name: PE_last_col
 // Project Name: SquAl
 // Target Devices: FPGA
 // Tool Versions: 
@@ -25,7 +25,7 @@
 `endif  
 
 //Processing element of the systolic array
-module PE(
+module PE_last_col(
       
     input clk,
     input rst,
@@ -36,12 +36,15 @@ module PE(
     input [`DATA_OUT_WIDTH-1:0] top,
     input [`DATA_OUT_WIDTH-1:0] left,
     input [`DATA_OUT_WIDTH-1:0] diag,     
-    input init,             
+    input init, 
+            
     output logic[`DATA_OUT_WIDTH-1:0] prev_op, 
     output logic[`DATA_OUT_WIDTH-1:0] curr_op,
-    //output logic stop_bit,
+    output logic stop_bit,
     output [`DATA_WIDTH-1:0] query_o , 
-    output [`DATA_WIDTH-1:0] op_reference         
+    output [`DATA_WIDTH-1:0] op_reference,
+    output logic [`DATA_OUT_WIDTH-1:0] loop_score_o ,
+    output logic loop_score_val       
 );
   
 
@@ -51,7 +54,7 @@ module PE(
     //internal logic and wires
     logic [`DATA_WIDTH-1:0] query_o_r;
     logic [1:0] set_bit=0;
-    //wire stop_wire;
+    wire stop_wire;
     wire [`DATA_WIDTH-1:0] diff;      //changed
     logic [`DATA_OUT_WIDTH-1:0] score_wire;
     wire [`DATA_WIDTH-1:0] l_query;
@@ -100,21 +103,25 @@ module PE(
     end 
 
     //stopping score line
-    //assign stop_wire= (score_wire>=`DTW_THRESHOLD);
+    assign stop_wire= (score_wire>=`DTW_THRESHOLD);
  
     always_ff @(posedge clk) begin //{}
 
         if(rst) begin //{  //sync reset
             curr_op<=`MAX_VAL;
             prev_op<=`MAX_VAL;
-            //stop_bit<=0;
+            stop_bit<=0;
+            loop_score_o<=0;
+            loop_score_val<=0;
         end //}
         else begin
             if(activate) begin //{ //Firing the PE
                 //update sequentially
                 curr_op<=score_wire;
-                //stop_bit<=stop_wire;
-                prev_op<=curr_op;                       
+                stop_bit<=stop_wire;
+                prev_op<=curr_op;   
+                loop_score_o<=score_wire; //sending last PE val for next loop 
+                loop_score_val<=1;                   
             end //}
         end
     end //}
@@ -139,4 +146,4 @@ module PE(
         end
     end //}
 
-endmodule : PE
+endmodule : PE_last_col
