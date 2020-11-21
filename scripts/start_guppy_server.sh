@@ -15,6 +15,7 @@ fi
 
 guppy_basecall_server \
     --config $config \
+    --trim_strategy none \
     --port $port \
     --log_path /tmp/guppy_log \
     --device cuda:0
