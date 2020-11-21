@@ -95,7 +95,7 @@ def basecall_align(read_type, length, args):
 
     # initialize basecaller
     basecaller = PyGuppyClient(address=f"127.0.0.1:{args.port}",     
-            config=args.guppy_config, server_file_load_timeout=180)  
+            config=args.guppy_config, server_file_load_timeout=100000)  
     basecaller.connect() 
 
     # generate all packets
