@@ -104,7 +104,7 @@ def rev_comp(bases):
 def load_model(args):
     ''' Load k-mer model file into Python dict. '''
     kmer_model = {}
-    with open(f"../../data/{args.basetype}_kmer_model.txt", 'r') as model_file:
+    with open(f"../data/{args.basetype}_kmer_model.txt", 'r') as model_file:
         for line in model_file:
             kmer, current = line.split()
             kmer_model[kmer] = float(current)
@@ -174,6 +174,8 @@ def get_reference(args):
 ################################################################################
 
 def init(args):
+
+    args.ratio = args.n - 1
 
     # check base type
     basetypes = ["dna", "rna"]
@@ -271,7 +273,7 @@ def do_dtw_read_until(read, ru_queue, args):
                 f"{len(read.signal)}\t{score}\tTrue\n")
         return read
 
-    return None
+    return read
 
 ################################################################################
 
@@ -463,16 +465,21 @@ def main(args):
         basecaller = PyGuppyClient(address=f"127.0.0.1:{args.port}",
                 config=args.guppy_config, server_file_load_timeout=100000)
         basecaller.connect()
-        dtw_latencies = []
-        bc_latencies = []
+        full_dtw_latencies = []
+        avg_dtw_latencies = []
+        max_dtw_latencies = []
+        full_bc_latencies = []
+        avg_bc_latencies = []
+        max_bc_latencies = []
         aln_latencies = []
+        nbatches = 0
 
         # perform read-until
         while not done:
 
             # select next subset of data
             batch = list(itertools.islice(virus_reads, args.batch_size)) + \
-                    list(itertools.islice(other_reads, args.batch_size))
+                    list(itertools.islice(other_reads, args.batch_size*args.ratio))
 
             if not args.basecall:
                 ########################
@@ -483,14 +490,22 @@ def main(args):
                 dtw_timer.start()
                 jobs = []
                 reads = []
+                time_dict = {}
+                times = []
                 for read in batch:
                     job = pool.apply_async(do_dtw_read_until, 
                             (read, ru_queue, args))
+                    time_dict[read.read_tag] = time.perf_counter()
                     jobs.append(job)
-                for job in jobs: reads.append(job.get())
+                for job in jobs: 
+                    read = job.get()
+                    times.append(time.perf_counter() - time_dict[read.read_tag])
+                    reads.append(read)
                 reads = list(filter(None, reads))
                 dtw_timer.stop()
-                dtw_latencies.append(dtw_timer.elapsed())
+                full_dtw_latencies.append(dtw_timer.elapsed())
+                avg_dtw_latencies.append(np.mean(times))
+                max_dtw_latencies.append(np.max(times))
                 dtw_timer.reset()
 
                 # generate all packets
@@ -506,7 +521,6 @@ def main(args):
                     )
 
                 # basecall all packets
-                bc_timer.start()
                 calls = []                                               
                 sent, rcvd = 0, 0                                            
                 while sent < len(packets):                               
@@ -520,12 +534,8 @@ def main(args):
                     result = basecaller.get_completed_reads()                
                     rcvd += len(result)                                      
                     calls.extend(result)                                 
-                bc_timer.stop()
-                bc_latencies.append(bc_timer.elapsed())
-                bc_timer.reset()
 
                 # align all basecalls
-                aln_timer.start()
                 alns = []
                 for call in calls:
                     try:
@@ -533,9 +543,6 @@ def main(args):
                         alns.append(alignment)
                     except(StopIteration):
                         pass # no alignment, can ignore for read-until
-                aln_timer.stop()
-                aln_latencies.append(aln_timer.elapsed())
-                aln_timer.reset()
 
                 for read, call, aln in zip(reads, calls, alns):
                     write_fastq_data(read.read_id, call['datasets']['sequence'], call['datasets']['qstring'], args)
@@ -571,8 +578,11 @@ def main(args):
 
                     # basecall all packets
                     bc_timer.start()
+                    time_dict = {}
+                    times = []
                     sent, rcvd = 0, 0
                     while sent < len(all_packets):
+                        time_dict[all_packets[sent]['read_tag']] = time.perf_counter()
                         success = basecaller.pass_read(all_packets[sent])
                         if not success: 
                             print('ERROR: Failed to basecall read.')
@@ -583,10 +593,13 @@ def main(args):
                         calls = basecaller.get_completed_reads()
                         rcvd += len(calls)
                         for call in calls:
+                            times.append(time.perf_counter() - time_dict[call['read_tag']])
                             read_status_call[call['read_tag']][2] = \
                                  merge_calls(read_status_call[call['read_tag']][2], call)
                     bc_timer.stop()
-                    bc_latencies.append(bc_timer.elapsed())
+                    full_bc_latencies.append(bc_timer.elapsed())
+                    avg_bc_latencies.append(np.mean(times))
+                    max_bc_latencies.append(np.max(times))
                     bc_timer.reset()
 
                     # align
@@ -605,48 +618,51 @@ def main(args):
                             ru_queue.put(f"{read.is_virus}\t{read.file_name}\t{read.read_id}\t" \
                                     f"{length}\t0\tFalse\n")
                     aln_timer.stop()
-                    aln_latencies.append(bc_timer.elapsed())
+                    aln_latencies.append(aln_timer.elapsed())
                     aln_timer.reset()
 
                     prev_length = args.trim_start + length
 
             nreads_total += (1 + args.ratio) * args.batch_size
-            bam_file = generate_bam(args)
-            done = update_coverage(bed_file, bam_file, args)
-            done = done or nreads_total >= args.max_reads
+            nbatches += 1
+            done = nbatches >= args.num_batches
 
         # stop read-until writer
         ru_queue.put('kill')
         ru_writer.get()
 
-    print(f"\nDTW Timer:\t{dtw_timer.elapsed()} seconds")
-    print(f"Guppy Timer:\t{bc_timer.elapsed()} seconds")
-    print(f"Minimap2 Timer:\t{aln_timer.elapsed()} seconds")
-
-    print(f"\nDTW Latencies:\t{dtw_latencies}")
-    print(f"Guppy Latencies:\t{bc_latencies}")
-    print(f"Minimap2 Latencies:\t{aln_latencies}")
+    print(f"\nLatency for {args.ratio+1} signals of length {args.chunk_lengths}, {args.num_batches} trial average")
+    if not args.basecall:
+        print(f"\tDTW:\tmean\t{np.mean(avg_dtw_latencies)}")
+        print(f"\tDTW:\tmax\t{np.mean(max_dtw_latencies)}")
+        print(f"\tDTW:\tall\t{np.mean(full_dtw_latencies)}")
+    else:
+        print(f"\tGuppy:\tmean\t{np.mean(avg_bc_latencies)}")
+        print(f"\tGuppy:\tmax\t{np.mean(max_bc_latencies)}")
+        print(f"\tGuppy:\tall\t{np.mean(full_bc_latencies)}")
+        print(f"\tMinimap2:\t{np.mean(aln_latencies)}")
 
 ################################################################################
 
 def parser():
     parser = argparse.ArgumentParser()
 
+    parser.add_argument("n", type=int)
+
     # guppy parameters
     parser.add_argument("--basetype", default="dna")
-    parser.add_argument("--model_type", default="hac")
+    parser.add_argument("--model_type", default="fast")
 
     # read-until parameters
-    parser.add_argument("--virus_dir", default="../../data/lambda/DNA/0")
-    parser.add_argument("--other_dir", default="../../data/human/DNA/0")
+    parser.add_argument("--virus_dir", default="../data/lambda/DNA/0")
+    parser.add_argument("--other_dir", default="../data/human/DNA/0")
     parser.add_argument("--basecall", action="store_true", default=False)
-    parser.add_argument("--ratio", type=int, default=511)
 
     # run-until parameters
     parser.add_argument("--target_coverage", type=int, default=1)
-    parser.add_argument("--max_reads", type=int, default=500)
+    parser.add_argument("--num_batches", type=int, default=100)
     parser.add_argument("--region_size", type=int, default=10000)
-    parser.add_argument("--batch_size", type=int, default=5)
+    parser.add_argument("--batch_size", type=int, default=1)
 
     # output data parameters
     parser.add_argument("--ru_data_file", default="default")
