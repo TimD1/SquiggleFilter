@@ -17,8 +17,11 @@ import pysam
 from numba import njit
 from sklearn import metrics
 
-import pyguppyclient as pgc
-from pyguppyclient.decode import ReadData
+# import pyguppyclient as pgc
+# from pyguppyclient.decode import ReadData
+
+from pyguppy_client_lib.pyclient import PyGuppyClient
+from pyguppy_client_lib.helper_functions import package_read, basecall_with_pyguppy
 
 ref = None
 nregions = 0
@@ -49,20 +52,32 @@ class Timer():
 
 ################################################################################
 
+class Read():
+    def __init__(self, signal, read_id, is_virus, file_name, offset=0, scaling=1.0):
+        self.signal = signal
+        self.read_id = read_id
+        self.is_virus = is_virus
+        self.file_name = file_name
+        self.total_samples = len(signal)
+        self.daq_offset = offset
+        self.daq_scaling = scaling
+        self.read_tag = random.randint(0, int(2**32 - 1))
+
 def yield_reads(folder, is_virus):
     ''' Yields full-length reads from all FAST5 files in a directory. '''
     for filename in glob(f"{folder}/*.fast5"):
-        with get_fast5_file(filename, 'r') as f5_fh:
-            reads = list(f5_fh.get_reads())
+        with h5py.File(filename, 'r') as f5_fh:
+            reads = list(f5_fh.keys())
             random.seed(42)
             random.shuffle(reads)
             for read in reads:
-                raw = read.handle[read.raw_dataset_name][:]
-                channel_info = read.handle[read.global_key + 'channel_id'].attrs
+                signal = f5_fh[read]['Raw']['Signal'][:]
+                read_id = f5_fh[read]['Raw'].attrs['read_id'].decode("utf-8")
+                channel_info = f5_fh[read]['channel_id'].attrs
                 scaling = channel_info['range'] / channel_info['digitisation']
                 offset = int(channel_info['offset'])
-                yield (is_virus, filename, ReadData(raw, read.read_id, 
-                    scaling=scaling, offset=offset))
+                yield Read(signal=signal, read_id=read_id, is_virus=is_virus, 
+                        file_name=filename, offset=offset, scaling=scaling)
 
 ################################################################################
 
@@ -217,10 +232,9 @@ def generate_bedfile(args):
 
 ################################################################################
 
-def do_dtw_read_until(read_data, ru_queue, args):
+def do_dtw_read_until(read, ru_queue, args):
 
     # parse lengths and thresholds
-    is_virus, filename, read = read_data
     lengths = [int(l) for l in args.chunk_lengths.split(",")]
     thresholds = [int(t) for t in args.chunk_thresholds.split(",")]
     rejected = False
@@ -242,7 +256,7 @@ def do_dtw_read_until(read_data, ru_queue, args):
 
         # reject read if too dissimilar
         if score > threshold:
-            ru_queue.put(f"{is_virus}\t{filename}\t{read.read_id}\t" \
+            ru_queue.put(f"{read.is_virus}\t{read.file_name}\t{read.read_id}\t" \
                     f"{args.trim_start+length}\t{score}\tFalse\n")
             rejected = True
             break
@@ -252,7 +266,7 @@ def do_dtw_read_until(read_data, ru_queue, args):
 
     # read passes all checks, basecall and align
     if not rejected:
-        ru_queue.put(f"{is_virus}\t{filename}\t{read.read_id}\t" \
+        ru_queue.put(f"{read.is_virus}\t{read.file_name}\t{read.read_id}\t" \
                 f"{len(read.signal)}\t{score}\tTrue\n")
         return read
 
@@ -404,14 +418,17 @@ def update_coverage(bed_file, bam_file, args):
 
 def merge_calls(call_chunk, new_call_chunk):
     ''' Merge consecutive read chunks called by Guppy. '''
-    if call_chunk == -1: # first chunk
+    if call_chunk == None: # first chunk
         return new_call_chunk
+    elif new_call_chunk['metadata']['duration'] == 0: # no new data
+        return call_chunk
     else:
         full_call = call_chunk
-        full_call.seq += new_call_chunk.seq
-        full_call.seqlen += len(new_call_chunk.seq)
-        full_call.qual += new_call_chunk.qual
-        full_call.events += new_call_chunk.events
+        full_call['datasets']['sequence'] += new_call_chunk['datasets']['sequence']
+        full_call['datasets']['qstring'] += new_call_chunk['datasets']['qstring']
+        full_call['metadata']['duration'] += new_call_chunk['metadata']['duration']
+        full_call['metadata']['num_events'] += new_call_chunk['metadata']['num_events']
+        full_call['metadata']['sequence_length'] += new_call_chunk['metadata']['sequence_length']
         return full_call
 
 ################################################################################
@@ -441,6 +458,11 @@ def main(args):
         ru_writer = pool.apply_async(write_ru_data, 
                 (ru_queue, args.ru_data_file))
 
+        # initialize basecaller
+        basecaller = PyGuppyClient(address=f"127.0.0.1:{args.port}",
+                config=args.guppy_config, server_file_load_timeout=180)
+        basecaller.connect()
+
         # perform read-until
         while not done:
 
@@ -457,84 +479,119 @@ def main(args):
                 dtw_timer.start()
                 jobs = []
                 reads = []
-                for read_data in batch:
+                for read in batch:
                     job = pool.apply_async(do_dtw_read_until, 
-                            (read_data, ru_queue, args))
+                            (read, ru_queue, args))
                     jobs.append(job)
                 for job in jobs: reads.append(job.get())
                 reads = list(filter(None, reads))
                 dtw_timer.stop()
 
-                with pgc.GuppyBasecallerClient(args.guppy_config, port=args.port) as basecaller:
-                    # basecall
-                    bc_timer.start()
-                    calls = []
-                    for read in reads:
-                        call = basecaller.basecall(read)
-                        calls.append(call)
-                    bc_timer.stop()
+                # generate all packets
+                packets = []
+                for read in reads:
+                    packets.append( package_read(
+                        read_tag = read.read_tag,
+                        read_id = read.read_id,
+                        raw_data = read.signal,
+                        daq_offset = float(read.daq_offset),
+                        daq_scaling = float(read.daq_scaling)
+                        )
+                    )
 
-                    # align
-                    aln_timer.start()
-                    alns = []
-                    for call in calls:
-                        try:
-                            alignment = next(aligner.map(call.seq))
-                            alns.append(alignment)
-                        except(StopIteration):
-                            pass # no alignment, can ignore for read-until
-                    aln_timer.stop()
+                # basecall all packets
+                bc_timer.start()
+                calls = []                                               
+                sent, rcvd = 0, 0                                            
+                while sent < len(packets):                               
+                    success = basecaller.pass_read(packets[sent])        
+                    if not success:                                          
+                        print('ERROR: Failed to basecall read.')             
+                        break                                                
+                    else:                                                    
+                        sent += 1                                            
+                while rcvd < len(packets):                               
+                    result = basecaller.get_completed_reads()                
+                    rcvd += len(result)                                      
+                    calls.extend(result)                                 
+                bc_timer.stop()
 
-                    for read, call, aln in zip(reads, calls, alns):
-                        write_fastq_data(read.read_id, call.seq, call.qual, args)
-                        write_sam_data(read.read_id, call.seq, call.qual, aln, args)
+                # align all basecalls
+                aln_timer.start()
+                alns = []
+                for call in calls:
+                    try:
+                        alignment = next(aligner.map(call['datasets']['sequence']))
+                        alns.append(alignment)
+                    except(StopIteration):
+                        pass # no alignment, can ignore for read-until
+                aln_timer.stop()
+
+                for read, call, aln in zip(reads, calls, alns):
+                    write_fastq_data(read.read_id, call['datasets']['sequence'], call['datasets']['qstring'], args)
+                    write_sam_data(read.read_id, call['datasets']['sequence'], call['datasets']['qstring'], aln, args)
 
             else:
                 ########################
                 ####### Basecall #######
                 ########################
 
-               
-                full_reads = copy.deepcopy(list(batch))
-                calls = [-1]*len(full_reads)
+                read_status_call = {}
+                for read in batch:
+                    # keep track of read data, if in progress, calls thus far
+                    read_status_call[read.read_tag] = [read, True, None]
                 prev_length = 0
                 lengths = [int(l) for l in args.chunk_lengths.split(",")]
                 for length in lengths:
 
+                    # generate all packets
+                    all_packets = []
+                    for read_tag, [read, status, call] in read_status_call.items():
+                        if not status: continue
+                        if len(read.signal) < prev_length: continue
+                        all_packets.append( package_read(
+                            read_tag = read.read_tag,
+                            read_id = read.read_id,
+                            raw_data = read.signal \
+                                    [prev_length:args.trim_start+length],
+                            daq_offset = float(read.daq_offset),
+                            daq_scaling = float(read.daq_scaling)
+                            )
+                        )
+
+                    # basecall all packets
                     bc_timer.start()
-                    with pgc.GuppyBasecallerClient(args.guppy_config, port=args.port, timeout=100) as basecaller:
-                        for idx, read_data in enumerate(full_reads):
-
-                            # unmapped
-                            if calls[idx] == None:
-                                continue
-
-                            # basecall
-                            is_virus, filename, read = read_data
-                            read_chunk = copy.deepcopy(read)
-                            read_chunk.signal = read.signal[prev_length:args.trim_start+length]
-                            call = basecaller.basecall(read_chunk)
-                            calls[idx] = merge_calls(calls[idx], call)
+                    sent, rcvd = 0, 0
+                    while sent < len(all_packets):
+                        success = basecaller.pass_read(all_packets[sent])
+                        if not success: 
+                            print('ERROR: Failed to basecall read.')
+                            break
+                        else: 
+                            sent += 1
+                    while rcvd < len(all_packets):
+                        calls = basecaller.get_completed_reads()
+                        rcvd += len(calls)
+                        for call in calls:
+                            read_status_call[call['read_tag']][2] = \
+                                 merge_calls(read_status_call[call['read_tag']][2], call)
                     bc_timer.stop()
 
                     # align
                     aln_timer.start()
-                    for idx, call in enumerate(calls):
-                        if call is None:
-                            continue
+                    for read_tag, [read, status, call] in read_status_call.items():
+                        if not status: continue
                         try:
-                            aln = next(aligner.map(call.seq))
+                            aln = next(aligner.map(call['datasets']['sequence']))
+                            if length == lengths[-1]: # passed all
+                                ru_queue.put(f"{read.is_virus}\t{read.file_name}\t{read.read_id}\t" \
+                                        f"{len(read.signal)}\t{aln.mapq}\tTrue\n")
+                                write_fastq_data(read.read_id, call['datasets']['sequence'], call['datasets']['qstring'], args)
+                                write_sam_data(read.read_id, call['datasets']['sequence'], call['datasets']['qstring'], aln, args)
                         except(StopIteration): # fail
-                            is_virus, filename, read = full_reads[idx]
-                            calls[idx] = None
-                            ru_queue.put(f"{is_virus}\t{filename}\t{read.read_id}\t" \
+                            read_status_call[read_tag][1] = False
+                            ru_queue.put(f"{read.is_virus}\t{read.file_name}\t{read.read_id}\t" \
                                     f"{length}\t0\tFalse\n")
-                        if length == lengths[-1]: # passed all
-                            is_virus, filename, read = full_reads[idx]
-                            ru_queue.put(f"{is_virus}\t{filename}\t{read.read_id}\t" \
-                                    f"{len(read.signal)}\t{aln.mapq}\tTrue\n")
-                            write_fastq_data(read.read_id, call.seq, call.qual, args)
-                            write_sam_data(read.read_id, call.seq, call.qual, aln, args)
                     aln_timer.stop()
 
                     prev_length = args.trim_start + length
@@ -569,7 +626,7 @@ def parser():
 
     # run-until parameters
     parser.add_argument("--target_coverage", type=int, default=1)
-    parser.add_argument("--max_reads", type=int, default=300)
+    parser.add_argument("--max_reads", type=int, default=500)
     parser.add_argument("--region_size", type=int, default=10000)
     parser.add_argument("--batch_size", type=int, default=10)
 
