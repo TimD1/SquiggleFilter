@@ -1,11 +1,13 @@
+import matplotlib.pyplot as plt
+import numpy as np
 
 #########################
 ###### PARAMETERS #######
 #########################
 
 # sample
-avg_virus_read_len = 100_000.0                                  # signals
-avg_other_read_len = 100_000.0                                  # signals
+avg_virus_read_len = 10_000.0                                  # signals
+avg_other_read_len = 10_000.0                                  # signals
 avg_read_trim = 1_000.0                                         # signals
 ratio = 100.0                                                   # none
 # coverage bias
@@ -18,7 +20,7 @@ target_coverage = 10.0                                          # none
 ru_lengths = [3_000.0]                                          # signals
 ru_virus_acc= [0.9]                                             # none
 ru_other_acc= [0.9]                                             # none
-decision_latency = 0.010                                        # seconds
+decision_latency = 0.100                                        # seconds
 
 # flow cell / pore chemistry
 avg_capture_time = 1.0                                          # seconds
@@ -53,7 +55,7 @@ def basic_runtime(ratio):
 
 ################################################################################
 
-def single_read_until_runtime(ratio):
+def single_read_until_runtime(ratio, ru_lengths, ru_virus_acc, ru_other_acc):
 
     unblocked_channels = (1.0 - prop_channels_blocked) * channels
     max_throughput = unblocked_channels * avg_fwd_rate
@@ -68,6 +70,8 @@ def single_read_until_runtime(ratio):
             minknow_reversal_latency + \
             bases_sequenced / avg_rev_rate
 
+    useful_viruses_time = ru_virus_acc[0] * prop_virus * \
+            (avg_virus_read_len-avg_read_trim)/avg_fwd_rate
     kept_viruses_time = ru_virus_acc[0] * prop_virus * \
             (avg_capture_time + avg_virus_read_len/avg_fwd_rate)
     tossed_viruses_time = (1-ru_virus_acc[0]) * prop_virus * \
@@ -79,12 +83,98 @@ def single_read_until_runtime(ratio):
 
     all_time = kept_viruses_time + tossed_viruses_time + \
             kept_others_time + tossed_others_time
-    useful_time = prop_virus * (avg_virus_read_len-avg_read_trim)/avg_fwd_rate
-    prop_useful_time = useful_time / all_time
+    prop_useful_time = useful_viruses_time / all_time
 
     useful_throughput = max_throughput * prop_useful_time
-    run_until_duration = genome_size * target_coverage / useful_throughput
+    run_until_duration = genome_size * target_coverage / (useful_throughput + 0.00001)
     return run_until_duration
 
-for ratio in [1, 10, 100, 1000]:
-    print(f"basic:\t{basic_runtime(ratio)}\tread-until:\t{single_read_until_runtime(ratio)}")
+# for ratio in [1, 10, 100, 1000]:
+#     print(f"basic:\t{basic_runtime(ratio)}\tread-until:\t{single_read_until_runtime(ratio)}")
+
+def load_scores(score_dir, length):
+    ba_virus = np.load(f"{score_dir}/{length}sigs_ba_virus_scores.npy")
+    ba_other = np.load(f"{score_dir}/{length}sigs_ba_other_scores.npy")
+    dtw_virus = np.load(f"{score_dir}/{length}sigs_dtw_virus_scores.npy")
+    dtw_other = np.load(f"{score_dir}/{length}sigs_dtw_other_scores.npy")
+    return ba_virus, ba_other, dtw_virus, dtw_other
+
+fig1, ax1 = plt.subplots()                                                     
+fig2, ax2 = plt.subplots()                                                     
+fig3, ax3 = plt.subplots()                                                     
+fig4, ax4 = plt.subplots()                                                     
+lengths = list(range(1000, 8001, 1000))
+for length in lengths:
+    ba_runtimes = []
+    dtw_runtimes = []
+    ba_virus, ba_other, dtw_virus, dtw_other = \
+            load_scores("../data/scores/rtDNA/covid0_human0", length)
+
+    # create thresholds for plotting                                             
+    ba_thresholds = np.linspace(                                                 
+            min(np.min(ba_virus), np.min(ba_other))-1,                           
+            max(np.max(ba_virus), np.max(ba_other))+1, num=100)                  
+    dtw_thresholds = np.linspace(                                                
+            min(np.min(dtw_virus), np.min(dtw_other))-1,                         
+            max(np.max(dtw_virus), np.max(dtw_other))+1, num=100)                
+
+    # calculate discard rate of each                                             
+    ba_virus_discard_rate, ba_other_discard_rate = [], []                        
+    dtw_virus_discard_rate, dtw_other_discard_rate = [], []                      
+    for t in ba_thresholds:                                                      
+        ba_virus_discard_rate.append(sum(ba_virus < t) / len(ba_virus))          
+        ba_other_discard_rate.append(sum(ba_other < t) / len(ba_other))          
+        ba_runtimes.append(
+                single_read_until_runtime(ratio, [length], 
+                    [1-ba_virus_discard_rate[-1]], [ba_other_discard_rate[-1]])
+                )
+
+    for t in dtw_thresholds:                                                     
+        dtw_virus_discard_rate.append(sum(dtw_virus > t) / len(dtw_virus))            
+        dtw_other_discard_rate.append(sum(dtw_other > t) / len(dtw_other))            
+        dtw_runtimes.append(
+                single_read_until_runtime(ratio, [length], 
+                    [1-dtw_virus_discard_rate[-1]], [dtw_other_discard_rate[-1]])
+                )
+
+    # plot basecall-align discard rate                                           
+    ax1.plot(ba_virus_discard_rate, ba_other_discard_rate, marker='o', alpha=0.5) 
+    ax1.set_xlabel(f'COVID Discard Rate')                          
+    ax1.set_ylabel(f'Human Discard Rate')                          
+    ax1.set_title(f'Basecall-Align Accuracy')                   
+    ax1.set_xlim((-0.1, 1.1))                                                     
+    ax1.set_ylim((-0.1, 1.1))                                                     
+    ax1.legend([str(x)+' signals' for x in lengths])
+
+    # plot dtw-align discard rate                                                
+    ax2.plot(dtw_virus_discard_rate, dtw_other_discard_rate, marker='o', alpha=0.5)
+    ax2.set_xlabel(f'COVID Discard Rate')                          
+    ax2.set_ylabel(f'Human Discard Rate')                          
+    ax2.set_title(f'DTW-Align Accuracy')                        
+    ax2.set_xlim((-0.1, 1.1))                                                     
+    ax2.set_ylim((-0.1, 1.1))                                                     
+    ax2.legend([str(x)+' signals' for x in lengths])
+
+    # plot runtimes
+    ax3.plot(ba_thresholds, ba_runtimes, marker='o', alpha=0.5) 
+    ax3.set_xlabel(f'Threshold Values')                          
+    ax3.set_ylabel(f'Read-Until Runtimes')                          
+    ax3.set_title(f'Basecall-Align Read-Until Runtimes')                   
+    ax3.set_ylim((-0.1, 300))                                                     
+    # plot runtimes
+    ax4.plot(dtw_thresholds, dtw_runtimes, marker='o', alpha=0.5) 
+    ax4.set_xlabel(f'Threshold Values')                          
+    ax4.set_ylabel(f'Read-Until Runtimes')                          
+    ax4.set_title(f'DTW Read-Until Runtimes')                   
+    ax4.set_ylim((-0.1, 300))                                                     
+
+fig1.savefig(f'../img/rtDNA_ba_curve.png')                       
+fig2.savefig(f'../img/rtDNA_dtw_curve.png')                     
+ax3.axhline(y=basic_runtime(ratio), color='k', linestyle='--')
+ax3.legend([str(x)+' signals' for x in lengths] + ['no read-until'])
+fig3.savefig(f'../img/rtDNA_ba_ru_time.png')                     
+ax4.axhline(y=basic_runtime(ratio), color='k', linestyle='--')
+ax4.legend([str(x)+' signals' for x in lengths] + ['no read-until'])
+fig4.savefig(f'../img/rtDNA_dtw_ru_time.png')                     
+
+
