@@ -28,34 +28,40 @@ module sDTW(input clk,
                      input start,
                      input [`DATA_WIDTH-1:0] query ,
                      input [`DATA_WIDTH-1:0] reference ,
-                     input init_sig,                    
+                     input init_sig,       
+                     input  [`DATA_OUT_WIDTH-1:0] loop_score_i,              
                      output logic result,
-                     output logic done                     
+                     output logic done,
+                     output  [`DATA_OUT_WIDTH-1:0] loop_score_o,
+                     output loop_score_val  ,
+                     output logic loop_finish                 
                     );
 	
 	//query initialization
 	logic [`QUERY_LEN-1:0] tmp_d; //pipeline registers for 2 clock init signal delay.
+	logic [`DATA_OUT_WIDTH-1:0] tmp1_d;
 	logic [`QUERY_LEN-1:0] init; //resgiter the init signal in each PE input
 	//PE firing
 	logic [`QUERY_LEN-1:0] activate;
 	logic [`CNTR_BITS-1:0] counter;
     //PE interconnects
-	//wire [`QUERY_LEN-1:0] stop_bits;
+	logic [`REF_MAX_LEN-1:0] stop_bits;
     wire [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		pe_op;   
     wire [`QUERY_LEN-1:0][`DATA_OUT_WIDTH-1:0]		pe_prev_op;      
     wire [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] op_reference;  
     wire [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] query_o;
-  
-
+    logic [`LOOP_CNTR_BITS-1:0] loop_ctr;
+    logic [`DATA_OUT_WIDTH-1:0] loop_score_pe;
 
     //First PE
+    
 	PE first_col(	.activate(activate[0]),
 					.clk(clk),
 					.rst(rst),
 					.init(init[0]),					
-					.left      (0),
+					.left      (loop_score_i),
 					.top       (pe_op[0]),					
-					.diag      (0),
+					.diag      (loop_score_pe),
 					.ip_reference (reference),
 					.query     (query),
 					.curr_op(pe_op[0]),
@@ -71,7 +77,7 @@ module sDTW(input clk,
     `ifndef SYNTH 
 	genvar i;
 	generate
-		for (i=1; i<`QUERY_LEN; i++) begin : pe_systolic
+		for (i=1; i<`QUERY_LEN-1; i++) begin : pe_systolic
 			PE col(	.activate(activate[i]),
 					.clk(clk),
 					.rst(rst),
@@ -85,15 +91,34 @@ module sDTW(input clk,
 					.prev_op(pe_prev_op[i]),
 					//.stop_bit(stop_bits[i]),				
 					.op_reference(op_reference[i]),
-					.query_o(query_o[i])				
-					
-				);
+					.query_o(query_o[i])													
+		);
 		end
 	endgenerate
+	
+			 PE_last_col PE_lc(	.activate(activate[`QUERY_LEN-1]),
+					.clk(clk),
+					.rst(rst),
+					.init(init[`QUERY_LEN-1]),
+					.left(pe_op[`QUERY_LEN-2]),
+					.top(pe_op[`QUERY_LEN-1]),
+					.diag(pe_prev_op[`QUERY_LEN-2]),
+					.ip_reference(op_reference[`QUERY_LEN-2]),
+					.query(query_o[`QUERY_LEN-2]),					
+					.curr_op(pe_op[`QUERY_LEN-1]),
+					.prev_op(pe_prev_op[`QUERY_LEN-1]),
+					.stop_bit(stop_bits[`QUERY_LEN-1]),				
+					.op_reference(op_reference[`QUERY_LEN-1]),
+					.query_o(query_o[`QUERY_LEN-1]),
+					.loop_score_o(loop_score_o)	,
+					.loop_score_val(loop_score_val)								
+			);
+		
+	
 	`else
 	genvar i;
 	generate
-		for (i=1; i<1000; i++) begin : pe_systolic
+		for (i=1; i<`QUERY_LEN-1; i++) begin : pe_systolic
 			PE col(	.activate(activate[i]),
 					.clk(clk),
 					.rst(rst),
@@ -105,145 +130,82 @@ module sDTW(input clk,
 					.query(query_o[i-1]),
 					.curr_op(pe_op[i]),
 					.prev_op(pe_prev_op[i]),
-					//.stop_bit(stop_bits[i]),				
+					.stop_bit(stop_bits[i]),				
 					.op_reference(op_reference[i]),
 					.query_o(query_o[i])				
 					
 				);
+				
 		end
-	endgenerate
+		endgenerate
+		 PE_last_col PE_lc(	.activate(activate[`QUERY_LEN-1]),
+					.clk(clk),
+					.rst(rst),
+					.init(init[`QUERY_LEN-1]),
+					.left(pe_op[`QUERY_LEN-2]),
+					.top(pe_op[`QUERY_LEN-1]),
+					.diag(pe_prev_op[`QUERY_LEN-2]),
+					.ip_reference(op_reference[`QUERY_LEN-2]),
+					.query(query_o[`QUERY_LEN-2]),					
+					.curr_op(pe_op[`QUERY_LEN-1]),
+					.prev_op(pe_prev_op[`QUERY_LEN-1]),
+					.stop_bit(stop_bits[`QUERY_LEN-1]),				
+					.op_reference(op_reference[`QUERY_LEN-1]),
+					.query_o(query_o[`QUERY_LEN-1]),
+					.loop_score_o(loop_score_o)	,
+					.loop_score_val(loop_score_val)								
+	     );
+		
 	
-	generate
-		for (i=2000; i<3000; i++) begin : pe_systolic1
-			PE col(	.activate(activate[i]),
-					.clk(clk),
-					.rst(rst),
-					.init(init[i]),
-					.left(pe_op[i-1]),
-					.top(pe_op[i]),
-					.diag(pe_prev_op[i-1]),
-					.ip_reference(op_reference[i-1]),
-					.query(query_o[i-1]),
-					.curr_op(pe_op[i]),
-					.prev_op(pe_prev_op[i]),
-					//.stop_bit(stop_bits[i]),				
-					.op_reference(op_reference[i]),
-					.query_o(query_o[i])				
-					
-				);
-		end
-	endgenerate
-	generate
-		for (i=3000; i<4000; i++) begin : pe_systolic2
-			PE col(	.activate(activate[i]),
-					.clk(clk),
-					.rst(rst),
-					.init(init[i]),
-					.left(pe_op[i-1]),
-					.top(pe_op[i]),
-					.diag(pe_prev_op[i-1]),
-					.ip_reference(op_reference[i-1]),
-					.query(query_o[i-1]),
-					.curr_op(pe_op[i]),
-					.prev_op(pe_prev_op[i]),
-					//.stop_bit(stop_bits[i]),				
-					.op_reference(op_reference[i]),
-					.query_o(query_o[i])				
-					
-				);
-		end
-	endgenerate
-	generate
-		for (i=4000; i<`QUERY_LEN; i++) begin : pe_systolic3
-			PE col(	.activate(activate[i]),
-					.clk(clk),
-					.rst(rst),
-					.init(init[i]),
-					.left(pe_op[i-1]),
-					.top(pe_op[i]),
-					.diag(pe_prev_op[i-1]),
-					.ip_reference(op_reference[i-1]),
-					.query(query_o[i-1]),
-					.curr_op(pe_op[i]),
-					.prev_op(pe_prev_op[i]),
-					//.stop_bit(stop_bits[i]),				
-					.op_reference(op_reference[i]),
-					.query_o(query_o[i])				
-					
-				);
-		end
-	endgenerate
+	
     `endif
 
 
-	//on completion of the array
-//    always@(done) begin
-//     for(integer i=0; i<`QUERY_LEN; i++) begin //{
-//			activate[i] <= 0;
-			
-//     end //}
-     
-     
-     
-//    end
-//	// logic for sDTW early abandon
-//	always_ff @(posedge clk)
-//	begin
 
-		
-			
-			     			 
-//	end
-	
-//	//logic for normal & early sDTW thresholding
-//	always_ff @(posedge clk)
-//	begin
-	
-	
-	        
-			
-			
-//    end
-    
-    
 	// control logic
 	always_ff @(posedge clk)
 	begin
         	
 			//comparing wrt threshold
-//			if(counter>`QUERY_LEN && counter!=`QUERY_LEN+`REF_MAX_LEN) begin //{
+			
 			        
-//                     //AND-ing to do early stop
-//                     if(&stop_bits[`QUERY_LEN-1:0]==1) begin//{
-//                         done<=1;
-//                         //stop_sig<=1;
-//                         result<=0;
-//                     end //}
-//			 end //}
-//	        else if (counter==`QUERY_LEN+`REF_MAX_LEN) begin
-//			     done<=1;
-			   
-			    
-//			 	 //OR-ing to check normal stop
-//			 	 if(|stop_bits[`QUERY_LEN-1:0]==1) begin//{
-			    
-//			     result<=1;
-//			     end //}
-//			end
-		    if (counter==`QUERY_LEN+`REF_MAX_LEN) begin
-			     done<=1;
-			   
-			    
-			 	 //OR-ing to check normal stop
-			 	 for(int i=0;i<`QUERY_LEN;i++) begin
-			 	   if(pe_op[i]<`DTW_THRESHOLD || pe_op[i]==`DTW_THRESHOLD)
-			 	       result<=1;
-			 	 end
-//			 	 if(stop_bits[`QUERY_LEN-1:0]==1) begin//{
-			    
-//			     result<=1;
-//			     end //}
+                     
+            if(counter==`CNTR_STOP-2) begin
+			      loop_finish<=1;
 			end
+			
+	        else if (counter==`CNTR_STOP) begin //12
+			     //done<=1;
+			     if(loop_ctr<`MAX_LOOP_CNT) begin //2
+			       counter<=0;
+			       loop_ctr<=loop_ctr+1;
+			       activate<={activate[`QUERY_LEN-2:0],1'b1};
+			     end 
+			     
+			   
+			end
+			if(counter==`QUERY_LEN && loop_ctr==`MAX_LOOP_CNT) begin			     			     			     
+			       done<=1;  
+			       //counter<=0;  
+			       activate<=0; 
+			       //OR-ing to check normal stop           
+			       if(|stop_bits[`REF_MAX_LEN-1:0]==1) begin//{
+			         result<=1;
+			       end
+			end
+			
+			
+        if(init) begin
+		  if(counter<`QUERY_LEN) begin//{
+		      counter<=counter+1;
+		      
+		  end //}
+		  else begin
+		      counter<=0;
+		      init<=0;
+		  end 
+		end
+		
 	    //sync reset
 		if(rst)
 		begin
@@ -252,69 +214,54 @@ module sDTW(input clk,
 			result<=0;
 			counter<=0;
 			tmp_d<=0;
-					
+			loop_ctr<=1;
+		    init<=0;	
+		    loop_finish<=0;
+		    loop_score_pe<=0;
+		    tmp1_d<=0;
+		    stop_bits<=0;
 		end
 		//firing the array
 		else if(start==1 && init_sig==0)
 		begin
             
-			if(init[`QUERY_LEN-1]==1) begin //{
-				//init[0]<=0;	
-//				for(int i=0;i<`QUERY_LEN;i++) begin //{
-				
-//				init[i]<=0;
-//				end //}
-                init <=0;
-			end //}
-            //start first PE
-            if(counter<`REF_MAX_LEN) begin
-                //activate[0] <= 1;
-    
-                //fire consecutive PE's in consecutive cycles
-//                for(integer j=1; j<`QUERY_LEN; j++) begin //{
-//                    activate[j] <= activate[j-1];
-                
-//                end //}
-                activate<={activate[`QUERY_LEN-2:0],1'b1};
-			end 
-			//inactivate PE's at the end of computation
-			else begin
-//                activate[0] <= 0;
-    
-//                //fire consecutive PE's in consecutive cycles
-//                for(integer j=1; j<`QUERY_LEN; j++) begin //{
-//                    activate[j] <= activate[j-1];
-                
-//                end //}
-                activate<={activate[`QUERY_LEN-2:0],1'b0};
-			end
+			//if(init[`QUERY_LEN-1]==1) begin //{
 
-            counter<=counter+1;    
+            //    init <=0;
+			//end //}
+            //start first PE
+           
+            tmp1_d<=loop_score_i;
+            loop_score_pe<=tmp1_d;
+            if(loop_ctr!=`MAX_LOOP_CNT+1 && counter<`CNTR_STOP) begin
+                if(counter<`REF_MAX_LEN) begin
+    
+                    activate<={activate[`QUERY_LEN-2:0],1'b1};
+                    
+                end 
+                //inactivate PE's at the end of computation
+                else begin
+    
+                    activate<={activate[`QUERY_LEN-2:0],1'b0};
+                    
+                end
+                counter<=counter+1;
+            end  
 				// propogate active high and active low to other PEs with one cycle delay
 		end
 		//intializing the PE's with query values in PE number of cycles.
 		else if(init_sig) begin
-			
-			
-//			init[0]<=1;
-			
+            
+            
 
-//			for(int i=1;i<`QUERY_LEN;i++) begin //{
-//				tmp_d[i-1]<=init[i-1];
-//				init[i]<=tmp_d[i-1];
-//			end //}
-            tmp_d<=init;
-            init<={tmp_d[`QUERY_LEN-2:0],1'b1};
+            
+              tmp_d<=init;
+              init<={tmp_d[`QUERY_LEN-2:0],1'b1};             
+            
 		 
 		end 
-		else if(done) begin//{
-//		  for(integer i=0; i<`QUERY_LEN; i++) begin //{
-//			activate[i] <= 0;
-			
-//          end //}
-          activate<=0;
-		end//}
-
+		
+		
 
 		
 	end
