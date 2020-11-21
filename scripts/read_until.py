@@ -33,6 +33,10 @@ class Timer():
         self._time = 0
         self._running = False
 
+    def clear(self):
+        if self._running: raise TimerError("Cannot clear a running timer.")
+        self._time = 0
+
     def start(self):
         if self._running: raise TimerError("Cannot start a running timer.")
         self._start_time = time.perf_counter()
@@ -544,8 +548,8 @@ def parser():
     parser.add_argument("--model_type", default="hac")
 
     # read-until parameters
-    parser.add_argument("--virus_dir", default="/x/squiggalign_data/lambda")
-    parser.add_argument("--other_dir", default="/x/squiggalign_data/human")
+    parser.add_argument("--virus_dir", default="../data/lambda/DNA/0")
+    parser.add_argument("--other_dir", default="../data/human/DNA/0")
     parser.add_argument("--basecall", action="store_true", default=False)
     parser.add_argument("--ratio", type=int, default=10)
 
