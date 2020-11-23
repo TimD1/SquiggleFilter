@@ -62,8 +62,8 @@ def init(args):
     if args.basetype[-3:].lower() == "dna":
         args.ru_lengths = list(range(1000, 10001, 1000))
         args.ru_thresholds = [
-                5500, 11000, 15000, 19000, 24000, 
-                29000, 34000, 39000, 44000, 48000]
+                3900, 7750, 12000, 16500, 20000, 
+                24000, 29500, 33000, 37000, 40000]
         args.guppy_config = f"dna_r9.4.1_450bps_{args.model}.cfg"
         args.port = 1234
         args.preset = "map-ont"
@@ -253,23 +253,23 @@ def plot_data(length, threshold, ba_virus, ba_other, dtw_virus, dtw_other):
     ax.hist(ba_virus, bins=list(range(61)), facecolor='r', alpha=0.5)
     ax.hist(ba_other, bins=list(range(61)), facecolor='g', alpha=0.5)
     ax.legend([f'{args.virus_species}', f'{args.other_species}'])
-    ax.set_xlabel('MiniMap Map Quality')
+    ax.set_xlabel('MiniMap2 Mapping Quality')
     ax.set_ylabel('Read Count')
-    ax.set_title(f"Basecall-Align MapQ: {length} signals")
+    ax.set_title(f"High-Acc Guppy + Minimap2 Mapping Quality: {length} signals")
     fig.savefig(f"{args.img_dir}/ba_hist_{length}.png")
 
     # plot raw DTW Histograms
     fig, ax = plt.subplots()
     ax.set_xlim((0, threshold*2))
-    ax.hist(dtw_virus, bins=list(range(0,threshold*2, 1000)), 
+    ax.hist(dtw_virus, bins=list(range(0,threshold*2, int(threshold/25))), 
             facecolor='r', alpha=0.5)
-    ax.hist(dtw_other, bins=list(range(0,threshold*2, 1000)), 
+    ax.hist(dtw_other, bins=list(range(0,threshold*2, int(threshold/25))), 
             facecolor='g', alpha=0.5)
     ax.legend([f'{args.virus_species}', f'{args.other_species}'])
     ax.set_xlabel('DTW Alignment Score')
     ax.set_ylabel('Read Count')
     ax.axvline(threshold, color='k', linestyle='--')
-    ax.set_title(f"DTW-Align Score: {length} signals")
+    ax.set_title(f"DTW Alignment Score: {length} signals")
     fig.savefig(f"{args.img_dir}/dtw_hist_{length}.png")
 
     # create thresholds for plotting
@@ -295,7 +295,7 @@ def plot_data(length, threshold, ba_virus, ba_other, dtw_virus, dtw_other):
     ax.plot(ba_virus_discard_rate, ba_other_discard_rate, marker='o', alpha=0.5)
     ax.set_xlabel(f'{args.virus_species} Discard Rate')
     ax.set_ylabel(f'{args.other_species} Discard Rate')
-    ax.set_title(f'Basecall-Align Accuracy: {length} signals')
+    ax.set_title(f'High-Acc Guppy + Minimap2 Accuracy: {length} signals')
     ax.set_xlim((-0.1, 1.1))
     ax.set_ylim((-0.1, 1.1))
     fig.savefig(f'{args.img_dir}/ba_discard_{length}.png')
@@ -305,7 +305,7 @@ def plot_data(length, threshold, ba_virus, ba_other, dtw_virus, dtw_other):
     ax.plot(dtw_virus_discard_rate, dtw_other_discard_rate, marker='o', alpha=0.5)
     ax.set_xlabel(f'{args.virus_species} Discard Rate')
     ax.set_ylabel(f'{args.other_species} Discard Rate')
-    ax.set_title(f'DTW-Align Accuracy: {length} signals')
+    ax.set_title(f'SquiggleFilter Accuracy: {length} signals')
     ax.set_xlim((-0.1, 1.1))
     ax.set_ylim((-0.1, 1.1))
     fig.savefig(f'{args.img_dir}/dtw_discard_{length}.png')
