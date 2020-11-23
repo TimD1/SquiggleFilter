@@ -39,6 +39,10 @@ prop_channels_blocked = 0.3                                     # none
 
 ################################################################################
 
+basetype = "rtDNA"
+species_name = "covid"
+species_plotname = "COVID"
+
 def basic_runtime(ratio):
     unblocked_channels = (1 - prop_channels_blocked) * channels
     max_throughput = unblocked_channels * avg_fwd_rate
@@ -89,9 +93,6 @@ def single_read_until_runtime(ratio, ru_lengths, ru_virus_acc, ru_other_acc):
     run_until_duration = genome_size * target_coverage / (useful_throughput + 0.00001)
     return run_until_duration
 
-# for ratio in [1, 10, 100, 1000]:
-#     print(f"basic:\t{basic_runtime(ratio)}\tread-until:\t{single_read_until_runtime(ratio)}")
-
 def load_scores(score_dir, length):
     ba_virus = np.load(f"{score_dir}/{length}sigs_ba_virus_scores.npy")
     ba_other = np.load(f"{score_dir}/{length}sigs_ba_other_scores.npy")
@@ -103,12 +104,15 @@ fig1, ax1 = plt.subplots()
 fig2, ax2 = plt.subplots()                                                     
 fig3, ax3 = plt.subplots()                                                     
 fig4, ax4 = plt.subplots()                                                     
-lengths = list(range(1000, 8001, 1000))
+lengths = list(range(1000, 10001, 1000))
+thresholds = { 1000: 3900, 2000: 7750, 3000: 12000, 4000: 16500, 5000: 20000, \
+        6000: 24000, 7000: 29500, 8000: 33000, 9000: 37000, 10000: 40000 }
+chosen_runtimes = []
 for length in lengths:
     ba_runtimes = []
     dtw_runtimes = []
     ba_virus, ba_other, dtw_virus, dtw_other = \
-            load_scores("../data/scores/rtDNA/covid0_human0", length)
+            load_scores(f"../data/scores/{basetype}/{species_name}0_human0", length)
 
     # create thresholds for plotting                                             
     ba_thresholds = np.linspace(                                                 
@@ -129,28 +133,31 @@ for length in lengths:
                     [1-ba_virus_discard_rate[-1]], [ba_other_discard_rate[-1]])
                 )
 
+    first_above_threshold = True
     for t in dtw_thresholds:                                                     
         dtw_virus_discard_rate.append(sum(dtw_virus > t) / len(dtw_virus))            
         dtw_other_discard_rate.append(sum(dtw_other > t) / len(dtw_other))            
-        dtw_runtimes.append(
-                single_read_until_runtime(ratio, [length], 
+        dtw_runtime = single_read_until_runtime(ratio, [length], 
                     [1-dtw_virus_discard_rate[-1]], [dtw_other_discard_rate[-1]])
-                )
+        dtw_runtimes.append(dtw_runtime)
+        if t > thresholds[length] and first_above_threshold:
+            first_above_threshold = False
+            chosen_runtimes.append(dtw_runtime)
 
     # plot basecall-align discard rate                                           
     ax1.plot(ba_virus_discard_rate, ba_other_discard_rate, marker='o', alpha=0.5) 
-    ax1.set_xlabel(f'COVID Discard Rate')                          
+    ax1.set_xlabel(f'{species_plotname} Discard Rate')                          
     ax1.set_ylabel(f'Human Discard Rate')                          
-    ax1.set_title(f'Basecall-Align Accuracy')                   
+    ax1.set_title(f'High-Acc Guppy + Minimap2 Accuracy')                   
     ax1.set_xlim((-0.1, 1.1))                                                     
     ax1.set_ylim((-0.1, 1.1))                                                     
     ax1.legend([str(x)+' signals' for x in lengths])
 
     # plot dtw-align discard rate                                                
     ax2.plot(dtw_virus_discard_rate, dtw_other_discard_rate, marker='o', alpha=0.5)
-    ax2.set_xlabel(f'COVID Discard Rate')                          
+    ax2.set_xlabel(f'{species_plotname} Discard Rate')                          
     ax2.set_ylabel(f'Human Discard Rate')                          
-    ax2.set_title(f'DTW-Align Accuracy')                        
+    ax2.set_title(f'SquiggleFilter Accuracy')                        
     ax2.set_xlim((-0.1, 1.1))                                                     
     ax2.set_ylim((-0.1, 1.1))                                                     
     ax2.legend([str(x)+' signals' for x in lengths])
@@ -159,22 +166,23 @@ for length in lengths:
     ax3.plot(ba_thresholds, ba_runtimes, marker='o', alpha=0.5) 
     ax3.set_xlabel(f'Threshold Values')                          
     ax3.set_ylabel(f'Read-Until Runtimes')                          
-    ax3.set_title(f'Basecall-Align Read-Until Runtimes')                   
+    ax3.set_title(f'High-Acc Guppy + Minimap2 Read-Until Runtimes')                   
     ax3.set_ylim((-0.1, 300))                                                     
     # plot runtimes
     ax4.plot(dtw_thresholds, dtw_runtimes, marker='o', alpha=0.5) 
     ax4.set_xlabel(f'Threshold Values')                          
     ax4.set_ylabel(f'Read-Until Runtimes')                          
-    ax4.set_title(f'DTW Read-Until Runtimes')                   
+    ax4.set_title(f'SquiggleFilter Read-Until Runtimes')                   
     ax4.set_ylim((-0.1, 300))                                                     
 
-fig1.savefig(f'../img/rtDNA_ba_curve.png')                       
-fig2.savefig(f'../img/rtDNA_dtw_curve.png')                     
+fig1.savefig(f'../img/{basetype}_ba_curve.png')                       
+fig2.savefig(f'../img/{basetype}_dtw_curve.png')                     
 ax3.axhline(y=basic_runtime(ratio), color='k', linestyle='--')
 ax3.legend([str(x)+' signals' for x in lengths] + ['no read-until'])
-fig3.savefig(f'../img/rtDNA_ba_ru_time.png')                     
+fig3.savefig(f'../img/{basetype}_ba_ru_time.png')                     
+ax4.plot([thresholds[length] for length in lengths], chosen_runtimes, color='k', marker='x', linestyle='None')
 ax4.axhline(y=basic_runtime(ratio), color='k', linestyle='--')
-ax4.legend([str(x)+' signals' for x in lengths] + ['no read-until'])
-fig4.savefig(f'../img/rtDNA_dtw_ru_time.png')                     
+ax4.legend([str(x)+' signals' for x in lengths] + ['selected', 'no read-until'])
+fig4.savefig(f'../img/{basetype}_dtw_ru_time.png')                     
 
 
