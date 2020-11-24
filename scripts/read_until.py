@@ -68,8 +68,9 @@ def yield_reads(folder, is_virus):
     for filename in glob(f"{folder}/*.fast5"):
         with h5py.File(filename, 'r') as f5_fh:
             reads = list(f5_fh.keys())
-            random.seed(42)
-            random.shuffle(reads)
+            if is_virus:
+                random.seed(42)
+                random.shuffle(reads)
             for read in reads:
                 signal = f5_fh[read]['Raw']['Signal'][:]
                 read_id = f5_fh[read]['Raw'].attrs['read_id'].decode("utf-8")
@@ -448,6 +449,7 @@ def main(args):
 
     dtw_timer = Timer()
     bc_timer = Timer()
+    data_timer = Timer()
     aln_timer = Timer()
 
     with mp.Pool() as pool:
@@ -506,6 +508,7 @@ def main(args):
                 while sent < len(packets):                               
                     success = basecaller.pass_read(packets[sent])        
                     if not success:                                          
+                        print(packets[sent])
                         print('ERROR: Failed to basecall read.')             
                         break                                                
                     else:                                                    
@@ -548,7 +551,7 @@ def main(args):
                     all_packets = []
                     for read_tag, [read, status, call] in read_status_call.items():
                         if not status: continue
-                        if len(read.signal) < prev_length: continue
+                        if len(read.signal) <= prev_length: continue
                         all_packets.append( package_read(
                             read_tag = read.read_tag,
                             read_id = read.read_id,
@@ -578,23 +581,73 @@ def main(args):
                     bc_timer.stop()
 
                     # align
-                    aln_timer.start()
                     for read_tag, [read, status, call] in read_status_call.items():
                         if not status: continue
                         try:
+                            aln_timer.start()
                             aln = next(aligner.map(call['datasets']['sequence']))
-                            if length == lengths[-1]: # passed all
+                            aln_timer.stop()
+                            if len(read.signal) <= args.trim_start+length: # read finished
                                 ru_queue.put(f"{read.is_virus}\t{read.file_name}\t{read.read_id}\t" \
                                         f"{len(read.signal)}\t{aln.mapq}\tTrue\n")
                                 write_fastq_data(read.read_id, call['datasets']['sequence'], call['datasets']['qstring'], args)
                                 write_sam_data(read.read_id, call['datasets']['sequence'], call['datasets']['qstring'], aln, args)
+                                read_status_call[read_tag][1] = False
                         except(StopIteration): # fail
+                            aln_timer.stop()
                             read_status_call[read_tag][1] = False
                             ru_queue.put(f"{read.is_virus}\t{read.file_name}\t{read.read_id}\t" \
                                     f"{length}\t0\tFalse\n")
-                    aln_timer.stop()
 
                     prev_length = args.trim_start + length
+
+                # finish calling all reads which succeeded
+                all_packets = []
+                for [read, status, call] in read_status_call.values():
+                    if len(read.signal) <= lengths[-1]+args.trim_start: continue
+                    if status: # passed all thresholds
+                        all_packets.append( package_read(
+                            read_tag = read.read_tag,
+                            read_id = read.read_id,
+                            raw_data = read.signal[prev_length:],
+                            daq_offset = float(read.daq_offset),
+                            daq_scaling = float(read.daq_scaling)
+                            )
+                        )
+                # basecall all packets
+                bc_timer.start()
+                sent, rcvd = 0, 0
+                while sent < len(all_packets):
+                    success = basecaller.pass_read(all_packets[sent])
+                    if not success: 
+                        print('ERROR: Failed to basecall read.')
+                        break
+                    else: 
+                        sent += 1
+                while rcvd < len(all_packets):
+                    calls = basecaller.get_completed_reads()
+                    rcvd += len(calls)
+                    for call in calls:
+                        try:
+                            read_status_call[call['read_tag']][2] = \
+                                 merge_calls(read_status_call[call['read_tag']][2], call)
+                        except KeyError: pass
+                bc_timer.stop()
+                for read_tag, [read, status, call] in read_status_call.items():
+                    if not status: continue
+                    try:
+                        aln_timer.start()
+                        aln = next(aligner.map(call['datasets']['sequence']))
+                        aln_timer.stop()
+                        ru_queue.put(f"{read.is_virus}\t{read.file_name}\t{read.read_id}\t" \
+                                f"{len(read.signal)}\t{aln.mapq}\tTrue\n")
+                        write_fastq_data(read.read_id, call['datasets']['sequence'], call['datasets']['qstring'], args)
+                        write_sam_data(read.read_id, call['datasets']['sequence'], call['datasets']['qstring'], aln, args)
+                    except(StopIteration): # fail
+                        aln_timer.stop()
+                        read_status_call[read_tag][1] = False
+                        ru_queue.put(f"{read.is_virus}\t{read.file_name}\t{read.read_id}\t" \
+                                f"{length}\t0\tFalse\n")
 
             nreads_total += (1 + args.ratio) * args.batch_size
             bam_file = generate_bam(args)
