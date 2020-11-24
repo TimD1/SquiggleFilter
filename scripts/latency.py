@@ -508,46 +508,6 @@ def main(args):
                 max_dtw_latencies.append(np.max(times))
                 dtw_timer.reset()
 
-                # generate all packets
-                packets = []
-                for read in reads:
-                    packets.append( package_read(
-                        read_tag = read.read_tag,
-                        read_id = read.read_id,
-                        raw_data = read.signal,
-                        daq_offset = float(read.daq_offset),
-                        daq_scaling = float(read.daq_scaling)
-                        )
-                    )
-
-                # basecall all packets
-                calls = []                                               
-                sent, rcvd = 0, 0                                            
-                while sent < len(packets):                               
-                    success = basecaller.pass_read(packets[sent])        
-                    if not success:                                          
-                        print('ERROR: Failed to basecall read.')             
-                        break                                                
-                    else:                                                    
-                        sent += 1                                            
-                while rcvd < len(packets):                               
-                    result = basecaller.get_completed_reads()                
-                    rcvd += len(result)                                      
-                    calls.extend(result)                                 
-
-                # align all basecalls
-                alns = []
-                for call in calls:
-                    try:
-                        alignment = next(aligner.map(call['datasets']['sequence']))
-                        alns.append(alignment)
-                    except(StopIteration):
-                        pass # no alignment, can ignore for read-until
-
-                for read, call, aln in zip(reads, calls, alns):
-                    write_fastq_data(read.read_id, call['datasets']['sequence'], call['datasets']['qstring'], args)
-                    write_sam_data(read.read_id, call['datasets']['sequence'], call['datasets']['qstring'], aln, args)
-
             else:
                 ########################
                 ####### Basecall #######
@@ -671,7 +631,7 @@ def parser():
 
     # read chunk selection parameters
     parser.add_argument("--trim_start", type=int, default=0)
-    parser.add_argument("--chunk_lengths", default="1000")
+    parser.add_argument("--chunk_lengths", default="2000")
     parser.add_argument("--chunk_thresholds", default="5500")
 
     return parser
