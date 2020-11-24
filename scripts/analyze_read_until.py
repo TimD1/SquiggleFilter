@@ -255,7 +255,7 @@ def plot_data(length, threshold, ba_virus, ba_other, dtw_virus, dtw_other):
     ax.legend([f'{args.virus_species}', f'{args.other_species}'])
     ax.set_xlabel('MiniMap2 Mapping Quality')
     ax.set_ylabel('Read Count')
-    ax.set_title(f"High-Acc Guppy + Minimap2 Mapping Quality: {length} signals")
+    ax.set_title(f"Fast Guppy + Minimap2 Mapping Quality: {length} signals")
     fig.savefig(f"{args.img_dir}/ba_hist_{length}.png")
 
     # plot raw DTW Histograms
@@ -295,7 +295,7 @@ def plot_data(length, threshold, ba_virus, ba_other, dtw_virus, dtw_other):
     ax.plot(ba_virus_discard_rate, ba_other_discard_rate, marker='o', alpha=0.5)
     ax.set_xlabel(f'{args.virus_species} Discard Rate')
     ax.set_ylabel(f'{args.other_species} Discard Rate')
-    ax.set_title(f'High-Acc Guppy + Minimap2 Accuracy: {length} signals')
+    ax.set_title(f'Fast Guppy + Minimap2 Accuracy: {length} signals')
     ax.set_xlim((-0.1, 1.1))
     ax.set_ylim((-0.1, 1.1))
     fig.savefig(f'{args.img_dir}/ba_discard_{length}.png')
@@ -405,13 +405,13 @@ def parser():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--main_dir", default="/home/timdunn/SquiggAlign/data")
-    parser.add_argument("--basetype", default="rtDNA")
-    parser.add_argument("--virus_species", default="covid")
+    parser.add_argument("--basetype", default="DNA")
+    parser.add_argument("--virus_species", default="lambda")
     parser.add_argument("--other_species", default="human")
     parser.add_argument("--virus_dataset", default="0")
     parser.add_argument("--other_dataset", default="0")
 
-    parser.add_argument("--model", default="hac")
+    parser.add_argument("--model", default="fast")
 
     parser.add_argument("--trim_start", type=int, default=1000)
     parser.add_argument("--max_virus_reads", type=int, default=1000)
