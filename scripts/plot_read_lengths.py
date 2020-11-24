@@ -11,9 +11,9 @@ main_dir = "/home/timdunn/SquiggAlign/data"
 max_reads = 1000
 
 for virus, basetype, other in zip(
-        ["covid", "lambda", "covid"], 
-        ["rtDNA", "DNA", "RNA"],
-        ["human", "human", "human"]):
+        ["covid", "lambda"], 
+        ["rtDNA", "DNA"],
+        ["human", "human"]):
     if basetype == "DNA":
         virus_color = 'red'
         other_color = 'forestgreen'
@@ -63,11 +63,12 @@ for virus, basetype, other in zip(
     virus_lengths = [x/scale for x in virus_lengths]
     other_lengths = [x/scale for x in other_lengths]
 
-    n, x, _ = ax.hist(virus_lengths, bins=np.linspace(0, maxlen, 100), 
-                               histtype=u'step', color='r')  
-    n, x, _ = ax.hist(other_lengths, bins=np.linspace(0, maxlen, 100), 
-                               histtype=u'step', color='g')  
+    n, x, _ = ax.hist(virus_lengths, bins=np.linspace(0, maxlen, 40), 
+                               histtype=u'step', color='r', linewidth=4, alpha=0.6)  
+    n, x, _ = ax.hist(other_lengths, bins=np.linspace(0, maxlen, 40), 
+                               histtype=u'step', color='g', linewidth=4, alpha=0.6)  
     ax.legend([f'{virus} {basetype}', f'{other} {basetype}'])
     ax.set_xlabel('Read length (bases)')
-    ax.set_ylabel('Number of reads')
+    ax.set_ylabel('Proportion of Total Reads')
+    ax.set_yticks([])
     fig.savefig(f'../img/read_lengths_{basetype}_0.png')
