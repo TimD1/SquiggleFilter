@@ -6,6 +6,8 @@ import os
 from ont_fast5_api.fast5_interface import get_fast5_file
 from glob import glob
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.rcParams.update({'font.size': 20})
 import numpy as np
 import mappy
 import h5py
@@ -246,30 +248,33 @@ def dtw_align(read_type, length, args):
 ################################################################################
 
 def plot_data(length, threshold, ba_virus, ba_other, dtw_virus, dtw_other):
+    if args.virus_species == 'covid':
+        virus_name = "SARS-CoV-2"
+    else:
+        virus_name = "lambda phage"
 
     # plot raw Basecall-Align Histograms
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(10,5))
     ax.set_xlim((0, 61))
-    ax.hist(ba_virus, bins=list(range(61)), facecolor='r', alpha=0.5)
-    ax.hist(ba_other, bins=list(range(61)), facecolor='g', alpha=0.5)
-    ax.legend([f'{args.virus_species}', f'{args.other_species}'])
+    ax.hist(ba_virus, bins=list(range(61)), histtype=u'step', facecolor='r', alpha=0.6)
+    ax.hist(ba_other, bins=list(range(61)), histtype=u'step', facecolor='g', alpha=0.6)
+    ax.legend([f'{virus_name}', f'{args.other_species}', 'threshold'])
     ax.set_xlabel('MiniMap2 Mapping Quality')
-    ax.set_ylabel('Read Count')
-    ax.set_title(f"Fast Guppy + Minimap2 Mapping Quality: {length} signals")
+    ax.set_yticks([])
     fig.savefig(f"{args.img_dir}/ba_hist_{length}.png")
 
     # plot raw DTW Histograms
     fig, ax = plt.subplots()
     ax.set_xlim((0, threshold*2))
-    ax.hist(dtw_virus, bins=list(range(0,threshold*2, int(threshold/25))), 
-            facecolor='r', alpha=0.5)
-    ax.hist(dtw_other, bins=list(range(0,threshold*2, int(threshold/25))), 
-            facecolor='g', alpha=0.5)
-    ax.legend([f'{args.virus_species}', f'{args.other_species}'])
+    ax.hist(dtw_virus, histtype=u'step', bins=list(range(0,threshold*2, int(threshold/25))), 
+            color='r', alpha=0.6, linewidth=4)
+    ax.hist(dtw_other, histtype=u'step', bins=list(range(0,threshold*2, int(threshold/25))), 
+            color='g', alpha=0.6, linewidth=4)
+    ax.axvline(threshold, color='k', linestyle='--')
+    ax.legend(['threshold', f'{virus_name}', f'{args.other_species}'], loc='upper left')
     ax.set_xlabel('DTW Alignment Score')
     ax.set_ylabel('Read Count')
-    ax.axvline(threshold, color='k', linestyle='--')
-    ax.set_title(f"DTW Alignment Score: {length} signals")
+    plt.tight_layout()
     fig.savefig(f"{args.img_dir}/dtw_hist_{length}.png")
 
     # create thresholds for plotting
@@ -293,9 +298,8 @@ def plot_data(length, threshold, ba_virus, ba_other, dtw_virus, dtw_other):
     # plot basecall-align discard rate
     fig, ax = plt.subplots()
     ax.plot(ba_virus_discard_rate, ba_other_discard_rate, marker='o', alpha=0.5)
-    ax.set_xlabel(f'{args.virus_species} Discard Rate')
+    ax.set_xlabel(f'{virus_name} Discard Rate')
     ax.set_ylabel(f'{args.other_species} Discard Rate')
-    ax.set_title(f'Fast Guppy + Minimap2 Accuracy: {length} signals')
     ax.set_xlim((-0.1, 1.1))
     ax.set_ylim((-0.1, 1.1))
     fig.savefig(f'{args.img_dir}/ba_discard_{length}.png')
@@ -303,9 +307,8 @@ def plot_data(length, threshold, ba_virus, ba_other, dtw_virus, dtw_other):
     # plot dtw-align discard rate
     fig, ax = plt.subplots()
     ax.plot(dtw_virus_discard_rate, dtw_other_discard_rate, marker='o', alpha=0.5)
-    ax.set_xlabel(f'{args.virus_species} Discard Rate')
+    ax.set_xlabel(f'{virus_name} Discard Rate')
     ax.set_ylabel(f'{args.other_species} Discard Rate')
-    ax.set_title(f'SquiggleFilter Accuracy: {length} signals')
     ax.set_xlim((-0.1, 1.1))
     ax.set_ylim((-0.1, 1.1))
     fig.savefig(f'{args.img_dir}/dtw_discard_{length}.png')
@@ -405,8 +408,8 @@ def parser():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--main_dir", default="/home/timdunn/SquiggAlign/data")
-    parser.add_argument("--basetype", default="DNA")
-    parser.add_argument("--virus_species", default="lambda")
+    parser.add_argument("--basetype", default="rtDNA")
+    parser.add_argument("--virus_species", default="covid")
     parser.add_argument("--other_species", default="human")
     parser.add_argument("--virus_dataset", default="0")
     parser.add_argument("--other_dataset", default="0")
