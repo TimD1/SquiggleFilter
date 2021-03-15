@@ -1,5 +1,5 @@
-import matplotlib as mpl
-mpl.use('agg')
+# import matplotlib as mpl
+# mpl.use('agg')
 mpl.rcParams.update({'font.size': 17})
 import matplotlib.pyplot as plt
 from matplotlib import pyplot as plt

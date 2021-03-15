@@ -271,9 +271,10 @@ def plot_data(length, threshold, ba_virus, ba_other, dtw_virus, dtw_other):
     ax.hist(dtw_other, histtype=u'step', bins=list(range(0,threshold*2, int(threshold/25))), 
             color='g', alpha=0.6, linewidth=4)
     ax.axvline(threshold, color='k', linestyle='--')
-    ax.legend(['threshold', f'{virus_name}', f'{args.other_species}'], loc='upper left')
-    ax.set_xlabel('DTW Alignment Score')
-    ax.set_ylabel('Read Count')
+    # ax.legend(['threshold', f'{virus_name}', f'{args.other_species}'], loc=(1,1))
+    # ax.set_xlabel('DTW Alignment Score')
+    # ax.set_ylabel('Read Count')
+    ax.set_ylim((0,150))
     plt.tight_layout()
     fig.savefig(f"{args.img_dir}/dtw_hist_{length}.png")
 

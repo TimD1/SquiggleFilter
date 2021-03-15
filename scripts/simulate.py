@@ -166,7 +166,8 @@ def load_scores(score_dir, length):
     dtw_other = np.load(f"{score_dir}/{length}sigs_dtw_other_scores.npy")
     return ba_virus, ba_other, dtw_virus, dtw_other
 
-lengths = list(range(1000, min(10001, int(avg_virus_read_len-avg_read_trim+1)), 1000))
+# lengths = list(range(1000, min(10001, int(avg_virus_read_len-avg_read_trim+1)), 1000))
+lengths = [1000, 2000, 3000, 8000]
 thresholds = { 1000: 3900, 2000: 7750, 3000: 12000, 4000: 16500, 5000: 20000, \
         6000: 24000, 7000: 29500, 8000: 33000, 9000: 37000, 10000: 40000 }
 
@@ -175,6 +176,8 @@ fig2, ax2 = plt.subplots()
 fig3, ax3 = plt.subplots()                                                     
 fig4, ax4 = plt.subplots()                                                     
 chosen_runtimes = []
+ax2.plot(0, 1, color='k', marker='*', markersize=15, linestyle='None')
+ax2.plot([0,1], [0,1], color='k', marker='None', linestyle=':')
 for length in lengths:
     ba_runtimes = []
     dtw_runtimes = []
@@ -204,6 +207,7 @@ for length in lengths:
 
     first_above_threshold = True
     decision_latency = 0.0003                                        # seconds
+    decision_latency = 0.216                                        # seconds
     basecall_throughput = 100000000
     for t in dtw_thresholds:                                                     
         dtw_virus_discard_rate.append(sum(dtw_virus > t) / len(dtw_virus))            
@@ -230,16 +234,18 @@ for length in lengths:
     # plot runtimes
     ax3.plot(ba_thresholds, ba_runtimes, marker='o', alpha=0.5) 
     ax3.set_xlabel(f'Mapping Quality Threshold')                          
-    ax3.set_ylabel(f'Read Until Runtime (seconds)')                          
+    ax3.set_ylabel(f'Sequencing Runtime (seconds)')                          
     ax3.set_ylim((-0.1, 1000))                                                     
     # plot runtimes
     ax4.plot(dtw_thresholds, dtw_runtimes, marker='o', alpha=0.5) 
     ax4.set_xlabel(f'Alignment Score Threshold')                          
-    ax4.set_ylabel(f'Read Until Runtime (seconds)')                          
-    ax4.set_ylim((-0.1, 1000))                                                     
+    ax4.set_ylabel(f'Sequencing Runtime (seconds)')                          
+    ax4.set_ylim((-0.1, 750))                                                     
+    ax4.set_xlim((0, 80000))                                                     
+    ax4.set_xticks([0, 80000])
 
 ########
-    lengths2 = [1000, 2000, 3000, 4000, 5000, 10000]
+    lengths2 = [1000, 2000, 3000, 8000]
     if length in lengths2:
         # plot dtw-align discard rate                                                
         ax2.plot(dtw_virus_discard_rate, dtw_other_discard_rate, marker='o', alpha=0.5)
@@ -257,26 +263,29 @@ for t in ba_thresholds:
     ba_virus_discard_rate.append(sum(ba_virus < t) / len(ba_virus))          
     ba_other_discard_rate.append(sum(ba_other < t) / len(ba_other))          
 ax2.plot(ba_virus_discard_rate, ba_other_discard_rate, marker='o', alpha=0.5) 
-ax2.legend([f"SquiggleFilter {x} samples" for x in lengths2]+["Guppy-lite 2000 samples"], loc="lower right")
+ax2.legend(["ideal", "random"] + \
+        [f"SquiggleFilter {x} samples" for x in lengths2] + \
+        ["Guppy-lite 2000 samples"], loc="lower right")
 ########
 
 
 fig1.savefig(f'../img/{basetype}_ba_curve.png')                       
-fig2.savefig(f'../img/{basetype}_dtw_curve.png')                     
+fig2.savefig(f'../img/{basetype}_dtw_curve.png', dpi=300)                     
 print("Basic:", basic_runtime(ratio))
 ax3.axhline(y=basic_runtime(ratio), color='k', linestyle='--')
-ax3.legend([str(x)+' samples' for x in lengths] + ['no read-until'], loc="upper right")
+ax3.legend([str(x)+' sample Read Until' for x in lengths] + ['no Read Until'], loc="upper right")
 fig3.tight_layout()
 fig4.tight_layout()
 fig3.savefig(f'../img/{basetype}_ba_ru_time.png')                     
-ax4.plot([thresholds[length] for length in lengths], chosen_runtimes, color='k', marker='x', linestyle='None')
+# ax4.plot([thresholds[length] for length in lengths], chosen_runtimes, color='k', marker='x', linestyle='None')
 ax4.plot([thresholds[2000]], chosen_runtimes[1], color='k', marker='*', markersize=15, linestyle='None')
 ax4.axhline(y=basic_runtime(ratio), color='k', linestyle='--')
-ax4.legend([str(x)+' samples' for x in lengths] + ['candidate thresholds', 'selected threshold', 'no read-until'])
+# ax4.legend([str(x)+' samples' for x in lengths] + ['candidate thresholds', 'selected threshold', 'no read-until'])
+ax4.legend([str(x)+' sample Read Until' for x in lengths] + ['Selected Threshold', 'No Read Until'], loc="lower right")
     # ax4.plot([thresholds[2000]], chosen_runtimes, color='k', marker='*', markersize=15, linestyle='None')
     # ax4.axhline(y=basic_runtime(ratio), color='k', linestyle='--')
     # ax4.legend([str(x)+' samples' for x in lengths] + ['selected threshold', 'no read-until'])
-fig4.savefig(f'../img/{basetype}_dtw_ru_time.png')                     
+fig4.savefig(f'../img/{basetype}_dtw_ru_time.png', dpi=300)                     
 
 # avg_virus_read_len = 50_000.0                                  # samples
 # avg_other_read_len = 50_000.0                                  # samples
