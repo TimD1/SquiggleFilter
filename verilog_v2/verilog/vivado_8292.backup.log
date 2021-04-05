@@ -1,0 +1,30 @@
+#-----------------------------------------------------------
+# Vivado v2019.1 (64-bit)
+# SW Build 2552052 on Fri May 24 14:49:42 MDT 2019
+# IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
+# Start of session at: Wed Nov 18 00:49:16 2020
+# Process ID: 8292
+# Current directory: C:/verilog
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent15988 C:\verilog\verilog_v2.xpr
+# Log file: C:/verilog/vivado.log
+# Journal file: C:/verilog\vivado.jou
+#-----------------------------------------------------------
+Sourcing tcl script 'C:/Users/Harisankar Sadasivan/AppData/Roaming/Xilinx/Vivado/Vivado_init.tcl'
+start_gui
+open_project C:/verilog/verilog_v2.xpr
+WARNING: [Board 49-91] Board repository path '{C:Xilinxivado-boards-masterivado-boards-master
+ewoard_files"}' does not exist, it will not be used to search board files.
+Scanning sources...
+Finished scanning sources
+WARNING: [filemgmt 56-3] Board Part Repository Path: Could not find the directory 'C:/Users/Harisankar Sadasivan/AppData/Roaming/Xilinx/Vivado/2019.1/xhub/board_store'.
+WARNING: [filemgmt 56-3] Board Part Repository Path: Could not find the directory 'C:/verilog/{C:Xilinx'.
+WARNING: [filemgmt 56-3] Board Part Repository Path: Could not find the directory 'C:/verilog/ivado-boards-master'.
+WARNING: [filemgmt 56-3] Board Part Repository Path: Could not find the directory 'C:/verilog/ivado-boards-master'.
+WARNING: [filemgmt 56-3] Board Part Repository Path: Could not find the directory 'C:/verilog/ewoard_files"}'.
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [Common 17-41] Interrupt caught. Command should exit soon.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2019.1/data/ip'.
+INFO: [Common 17-344] 'open_project' was cancelled
+exit
+INFO: [Common 17-206] Exiting Vivado at Wed Nov 18 00:49:41 2020...

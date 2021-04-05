@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2019.1 (64-bit)
+# SW Build 2552052 on Fri May 24 14:49:42 MDT 2019
+# IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
+# Start of session at: Wed Mar 31 11:53:09 2021
+# Process ID: 9340
+# Current directory: C:/verilog/verilog_v2.runs/synth_1
+# Command line: vivado.exe -log testbench_norm.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source testbench_norm.tcl
+# Log file: C:/verilog/verilog_v2.runs/synth_1/testbench_norm.vds
+# Journal file: C:/verilog/verilog_v2.runs/synth_1\vivado.jou
+#-----------------------------------------------------------
+source testbench_norm.tcl -notrace

@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="testbench_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="testbench" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="8999771666666fs"></ZoomStartTime>
+      <ZoomEndTime time="9000285666667fs"></ZoomEndTime>
+      <Cursor1Time time="9000000000000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="253"></NameColumnWidth>
+      <ValueColumnWidth column_width="92"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="2" />
+   <wvobject fp_name="group52" type="group">
+      <obj_property name="label">first_pe</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/clk" type="logic">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/rst" type="logic">
+         <obj_property name="ElementShortName">rst</obj_property>
+         <obj_property name="ObjectShortName">rst</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/query" type="array">
+         <obj_property name="ElementShortName">query[7:0]</obj_property>
+         <obj_property name="ObjectShortName">query[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/ip_reference" type="array">
+         <obj_property name="ElementShortName">ip_reference[7:0]</obj_property>
+         <obj_property name="ObjectShortName">ip_reference[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/activate" type="logic">
+         <obj_property name="ElementShortName">activate</obj_property>
+         <obj_property name="ObjectShortName">activate</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/ip_bonus" type="array">
+         <obj_property name="ElementShortName">ip_bonus[6:0]</obj_property>
+         <obj_property name="ObjectShortName">ip_bonus[6:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/left" type="array">
+         <obj_property name="ElementShortName">left[16:0]</obj_property>
+         <obj_property name="ObjectShortName">left[16:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/diag" type="array">
+         <obj_property name="ElementShortName">diag[16:0]</obj_property>
+         <obj_property name="ObjectShortName">diag[16:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/init" type="logic">
+         <obj_property name="ElementShortName">init</obj_property>
+         <obj_property name="ObjectShortName">init</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/prev_op" type="array">
+         <obj_property name="ElementShortName">prev_op[16:0]</obj_property>
+         <obj_property name="ObjectShortName">prev_op[16:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/curr_op" type="array">
+         <obj_property name="ElementShortName">curr_op[16:0]</obj_property>
+         <obj_property name="ObjectShortName">curr_op[16:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/prev_bonus" type="array">
+         <obj_property name="ElementShortName">prev_bonus[6:0]</obj_property>
+         <obj_property name="ObjectShortName">prev_bonus[6:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/query_o" type="array">
+         <obj_property name="ElementShortName">query_o[7:0]</obj_property>
+         <obj_property name="ObjectShortName">query_o[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/op_reference" type="array">
+         <obj_property name="ElementShortName">op_reference[7:0]</obj_property>
+         <obj_property name="ObjectShortName">op_reference[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/query_o_r" type="array">
+         <obj_property name="ElementShortName">query_o_r[7:0]</obj_property>
+         <obj_property name="ObjectShortName">query_o_r[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/set_bit" type="array">
+         <obj_property name="ElementShortName">set_bit[1:0]</obj_property>
+         <obj_property name="ObjectShortName">set_bit[1:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/diff" type="array">
+         <obj_property name="ElementShortName">diff[7:0]</obj_property>
+         <obj_property name="ObjectShortName">diff[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/cum_bonus" type="array">
+         <obj_property name="ElementShortName">cum_bonus[7:0]</obj_property>
+         <obj_property name="ObjectShortName">cum_bonus[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/bonus_wire_pre_cal" type="array">
+         <obj_property name="ElementShortName">bonus_wire_pre_cal[7:0]</obj_property>
+         <obj_property name="ObjectShortName">bonus_wire_pre_cal[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/mv_stay_score" type="array">
+         <obj_property name="ElementShortName">mv_stay_score[7:0]</obj_property>
+         <obj_property name="ObjectShortName">mv_stay_score[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/bonus_wire" type="array">
+         <obj_property name="ElementShortName">bonus_wire[7:0]</obj_property>
+         <obj_property name="ObjectShortName">bonus_wire[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/move_score" type="array">
+         <obj_property name="ElementShortName">move_score[8:0]</obj_property>
+         <obj_property name="ObjectShortName">move_score[8:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/move" type="logic">
+         <obj_property name="ElementShortName">move</obj_property>
+         <obj_property name="ObjectShortName">move</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/curr_bonus" type="array">
+         <obj_property name="ElementShortName">curr_bonus[6:0]</obj_property>
+         <obj_property name="ObjectShortName">curr_bonus[6:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/diag_s" type="array">
+         <obj_property name="ElementShortName">diag_s[16:0]</obj_property>
+         <obj_property name="ObjectShortName">diag_s[16:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/ip_bonus_s" type="array">
+         <obj_property name="ElementShortName">ip_bonus_s[6:0]</obj_property>
+         <obj_property name="ObjectShortName">ip_bonus_s[6:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/score_wire" type="array">
+         <obj_property name="ElementShortName">score_wire[16:0]</obj_property>
+         <obj_property name="ObjectShortName">score_wire[16:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/l_query" type="array">
+         <obj_property name="ElementShortName">l_query[7:0]</obj_property>
+         <obj_property name="ObjectShortName">l_query[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/l_query_r" type="array">
+         <obj_property name="ElementShortName">l_query_r[7:0]</obj_property>
+         <obj_property name="ObjectShortName">l_query_r[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/ip_ref" type="array">
+         <obj_property name="ElementShortName">ip_ref[7:0]</obj_property>
+         <obj_property name="ObjectShortName">ip_ref[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/first_col/ip_reference_r" type="array">
+         <obj_property name="ElementShortName">ip_reference_r[7:0]</obj_property>
+         <obj_property name="ObjectShortName">ip_reference_r[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group88" type="group">
+      <obj_property name="label">last_col</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/clk" type="logic">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/rst" type="logic">
+         <obj_property name="ElementShortName">rst</obj_property>
+         <obj_property name="ObjectShortName">rst</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/query" type="array">
+         <obj_property name="ElementShortName">query[7:0]</obj_property>
+         <obj_property name="ObjectShortName">query[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/ip_reference" type="array">
+         <obj_property name="ElementShortName">ip_reference[7:0]</obj_property>
+         <obj_property name="ObjectShortName">ip_reference[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/ip_bonus" type="array">
+         <obj_property name="ElementShortName">ip_bonus[6:0]</obj_property>
+         <obj_property name="ObjectShortName">ip_bonus[6:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/activate" type="logic">
+         <obj_property name="ElementShortName">activate</obj_property>
+         <obj_property name="ObjectShortName">activate</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/left" type="array">
+         <obj_property name="ElementShortName">left[16:0]</obj_property>
+         <obj_property name="ObjectShortName">left[16:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/diag" type="array">
+         <obj_property name="ElementShortName">diag[16:0]</obj_property>
+         <obj_property name="ObjectShortName">diag[16:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/init" type="logic">
+         <obj_property name="ElementShortName">init</obj_property>
+         <obj_property name="ObjectShortName">init</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/prev_op" type="array">
+         <obj_property name="ElementShortName">prev_op[16:0]</obj_property>
+         <obj_property name="ObjectShortName">prev_op[16:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/curr_op" type="array">
+         <obj_property name="ElementShortName">curr_op[16:0]</obj_property>
+         <obj_property name="ObjectShortName">curr_op[16:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/stop_bit" type="logic">
+         <obj_property name="ElementShortName">stop_bit</obj_property>
+         <obj_property name="ObjectShortName">stop_bit</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/prev_bonus" type="array">
+         <obj_property name="ElementShortName">prev_bonus[6:0]</obj_property>
+         <obj_property name="ObjectShortName">prev_bonus[6:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/query_o" type="array">
+         <obj_property name="ElementShortName">query_o[7:0]</obj_property>
+         <obj_property name="ObjectShortName">query_o[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/op_reference" type="array">
+         <obj_property name="ElementShortName">op_reference[7:0]</obj_property>
+         <obj_property name="ObjectShortName">op_reference[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/loop_score_o" type="array">
+         <obj_property name="ElementShortName">loop_score_o[16:0]</obj_property>
+         <obj_property name="ObjectShortName">loop_score_o[16:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/loop_score_val" type="logic">
+         <obj_property name="ElementShortName">loop_score_val</obj_property>
+         <obj_property name="ObjectShortName">loop_score_val</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/stop_wire" type="logic">
+         <obj_property name="ElementShortName">stop_wire</obj_property>
+         <obj_property name="ObjectShortName">stop_wire</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/query_o_r" type="array">
+         <obj_property name="ElementShortName">query_o_r[7:0]</obj_property>
+         <obj_property name="ObjectShortName">query_o_r[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/set_bit" type="array">
+         <obj_property name="ElementShortName">set_bit[1:0]</obj_property>
+         <obj_property name="ObjectShortName">set_bit[1:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/diff" type="array">
+         <obj_property name="ElementShortName">diff[7:0]</obj_property>
+         <obj_property name="ObjectShortName">diff[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/cum_bonus" type="array">
+         <obj_property name="ElementShortName">cum_bonus[7:0]</obj_property>
+         <obj_property name="ObjectShortName">cum_bonus[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/bonus_wire_pre_cal" type="array">
+         <obj_property name="ElementShortName">bonus_wire_pre_cal[7:0]</obj_property>
+         <obj_property name="ObjectShortName">bonus_wire_pre_cal[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/mv_stay_score" type="array">
+         <obj_property name="ElementShortName">mv_stay_score[7:0]</obj_property>
+         <obj_property name="ObjectShortName">mv_stay_score[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/bonus_wire" type="array">
+         <obj_property name="ElementShortName">bonus_wire[7:0]</obj_property>
+         <obj_property name="ObjectShortName">bonus_wire[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/move_score" type="array">
+         <obj_property name="ElementShortName">move_score[8:0]</obj_property>
+         <obj_property name="ObjectShortName">move_score[8:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/move" type="logic">
+         <obj_property name="ElementShortName">move</obj_property>
+         <obj_property name="ObjectShortName">move</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/curr_bonus" type="array">
+         <obj_property name="ElementShortName">curr_bonus[6:0]</obj_property>
+         <obj_property name="ObjectShortName">curr_bonus[6:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/diag_s" type="array">
+         <obj_property name="ElementShortName">diag_s[16:0]</obj_property>
+         <obj_property name="ObjectShortName">diag_s[16:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/ip_bonus_s" type="array">
+         <obj_property name="ElementShortName">ip_bonus_s[6:0]</obj_property>
+         <obj_property name="ObjectShortName">ip_bonus_s[6:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/score_wire" type="array">
+         <obj_property name="ElementShortName">score_wire[16:0]</obj_property>
+         <obj_property name="ObjectShortName">score_wire[16:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/l_query" type="array">
+         <obj_property name="ElementShortName">l_query[7:0]</obj_property>
+         <obj_property name="ObjectShortName">l_query[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/l_query_r" type="array">
+         <obj_property name="ElementShortName">l_query_r[7:0]</obj_property>
+         <obj_property name="ObjectShortName">l_query_r[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/ip_ref" type="array">
+         <obj_property name="ElementShortName">ip_ref[7:0]</obj_property>
+         <obj_property name="ObjectShortName">ip_ref[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/w_t/ed/PE_lc/ip_reference_r" type="array">
+         <obj_property name="ElementShortName">ip_reference_r[7:0]</obj_property>
+         <obj_property name="ObjectShortName">ip_reference_r[7:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>

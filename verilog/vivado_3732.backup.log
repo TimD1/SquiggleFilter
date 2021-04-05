@@ -1,0 +1,1016 @@
+#-----------------------------------------------------------
+# Vivado v2019.1 (64-bit)
+# SW Build 2552052 on Fri May 24 14:49:42 MDT 2019
+# IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
+# Start of session at: Tue Nov 17 12:33:53 2020
+# Process ID: 3732
+# Current directory: C:/verilog
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent12852 C:\verilog\verilog_v2.xpr
+# Log file: C:/verilog/vivado.log
+# Journal file: C:/verilog\vivado.jou
+#-----------------------------------------------------------
+Sourcing tcl script 'C:/Users/Harisankar Sadasivan/AppData/Roaming/Xilinx/Vivado/Vivado_init.tcl'
+start_gui
+open_project C:/verilog/verilog_v2.xpr
+WARNING: [Board 49-91] Board repository path '{C:Xilinxivado-boards-masterivado-boards-master
+ewoard_files"}' does not exist, it will not be used to search board files.
+Scanning sources...
+Finished scanning sources
+WARNING: [filemgmt 56-3] Board Part Repository Path: Could not find the directory 'C:/Users/Harisankar Sadasivan/AppData/Roaming/Xilinx/Vivado/2019.1/xhub/board_store'.
+WARNING: [filemgmt 56-3] Board Part Repository Path: Could not find the directory 'C:/verilog/{C:Xilinx'.
+WARNING: [filemgmt 56-3] Board Part Repository Path: Could not find the directory 'C:/verilog/ivado-boards-master'.
+WARNING: [filemgmt 56-3] Board Part Repository Path: Could not find the directory 'C:/verilog/ivado-boards-master'.
+WARNING: [filemgmt 56-3] Board Part Repository Path: Could not find the directory 'C:/verilog/ewoard_files"}'.
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2019.1/data/ip'.
+launch_simulation
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'C:/Xilinx/Vivado/2019.1/data/xsim/xsim.ini' copied to run dir:'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-54] Inspecting design source files for 'testbench' in fileset 'sim_1'...
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-100] Fetching design files from 'sources_1'...(this may take a while)...
+INFO: [USF-XSim-101] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj testbench_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/testbench.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module testbench
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/PE.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module PE
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/sDTW.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module sDTW
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog_v3/verilog_v2.srcs/sources_1/new/warper_top.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module warper_top
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog_v3/verilog_v2.srcs/sources_1/new/query_bram.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module bram_wA_rB
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog_v3/verilog_v2.srcs/sources_1/new/ref_bram.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module bram_rw
+INFO: [USF-XSim-69] 'compile' step finished in '2' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+"xelab -wto 89d7605952a24057b2151880802bfea9 --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator 2019.1
+Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
+Running: C:/Xilinx/Vivado/2019.1/bin/unwrapped/win64.o/xelab.exe -wto 89d7605952a24057b2151880802bfea9 --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 17 for port 'left' [C:/verilog/verilog_v2.srcs/sources_1/new/sDTW.sv:56]
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 17 for port 'diag' [C:/verilog/verilog_v2.srcs/sources_1/new/sDTW.sv:58]
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.PE
+Compiling module xil_defaultlib.sDTW_default
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=1,ME...
+Compiling module xpm.xpm_memory_sdpram(MEMORY_SIZE=40...
+Compiling module xil_defaultlib.bram_wA_rB
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=0,ME...
+Compiling module xpm.xpm_memory_spram(MEMORY_SIZE=160...
+Compiling module xil_defaultlib.bram_rw
+Compiling module xil_defaultlib.warper_top
+Compiling module xil_defaultlib.testbench
+WARNING: [XSIM 43-3373] "C:/verilog/verilog_v2.srcs/sources_1/new/testbench.sv" Line 168. System function $fscanf is used as system task. This system function should have a LHS e.g. x=$fscanf().
+WARNING: [XSIM 43-3373] "C:/verilog/verilog_v2.srcs/sources_1/new/testbench.sv" Line 200. System function $fscanf is used as system task. This system function should have a LHS e.g. x=$fscanf().
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot testbench_behav
+INFO: [USF-XSim-69] 'elaborate' step finished in '3' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "testbench_behav -key {Behavioral:sim_1:Functional:testbench} -tclbatch {testbench.tcl} -view {C:/verilog/testbench_behav.wcfg} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Vivado Simulator 2019.1
+Time resolution is 1 ps
+open_wave_config C:/verilog/testbench_behav.wcfg
+source testbench.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+# run 9000000ns
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. testbench.w_t.q_bram.xpm_memory_sdpram_inst.xpm_memory_base_inst.config_drc
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/q_bram/xpm_memory_sdpram_inst/xpm_memory_base_inst/Initial290_201  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+Info: [XPM_MEMORY 20-2] MEMORY_INIT_FILE (none), MEMORY_INIT_PARAM together specify no memory initialization. Initial memory contents will be all 0's. testbench.w_t.q_bram.xpm_memory_sdpram_inst.xpm_memory_base_inst.config_drc  0
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/q_bram/xpm_memory_sdpram_inst/xpm_memory_base_inst/Initial290_201  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. testbench.w_t.ref_bram.xpm_memory_spram_inst.xpm_memory_base_inst.config_drc
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/ref_bram/xpm_memory_spram_inst/xpm_memory_base_inst/Initial290_215  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+Info: [XPM_MEMORY 20-2] MEMORY_INIT_FILE (none), MEMORY_INIT_PARAM together specify no memory initialization. Initial memory contents will be all 0's. testbench.w_t.ref_bram.xpm_memory_spram_inst.xpm_memory_base_inst.config_drc  0
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/ref_bram/xpm_memory_spram_inst/xpm_memory_base_inst/Initial290_215  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+file opened succesfully: -20000
+ptr=     -20000
+file opened succesfully: -20000
+ptr=     -20000
+////////////////////////////////////////////////
+//          Running Squal Testbench             //
+////////////////////////////////////////////////
+Test			FAILED! result = 1 expected =      0
+131071
+$finish called at time : 661475 ns : File "C:/verilog/verilog_v2.srcs/sources_1/new/testbench.sv" Line 378
+xsim: Time (s): cpu = 00:00:17 ; elapsed = 00:00:07 . Memory (MB): peak = 842.637 ; gain = 101.762
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'testbench_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 9000000ns
+launch_simulation: Time (s): cpu = 00:00:21 ; elapsed = 00:00:13 . Memory (MB): peak = 842.637 ; gain = 103.691
+add_files -norecurse {C:/verilog/verilog_v2.srcs/sources_1/new/mad_normalizer.sv C:/verilog/verilog_v2.srcs/sources_1/new/mean_calculator.sv C:/verilog/verilog_v2.srcs/sources_1/new/top_normalizer.sv C:/verilog/verilog_v2.srcs/sources_1/new/mad_calculator.sv}
+add_files {C:/verilog/verilog_v2.srcs/sources_1/new/constants.vh C:/verilog/verilog_v2.srcs/sources_1/new/mean_calculator.sv C:/verilog/verilog_v2.srcs/sources_1/new/sDTW.sv C:/verilog/verilog_v2.srcs/sources_1/new/PE.sv C:/verilog/verilog_v2.srcs/sources_1/new/warper_top.sv C:/verilog/verilog_v2.srcs/sources_1/new/query_bram.sv C:/verilog/verilog_v2.srcs/sources_1/new/testbench_PE.sv C:/verilog/verilog_v2.srcs/sources_1/new/mad_normalizer.sv C:/verilog/verilog_v2.srcs/sources_1/new/PE_kg.sv C:/verilog/verilog_v2.srcs/sources_1/new/testbench_bram.sv C:/verilog/verilog_v2.srcs/sources_1/new/top_normalizer.sv C:/verilog/verilog_v2.srcs/sources_1/new/mad_calculator.sv C:/verilog/verilog_v2.srcs/sources_1/new/ref_bram.sv C:/verilog/verilog_v2.srcs/sources_1/new/testbench.sv}
+WARNING: [filemgmt 56-12] File 'C:/verilog/verilog_v2.srcs/sources_1/new/constants.vh' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'C:/verilog/verilog_v2.srcs/sources_1/new/mean_calculator.sv' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'C:/verilog/verilog_v2.srcs/sources_1/new/sDTW.sv' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'C:/verilog/verilog_v2.srcs/sources_1/new/PE.sv' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'C:/verilog/verilog_v2.srcs/sources_1/new/testbench_PE.sv' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'C:/verilog/verilog_v2.srcs/sources_1/new/mad_normalizer.sv' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'C:/verilog/verilog_v2.srcs/sources_1/new/testbench_bram.sv' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'C:/verilog/verilog_v2.srcs/sources_1/new/top_normalizer.sv' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'C:/verilog/verilog_v2.srcs/sources_1/new/mad_calculator.sv' cannot be added to the project because it already exists in the project, skipping this file
+WARNING: [filemgmt 56-12] File 'C:/verilog/verilog_v2.srcs/sources_1/new/testbench.sv' cannot be added to the project because it already exists in the project, skipping this file
+set_property is_enabled false [get_files  {C:/verilog/verilog_v2.srcs/sources_1/new/testbench.sv C:/verilog_v3/verilog_v2.srcs/sources_1/new/warper_top.sv}]
+close [ open C:/verilog/verilog_v2.srcs/sources_1/new/testbench_norm.sv w ]
+add_files C:/verilog/verilog_v2.srcs/sources_1/new/testbench_norm.sv
+set_property top top_normalizer [current_fileset]
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+launch_simulation
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'C:/Xilinx/Vivado/2019.1/data/xsim/xsim.ini' copied to run dir:'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-54] Inspecting design source files for 'testbench' in fileset 'sim_1'...
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-100] Fetching design files from 'sources_1'...(this may take a while)...
+INFO: [USF-XSim-101] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj testbench_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/mad_normalizer.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mad_normalizer
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/mean_calculator.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mean_calculator
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/top_normalizer.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module top_normalizer
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/mad_calculator.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mad_calculator
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/warper_top.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module warper_top
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/query_bram.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module bram_wA_rB
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/PE_kg.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module PE_kg
+ERROR: [VRFC 10-3516] mismatch in closing label 'PE'; expected 'PE_kg' [C:/verilog/verilog_v2.srcs/sources_1/new/PE_kg.sv:28]
+INFO: [USF-XSim-69] 'compile' step finished in '2' seconds
+INFO: [USF-XSim-99] Step results log file:'C:/verilog/verilog_v2.sim/sim_1/behav/xsim/xvlog.log'
+ERROR: [USF-XSim-62] 'compile' step failed with error(s). Please check the Tcl console output or 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim/xvlog.log' file for more information.
+ERROR: [Vivado 12-4473] Detected error while running simulation. Please correct the issue and retry this operation.
+ERROR: [Common 17-39] 'launch_simulation' failed due to earlier errors.
+set_property is_enabled false [get_files  C:/verilog/verilog_v2.srcs/sources_1/new/PE_kg.sv]
+set_property is_enabled false [get_files  C:/verilog/verilog_v2.srcs/sources_1/new/testbench_norm.sv]
+launch_simulation
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'C:/Xilinx/Vivado/2019.1/data/xsim/xsim.ini' copied to run dir:'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-54] Inspecting design source files for 'testbench' in fileset 'sim_1'...
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-100] Fetching design files from 'sources_1'...(this may take a while)...
+INFO: [USF-XSim-101] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj testbench_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/mad_normalizer.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mad_normalizer
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/mean_calculator.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mean_calculator
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/top_normalizer.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module top_normalizer
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/mad_calculator.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mad_calculator
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/warper_top.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module warper_top
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/query_bram.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module bram_wA_rB
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/ref_bram.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module bram_rw
+INFO: [USF-XSim-69] 'compile' step finished in '2' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+"xelab -wto 89d7605952a24057b2151880802bfea9 --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator 2019.1
+Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
+Running: C:/Xilinx/Vivado/2019.1/bin/unwrapped/win64.o/xelab.exe -wto 89d7605952a24057b2151880802bfea9 --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 17 for port 'left' [C:/verilog/verilog_v2.srcs/sources_1/new/sDTW.sv:56]
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 17 for port 'diag' [C:/verilog/verilog_v2.srcs/sources_1/new/sDTW.sv:58]
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.PE
+Compiling module xil_defaultlib.sDTW_default
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=1,ME...
+Compiling module xpm.xpm_memory_sdpram(MEMORY_SIZE=40...
+Compiling module xil_defaultlib.bram_wA_rB
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=0,ME...
+Compiling module xpm.xpm_memory_spram(MEMORY_SIZE=160...
+Compiling module xil_defaultlib.bram_rw
+Compiling module xil_defaultlib.warper_top
+Compiling module xil_defaultlib.testbench
+WARNING: [XSIM 43-3373] "C:/verilog/verilog_v2.srcs/sources_1/new/testbench.sv" Line 168. System function $fscanf is used as system task. This system function should have a LHS e.g. x=$fscanf().
+WARNING: [XSIM 43-3373] "C:/verilog/verilog_v2.srcs/sources_1/new/testbench.sv" Line 200. System function $fscanf is used as system task. This system function should have a LHS e.g. x=$fscanf().
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot testbench_behav
+INFO: [USF-XSim-69] 'elaborate' step finished in '2' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "testbench_behav -key {Behavioral:sim_1:Functional:testbench} -tclbatch {testbench.tcl} -view {C:/verilog/testbench_behav.wcfg} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Vivado Simulator 2019.1
+Time resolution is 1 ps
+open_wave_config C:/verilog/testbench_behav.wcfg
+source testbench.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+# run 9000000ns
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. testbench.w_t.q_bram.xpm_memory_sdpram_inst.xpm_memory_base_inst.config_drc
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/q_bram/xpm_memory_sdpram_inst/xpm_memory_base_inst/Initial290_201  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+Info: [XPM_MEMORY 20-2] MEMORY_INIT_FILE (none), MEMORY_INIT_PARAM together specify no memory initialization. Initial memory contents will be all 0's. testbench.w_t.q_bram.xpm_memory_sdpram_inst.xpm_memory_base_inst.config_drc  0
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/q_bram/xpm_memory_sdpram_inst/xpm_memory_base_inst/Initial290_201  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. testbench.w_t.ref_bram.xpm_memory_spram_inst.xpm_memory_base_inst.config_drc
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/ref_bram/xpm_memory_spram_inst/xpm_memory_base_inst/Initial290_215  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+Info: [XPM_MEMORY 20-2] MEMORY_INIT_FILE (none), MEMORY_INIT_PARAM together specify no memory initialization. Initial memory contents will be all 0's. testbench.w_t.ref_bram.xpm_memory_spram_inst.xpm_memory_base_inst.config_drc  0
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/ref_bram/xpm_memory_spram_inst/xpm_memory_base_inst/Initial290_215  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+file opened succesfully: -20000
+ptr=     -20000
+file opened succesfully: -20000
+ptr=     -20000
+////////////////////////////////////////////////
+//          Running Squal Testbench             //
+////////////////////////////////////////////////
+Test			FAILED! result = 1 expected =      0
+131071
+$finish called at time : 661475 ns : File "C:/verilog/verilog_v2.srcs/sources_1/new/testbench.sv" Line 378
+xsim: Time (s): cpu = 00:00:07 ; elapsed = 00:00:06 . Memory (MB): peak = 974.953 ; gain = 93.141
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'testbench_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 9000000ns
+launch_simulation: Time (s): cpu = 00:00:09 ; elapsed = 00:00:12 . Memory (MB): peak = 974.992 ; gain = 93.180
+set_property is_enabled true [get_files  {C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_1/div_gen_1.xci C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_2/div_gen_2.xci}]
+set_property -dict [list CONFIG.dividend_and_quotient_width {23} CONFIG.divisor_width {13} CONFIG.fractional_width {13} CONFIG.latency {25}] [get_ips div_gen_0]
+generate_target all [get_files  C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'div_gen_0'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'div_gen_0'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'div_gen_0'...
+INFO: [IP_Flow 19-1686] Generating 'C Simulation' target for IP 'div_gen_0'...
+INFO: [IP_Flow 19-1686] Generating 'Test Bench' target for IP 'div_gen_0'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'div_gen_0'...
+export_ip_user_files -of_objects [get_files C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci] -directory C:/verilog/verilog_v2.ip_user_files/sim_scripts -ip_user_files_dir C:/verilog/verilog_v2.ip_user_files -ipstatic_source_dir C:/verilog/verilog_v2.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/verilog/verilog_v2.cache/compile_simlib/modelsim} {questa=C:/verilog/verilog_v2.cache/compile_simlib/questa} {riviera=C:/verilog/verilog_v2.cache/compile_simlib/riviera} {activehdl=C:/verilog/verilog_v2.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+launch_simulation
+INFO: [Vivado 12-5698] Checking validity of IPs in the design for the 'XSim' simulator...
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [Vivado 12-4795] Using compiled simulation libraries for IPs
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'C:/Xilinx/Vivado/2019.1/data/xsim/xsim.ini' copied to run dir:'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-54] Inspecting design source files for 'testbench' in fileset 'sim_1'...
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-100] Fetching design files from 'sources_1'...(this may take a while)...
+INFO: [USF-XSim-101] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj testbench_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/PE.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module PE
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/sDTW.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module sDTW
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog_v3/verilog_v2.srcs/sources_1/new/query_bram.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module bram_wA_rB
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog_v3/verilog_v2.srcs/sources_1/new/ref_bram.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module bram_rw
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/mad_normalizer.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mad_normalizer
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/mean_calculator.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mean_calculator
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/top_normalizer.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module top_normalizer
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/mad_calculator.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mad_calculator
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/warper_top.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module warper_top
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/query_bram.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module bram_wA_rB
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'bram_wA_rB' [C:/verilog/verilog_v2.srcs/sources_1/new/query_bram.sv:25]
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/ref_bram.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module bram_rw
+WARNING: [VRFC 10-3609] overwriting previous definition of module 'bram_rw' [C:/verilog/verilog_v2.srcs/sources_1/new/ref_bram.sv:25]
+"xvhdl --incr --relax -prj testbench_vhdl.prj"
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_0/sim/div_gen_0.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'div_gen_0'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_0/demo_tb/tb_div_gen_0.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'tb_div_gen_0'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_1/sim/div_gen_1.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'div_gen_1'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_1/demo_tb/tb_div_gen_1.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'tb_div_gen_1'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_2/sim/div_gen_2.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'div_gen_2'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_2/demo_tb/tb_div_gen_2.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'tb_div_gen_2'
+INFO: [USF-XSim-69] 'compile' step finished in '3' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+"xelab -wto 89d7605952a24057b2151880802bfea9 --incr --debug typical --relax --mt 2 -L xil_defaultlib -L xbip_utils_v3_0_10 -L axi_utils_v2_0_6 -L xbip_pipe_v3_0_6 -L xbip_dsp48_wrapper_v3_0_4 -L xbip_dsp48_addsub_v3_0_6 -L xbip_bram18k_v3_0_6 -L mult_gen_v12_0_15 -L floating_point_v7_0_16 -L xbip_dsp48_mult_v3_0_6 -L xbip_dsp48_multadd_v3_0_6 -L div_gen_v5_1_15 -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator 2019.1
+Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
+Running: C:/Xilinx/Vivado/2019.1/bin/unwrapped/win64.o/xelab.exe -wto 89d7605952a24057b2151880802bfea9 --incr --debug typical --relax --mt 2 -L xil_defaultlib -L xbip_utils_v3_0_10 -L axi_utils_v2_0_6 -L xbip_pipe_v3_0_6 -L xbip_dsp48_wrapper_v3_0_4 -L xbip_dsp48_addsub_v3_0_6 -L xbip_bram18k_v3_0_6 -L mult_gen_v12_0_15 -L floating_point_v7_0_16 -L xbip_dsp48_mult_v3_0_6 -L xbip_dsp48_multadd_v3_0_6 -L div_gen_v5_1_15 -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 17 for port 'left' [C:/verilog/verilog_v2.srcs/sources_1/new/sDTW.sv:56]
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 17 for port 'diag' [C:/verilog/verilog_v2.srcs/sources_1/new/sDTW.sv:58]
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.PE
+Compiling module xil_defaultlib.sDTW_default
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=1,ME...
+Compiling module xpm.xpm_memory_sdpram(MEMORY_SIZE=40...
+Compiling module xil_defaultlib.bram_wA_rB
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=0,ME...
+Compiling module xpm.xpm_memory_spram(MEMORY_SIZE=160...
+Compiling module xil_defaultlib.bram_rw
+Compiling module xil_defaultlib.warper_top
+Compiling module xil_defaultlib.testbench
+WARNING: [XSIM 43-3373] "C:/verilog/verilog_v2.srcs/sources_1/new/testbench.sv" Line 168. System function $fscanf is used as system task. This system function should have a LHS e.g. x=$fscanf().
+WARNING: [XSIM 43-3373] "C:/verilog/verilog_v2.srcs/sources_1/new/testbench.sv" Line 200. System function $fscanf is used as system task. This system function should have a LHS e.g. x=$fscanf().
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot testbench_behav
+INFO: [USF-XSim-69] 'elaborate' step finished in '3' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "testbench_behav -key {Behavioral:sim_1:Functional:testbench} -tclbatch {testbench.tcl} -view {C:/verilog/testbench_behav.wcfg} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Vivado Simulator 2019.1
+Time resolution is 1 ps
+open_wave_config C:/verilog/testbench_behav.wcfg
+source testbench.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+# run 9000000ns
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. testbench.w_t.q_bram.xpm_memory_sdpram_inst.xpm_memory_base_inst.config_drc
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/q_bram/xpm_memory_sdpram_inst/xpm_memory_base_inst/Initial290_201  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+Info: [XPM_MEMORY 20-2] MEMORY_INIT_FILE (none), MEMORY_INIT_PARAM together specify no memory initialization. Initial memory contents will be all 0's. testbench.w_t.q_bram.xpm_memory_sdpram_inst.xpm_memory_base_inst.config_drc  0
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/q_bram/xpm_memory_sdpram_inst/xpm_memory_base_inst/Initial290_201  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. testbench.w_t.ref_bram.xpm_memory_spram_inst.xpm_memory_base_inst.config_drc
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/ref_bram/xpm_memory_spram_inst/xpm_memory_base_inst/Initial290_215  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+Info: [XPM_MEMORY 20-2] MEMORY_INIT_FILE (none), MEMORY_INIT_PARAM together specify no memory initialization. Initial memory contents will be all 0's. testbench.w_t.ref_bram.xpm_memory_spram_inst.xpm_memory_base_inst.config_drc  0
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/ref_bram/xpm_memory_spram_inst/xpm_memory_base_inst/Initial290_215  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+file opened succesfully: -20000
+ptr=     -20000
+file opened succesfully: -20000
+ptr=     -20000
+////////////////////////////////////////////////
+//          Running Squal Testbench             //
+////////////////////////////////////////////////
+Test			FAILED! result = 1 expected =      0
+131071
+$finish called at time : 661475 ns : File "C:/verilog/verilog_v2.srcs/sources_1/new/testbench.sv" Line 378
+xsim: Time (s): cpu = 00:00:07 ; elapsed = 00:00:06 . Memory (MB): peak = 1102.625 ; gain = 83.434
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'testbench_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 9000000ns
+launch_simulation: Time (s): cpu = 00:00:09 ; elapsed = 00:00:13 . Memory (MB): peak = 1102.625 ; gain = 83.434
+launch_runs synth_1 -jobs 4
+[Tue Nov 17 13:43:31 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+set_property is_enabled false [get_files  C:/verilog/verilog_v2.srcs/sources_1/new/warper_top.sv]
+reset_run synth_1
+set_property is_enabled false [get_files  {C:/verilog/verilog_v2.srcs/sources_1/new/ref_bram.sv C:/verilog_v3/verilog_v2.srcs/sources_1/new/ref_bram.sv C:/verilog/verilog_v2.srcs/sources_1/new/query_bram.sv C:/verilog_v3/verilog_v2.srcs/sources_1/new/query_bram.sv}]
+set_property is_enabled false [get_files  C:/verilog/verilog_v2.srcs/sources_1/new/sDTW.sv]
+launch_runs synth_1 -jobs 4
+[Tue Nov 17 13:44:45 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+set_property is_enabled false [get_files  C:/verilog/verilog_v2.srcs/sources_1/new/PE.sv]
+reset_run synth_1
+launch_runs synth_1 -jobs 4
+[Tue Nov 17 13:47:50 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+open_run synth_1 -name synth_1
+Design is defaulting to impl run constrset: constrs_1
+Design is defaulting to synth run part: xc7a200tsbv484-1
+INFO: [Device 21-403] Loading part xc7a200tsbv484-1
+INFO: [Netlist 29-17] Analyzing 294 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-479] Netlist was created with Vivado 2019.1
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.006 . Memory (MB): peak = 1432.738 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+open_run: Time (s): cpu = 00:00:25 ; elapsed = 00:00:17 . Memory (MB): peak = 1634.906 ; gain = 532.281
+report_utilization -name utilization_1
+create_clock -period 4.000 -name clk -waveform {0.000 2.000} [get_ports -filter { NAME =~  "*clk*" && DIRECTION == "IN" }]
+report_timing_summary -delay_type min_max -report_unconstrained -check_timing_verbose -max_paths 10 -input_pins -routable_nets -name timing_1
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -1, Delay Type: min_max.
+INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 2 CPUs
+convert_ips [get_files  C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci]
+INFO: [filemgmt 56-106] Converting IP 'div_gen_0' into core container format.
+INFO: [filemgmt 56-101] Creating core container 'C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_0.xcix' for IP 'div_gen_0'
+export_ip_user_files -of_objects  [get_files  C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci] -sync -lib_map_path [list {modelsim=C:/verilog/verilog_v2.cache/compile_simlib/modelsim} {questa=C:/verilog/verilog_v2.cache/compile_simlib/questa} {riviera=C:/verilog/verilog_v2.cache/compile_simlib/riviera} {activehdl=C:/verilog/verilog_v2.cache/compile_simlib/activehdl}] -force -quiet
+export_ip_user_files -of_objects  [get_files C:/verilog/verilog_v2.srcs/sources_1/ip/mult_gen_0_1/mult_gen_0.xci] -no_script -reset -force -quiet
+export_ip_user_files -of_objects  [get_files C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_4/div_gen_4.xci] -no_script -reset -force -quiet
+remove_files  {C:/verilog/verilog_v2.srcs/sources_1/ip/mult_gen_0_1/mult_gen_0.xci C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_4/div_gen_4.xci}
+export_ip_user_files -of_objects  [get_files C:/verilog/verilog_v2.srcs/sources_1/ip/blk_mem_gen_0/blk_mem_gen_0.xci] -no_script -reset -force -quiet
+export_ip_user_files -of_objects  [get_files C:/verilog/verilog_v2.srcs/sources_1/ip/blk_mem_gen_1/blk_mem_gen_1.xci] -no_script -reset -force -quiet
+remove_files  {C:/verilog/verilog_v2.srcs/sources_1/ip/blk_mem_gen_0/blk_mem_gen_0.xci C:/verilog/verilog_v2.srcs/sources_1/ip/blk_mem_gen_1/blk_mem_gen_1.xci}
+set_property -dict [list CONFIG.dividend_and_quotient_width {23} CONFIG.divisor_width {13} CONFIG.fractional_width {13} CONFIG.latency {25}] [get_ips div_gen_2]
+generate_target all [get_files  C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_2/div_gen_2.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'div_gen_2'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'div_gen_2'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'div_gen_2'...
+INFO: [IP_Flow 19-1686] Generating 'C Simulation' target for IP 'div_gen_2'...
+INFO: [IP_Flow 19-1686] Generating 'Test Bench' target for IP 'div_gen_2'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'div_gen_2'...
+export_ip_user_files -of_objects [get_files C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_2/div_gen_2.xci] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_2/div_gen_2.xci] -directory C:/verilog/verilog_v2.ip_user_files/sim_scripts -ip_user_files_dir C:/verilog/verilog_v2.ip_user_files -ipstatic_source_dir C:/verilog/verilog_v2.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/verilog/verilog_v2.cache/compile_simlib/modelsim} {questa=C:/verilog/verilog_v2.cache/compile_simlib/questa} {riviera=C:/verilog/verilog_v2.cache/compile_simlib/riviera} {activehdl=C:/verilog/verilog_v2.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+create_ip -name div_gen -vendor xilinx.com -library ip -version 5.1 -module_name div_gen_3 -dir c:/verilog/verilog_v2.srcs/sources_1/ip
+set_property -dict [list CONFIG.dividend_and_quotient_width {14} CONFIG.divisor_width {10} CONFIG.fractional_width {10} CONFIG.latency {18}] [get_ips div_gen_3]
+generate_target {instantiation_template} [get_files c:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_3/div_gen_3.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'div_gen_3'...
+set_property generate_synth_checkpoint false [get_files  c:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_3/div_gen_3.xci]
+generate_target all [get_files  c:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_3/div_gen_3.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'div_gen_3'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'div_gen_3'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'div_gen_3'...
+INFO: [IP_Flow 19-1686] Generating 'C Simulation' target for IP 'div_gen_3'...
+INFO: [IP_Flow 19-1686] Generating 'Test Bench' target for IP 'div_gen_3'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'div_gen_3'...
+export_ip_user_files -of_objects [get_files c:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_3/div_gen_3.xci] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files c:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_3/div_gen_3.xci] -directory C:/verilog/verilog_v2.ip_user_files/sim_scripts -ip_user_files_dir C:/verilog/verilog_v2.ip_user_files -ipstatic_source_dir C:/verilog/verilog_v2.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/verilog/verilog_v2.cache/compile_simlib/modelsim} {questa=C:/verilog/verilog_v2.cache/compile_simlib/questa} {riviera=C:/verilog/verilog_v2.cache/compile_simlib/riviera} {activehdl=C:/verilog/verilog_v2.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+set_property -dict [list CONFIG.dividend_and_quotient_width {24} CONFIG.divisor_width {13} CONFIG.fractional_width {13} CONFIG.latency {26}] [get_ips div_gen_0]
+generate_target all [get_files  C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'div_gen_0'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'div_gen_0'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'div_gen_0'...
+INFO: [IP_Flow 19-1686] Generating 'C Simulation' target for IP 'div_gen_0'...
+INFO: [IP_Flow 19-1686] Generating 'Test Bench' target for IP 'div_gen_0'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'div_gen_0'...
+export_ip_user_files -of_objects [get_files C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci] -directory C:/verilog/verilog_v2.ip_user_files/sim_scripts -ip_user_files_dir C:/verilog/verilog_v2.ip_user_files -ipstatic_source_dir C:/verilog/verilog_v2.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/verilog/verilog_v2.cache/compile_simlib/modelsim} {questa=C:/verilog/verilog_v2.cache/compile_simlib/questa} {riviera=C:/verilog/verilog_v2.cache/compile_simlib/riviera} {activehdl=C:/verilog/verilog_v2.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+set_property -dict [list CONFIG.dividend_and_quotient_width {24} CONFIG.divisor_width {13} CONFIG.fractional_width {13} CONFIG.latency {26}] [get_ips div_gen_1]
+generate_target all [get_files  C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_1/div_gen_1.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'div_gen_1'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'div_gen_1'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'div_gen_1'...
+INFO: [IP_Flow 19-1686] Generating 'C Simulation' target for IP 'div_gen_1'...
+INFO: [IP_Flow 19-1686] Generating 'Test Bench' target for IP 'div_gen_1'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'div_gen_1'...
+export_ip_user_files -of_objects [get_files C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_1/div_gen_1.xci] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_1/div_gen_1.xci] -directory C:/verilog/verilog_v2.ip_user_files/sim_scripts -ip_user_files_dir C:/verilog/verilog_v2.ip_user_files -ipstatic_source_dir C:/verilog/verilog_v2.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/verilog/verilog_v2.cache/compile_simlib/modelsim} {questa=C:/verilog/verilog_v2.cache/compile_simlib/questa} {riviera=C:/verilog/verilog_v2.cache/compile_simlib/riviera} {activehdl=C:/verilog/verilog_v2.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+launch_simulation
+INFO: [Vivado 12-5698] Checking validity of IPs in the design for the 'XSim' simulator...
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [Vivado 12-4795] Using compiled simulation libraries for IPs
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'C:/Xilinx/Vivado/2019.1/data/xsim/xsim.ini' copied to run dir:'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-54] Inspecting design source files for 'testbench' in fileset 'sim_1'...
+WARNING: [SIM-utils-52] IP component XML file does not exist: 'c:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xml'
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-100] Fetching design files from 'sources_1'...(this may take a while)...
+INFO: [USF-XSim-101] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj testbench_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/mad_normalizer.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mad_normalizer
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/mean_calculator.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mean_calculator
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/top_normalizer.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module top_normalizer
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/mad_calculator.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mad_calculator
+"xvhdl --incr --relax -prj testbench_vhdl.prj"
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/verilog/verilog_v2.ip_user_files/ip/div_gen_0/sim/div_gen_0.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'div_gen_0'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/verilog/verilog_v2.ip_user_files/ip/div_gen_0/demo_tb/tb_div_gen_0.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'tb_div_gen_0'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_1/sim/div_gen_1.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'div_gen_1'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_1/demo_tb/tb_div_gen_1.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'tb_div_gen_1'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_2/sim/div_gen_2.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'div_gen_2'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_2/demo_tb/tb_div_gen_2.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'tb_div_gen_2'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_3/sim/div_gen_3.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'div_gen_3'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_3/demo_tb/tb_div_gen_3.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'tb_div_gen_3'
+INFO: [USF-XSim-69] 'compile' step finished in '3' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+"xelab -wto 89d7605952a24057b2151880802bfea9 --incr --debug typical --relax --mt 2 -L xbip_utils_v3_0_10 -L axi_utils_v2_0_6 -L xbip_pipe_v3_0_6 -L xbip_dsp48_wrapper_v3_0_4 -L xbip_dsp48_addsub_v3_0_6 -L xbip_bram18k_v3_0_6 -L mult_gen_v12_0_15 -L floating_point_v7_0_16 -L xbip_dsp48_mult_v3_0_6 -L xbip_dsp48_multadd_v3_0_6 -L div_gen_v5_1_15 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator 2019.1
+Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
+Running: C:/Xilinx/Vivado/2019.1/bin/unwrapped/win64.o/xelab.exe -wto 89d7605952a24057b2151880802bfea9 --incr --debug typical --relax --mt 2 -L xbip_utils_v3_0_10 -L axi_utils_v2_0_6 -L xbip_pipe_v3_0_6 -L xbip_dsp48_wrapper_v3_0_4 -L xbip_dsp48_addsub_v3_0_6 -L xbip_bram18k_v3_0_6 -L mult_gen_v12_0_15 -L floating_point_v7_0_16 -L xbip_dsp48_mult_v3_0_6 -L xbip_dsp48_multadd_v3_0_6 -L div_gen_v5_1_15 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 17 for port 'left' [C:/verilog/verilog_v2.srcs/sources_1/new/sDTW.sv:56]
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 17 for port 'diag' [C:/verilog/verilog_v2.srcs/sources_1/new/sDTW.sv:58]
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.PE
+Compiling module xil_defaultlib.sDTW_default
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=1,ME...
+Compiling module xpm.xpm_memory_sdpram(MEMORY_SIZE=40...
+Compiling module xil_defaultlib.bram_wA_rB
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=0,ME...
+Compiling module xpm.xpm_memory_spram(MEMORY_SIZE=160...
+Compiling module xil_defaultlib.bram_rw
+Compiling module xil_defaultlib.warper_top
+Compiling module xil_defaultlib.testbench
+WARNING: [XSIM 43-3373] "C:/verilog/verilog_v2.srcs/sources_1/new/testbench.sv" Line 168. System function $fscanf is used as system task. This system function should have a LHS e.g. x=$fscanf().
+WARNING: [XSIM 43-3373] "C:/verilog/verilog_v2.srcs/sources_1/new/testbench.sv" Line 200. System function $fscanf is used as system task. This system function should have a LHS e.g. x=$fscanf().
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot testbench_behav
+INFO: [USF-XSim-69] 'elaborate' step finished in '3' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "testbench_behav -key {Behavioral:sim_1:Functional:testbench} -tclbatch {testbench.tcl} -view {C:/verilog/testbench_behav.wcfg} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Vivado Simulator 2019.1
+Time resolution is 1 ps
+open_wave_config C:/verilog/testbench_behav.wcfg
+source testbench.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+# run 9000000ns
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. testbench.w_t.q_bram.xpm_memory_sdpram_inst.xpm_memory_base_inst.config_drc
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/q_bram/xpm_memory_sdpram_inst/xpm_memory_base_inst/Initial290_201  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+Info: [XPM_MEMORY 20-2] MEMORY_INIT_FILE (none), MEMORY_INIT_PARAM together specify no memory initialization. Initial memory contents will be all 0's. testbench.w_t.q_bram.xpm_memory_sdpram_inst.xpm_memory_base_inst.config_drc  0
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/q_bram/xpm_memory_sdpram_inst/xpm_memory_base_inst/Initial290_201  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. testbench.w_t.ref_bram.xpm_memory_spram_inst.xpm_memory_base_inst.config_drc
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/ref_bram/xpm_memory_spram_inst/xpm_memory_base_inst/Initial290_215  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+Info: [XPM_MEMORY 20-2] MEMORY_INIT_FILE (none), MEMORY_INIT_PARAM together specify no memory initialization. Initial memory contents will be all 0's. testbench.w_t.ref_bram.xpm_memory_spram_inst.xpm_memory_base_inst.config_drc  0
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/ref_bram/xpm_memory_spram_inst/xpm_memory_base_inst/Initial290_215  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+file opened succesfully: -20000
+ptr=     -20000
+file opened succesfully: -20000
+ptr=     -20000
+////////////////////////////////////////////////
+//          Running Squal Testbench             //
+////////////////////////////////////////////////
+Test			FAILED! result = 1 expected =      0
+131071
+$finish called at time : 661475 ns : File "C:/verilog/verilog_v2.srcs/sources_1/new/testbench.sv" Line 378
+xsim: Time (s): cpu = 00:00:08 ; elapsed = 00:00:06 . Memory (MB): peak = 2413.055 ; gain = 0.000
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'testbench_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 9000000ns
+launch_simulation: Time (s): cpu = 00:00:10 ; elapsed = 00:00:14 . Memory (MB): peak = 2413.055 ; gain = 0.000
+set_property -dict [list CONFIG.dividend_and_quotient_width {13} CONFIG.divisor_width {8} CONFIG.fractional_width {8} CONFIG.latency {17}] [get_ips div_gen_3]
+generate_target all [get_files  c:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_3/div_gen_3.xci]
+INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'div_gen_3'...
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'div_gen_3'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'div_gen_3'...
+INFO: [IP_Flow 19-1686] Generating 'C Simulation' target for IP 'div_gen_3'...
+INFO: [IP_Flow 19-1686] Generating 'Test Bench' target for IP 'div_gen_3'...
+INFO: [IP_Flow 19-1686] Generating 'Change Log' target for IP 'div_gen_3'...
+export_ip_user_files -of_objects [get_files c:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_3/div_gen_3.xci] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files c:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_3/div_gen_3.xci] -directory C:/verilog/verilog_v2.ip_user_files/sim_scripts -ip_user_files_dir C:/verilog/verilog_v2.ip_user_files -ipstatic_source_dir C:/verilog/verilog_v2.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/verilog/verilog_v2.cache/compile_simlib/modelsim} {questa=C:/verilog/verilog_v2.cache/compile_simlib/questa} {riviera=C:/verilog/verilog_v2.cache/compile_simlib/riviera} {activehdl=C:/verilog/verilog_v2.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+launch_simulation
+INFO: [Vivado 12-5698] Checking validity of IPs in the design for the 'XSim' simulator...
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [Vivado 12-4795] Using compiled simulation libraries for IPs
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'C:/Xilinx/Vivado/2019.1/data/xsim/xsim.ini' copied to run dir:'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-54] Inspecting design source files for 'testbench' in fileset 'sim_1'...
+WARNING: [SIM-utils-52] IP component XML file does not exist: 'c:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xml'
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-100] Fetching design files from 'sources_1'...(this may take a while)...
+INFO: [USF-XSim-101] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj testbench_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/mad_normalizer.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mad_normalizer
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/mean_calculator.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mean_calculator
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/top_normalizer.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module top_normalizer
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/mad_calculator.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mad_calculator
+"xvhdl --incr --relax -prj testbench_vhdl.prj"
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_1/demo_tb/tb_div_gen_1.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'tb_div_gen_1'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_2/demo_tb/tb_div_gen_2.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'tb_div_gen_2'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_3/sim/div_gen_3.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'div_gen_3'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_3/demo_tb/tb_div_gen_3.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'tb_div_gen_3'
+INFO: [USF-XSim-69] 'compile' step finished in '4' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+"xelab -wto 89d7605952a24057b2151880802bfea9 --incr --debug typical --relax --mt 2 -L xbip_utils_v3_0_10 -L axi_utils_v2_0_6 -L xbip_pipe_v3_0_6 -L xbip_dsp48_wrapper_v3_0_4 -L xbip_dsp48_addsub_v3_0_6 -L xbip_bram18k_v3_0_6 -L mult_gen_v12_0_15 -L floating_point_v7_0_16 -L xbip_dsp48_mult_v3_0_6 -L xbip_dsp48_multadd_v3_0_6 -L div_gen_v5_1_15 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator 2019.1
+Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
+Running: C:/Xilinx/Vivado/2019.1/bin/unwrapped/win64.o/xelab.exe -wto 89d7605952a24057b2151880802bfea9 --incr --debug typical --relax --mt 2 -L xbip_utils_v3_0_10 -L axi_utils_v2_0_6 -L xbip_pipe_v3_0_6 -L xbip_dsp48_wrapper_v3_0_4 -L xbip_dsp48_addsub_v3_0_6 -L xbip_bram18k_v3_0_6 -L mult_gen_v12_0_15 -L floating_point_v7_0_16 -L xbip_dsp48_mult_v3_0_6 -L xbip_dsp48_multadd_v3_0_6 -L div_gen_v5_1_15 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 17 for port 'left' [C:/verilog/verilog_v2.srcs/sources_1/new/sDTW.sv:56]
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 17 for port 'diag' [C:/verilog/verilog_v2.srcs/sources_1/new/sDTW.sv:58]
+Completed static elaboration
+INFO: [XSIM 43-4323] No Change in HDL. Linking previously generated obj files to create kernel
+INFO: [USF-XSim-69] 'elaborate' step finished in '2' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "testbench_behav -key {Behavioral:sim_1:Functional:testbench} -tclbatch {testbench.tcl} -view {C:/verilog/testbench_behav.wcfg} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Vivado Simulator 2019.1
+Time resolution is 1 ps
+open_wave_config C:/verilog/testbench_behav.wcfg
+source testbench.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+# run 9000000ns
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. testbench.w_t.q_bram.xpm_memory_sdpram_inst.xpm_memory_base_inst.config_drc
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/q_bram/xpm_memory_sdpram_inst/xpm_memory_base_inst/Initial290_201  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+Info: [XPM_MEMORY 20-2] MEMORY_INIT_FILE (none), MEMORY_INIT_PARAM together specify no memory initialization. Initial memory contents will be all 0's. testbench.w_t.q_bram.xpm_memory_sdpram_inst.xpm_memory_base_inst.config_drc  0
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/q_bram/xpm_memory_sdpram_inst/xpm_memory_base_inst/Initial290_201  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. testbench.w_t.ref_bram.xpm_memory_spram_inst.xpm_memory_base_inst.config_drc
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/ref_bram/xpm_memory_spram_inst/xpm_memory_base_inst/Initial290_215  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+Info: [XPM_MEMORY 20-2] MEMORY_INIT_FILE (none), MEMORY_INIT_PARAM together specify no memory initialization. Initial memory contents will be all 0's. testbench.w_t.ref_bram.xpm_memory_spram_inst.xpm_memory_base_inst.config_drc  0
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/ref_bram/xpm_memory_spram_inst/xpm_memory_base_inst/Initial290_215  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+file opened succesfully: -20000
+ptr=     -20000
+file opened succesfully: -20000
+ptr=     -20000
+////////////////////////////////////////////////
+//          Running Squal Testbench             //
+////////////////////////////////////////////////
+Test			FAILED! result = 1 expected =      0
+131071
+$finish called at time : 661475 ns : File "C:/verilog/verilog_v2.srcs/sources_1/new/testbench.sv" Line 378
+xsim: Time (s): cpu = 00:00:06 ; elapsed = 00:00:05 . Memory (MB): peak = 2413.055 ; gain = 0.000
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'testbench_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 9000000ns
+launch_simulation: Time (s): cpu = 00:00:09 ; elapsed = 00:00:13 . Memory (MB): peak = 2413.055 ; gain = 0.000
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+reset_run synth_1
+launch_runs synth_1 -jobs 4
+[Tue Nov 17 20:52:45 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+close_design
+open_run synth_1 -name synth_1
+Design is defaulting to impl run constrset: constrs_1
+Design is defaulting to synth run part: xc7a200tsbv484-1
+INFO: [Netlist 29-17] Analyzing 255 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-479] Netlist was created with Vivado 2019.1
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.005 . Memory (MB): peak = 2413.055 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+open_run: Time (s): cpu = 00:00:09 ; elapsed = 00:00:06 . Memory (MB): peak = 2413.055 ; gain = 0.000
+report_utilization -name utilization_1
+reset_run synth_1
+launch_runs synth_1 -jobs 4
+[Tue Nov 17 20:57:52 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+close_design
+open_run synth_1 -name synth_1
+Design is defaulting to impl run constrset: constrs_1
+Design is defaulting to synth run part: xc7a200tsbv484-1
+INFO: [Netlist 29-17] Analyzing 255 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-479] Netlist was created with Vivado 2019.1
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.007 . Memory (MB): peak = 2535.766 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+open_run: Time (s): cpu = 00:00:09 ; elapsed = 00:00:06 . Memory (MB): peak = 2595.629 ; gain = 59.863
+launch_simulation
+INFO: [Vivado 12-5698] Checking validity of IPs in the design for the 'XSim' simulator...
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [Vivado 12-4795] Using compiled simulation libraries for IPs
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'C:/Xilinx/Vivado/2019.1/data/xsim/xsim.ini' copied to run dir:'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-54] Inspecting design source files for 'testbench' in fileset 'sim_1'...
+WARNING: [SIM-utils-52] IP component XML file does not exist: 'c:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xml'
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-100] Fetching design files from 'sources_1'...(this may take a while)...
+INFO: [USF-XSim-101] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj testbench_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/mad_normalizer.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mad_normalizer
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/mean_calculator.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mean_calculator
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/top_normalizer.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module top_normalizer
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/verilog/verilog_v2.srcs/sources_1/new/mad_calculator.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mad_calculator
+"xvhdl --incr --relax -prj testbench_vhdl.prj"
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_3/demo_tb/tb_div_gen_3.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'tb_div_gen_3'
+INFO: [USF-XSim-69] 'compile' step finished in '4' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+"xelab -wto 89d7605952a24057b2151880802bfea9 --incr --debug typical --relax --mt 2 -L xbip_utils_v3_0_10 -L axi_utils_v2_0_6 -L xbip_pipe_v3_0_6 -L xbip_dsp48_wrapper_v3_0_4 -L xbip_dsp48_addsub_v3_0_6 -L xbip_bram18k_v3_0_6 -L mult_gen_v12_0_15 -L floating_point_v7_0_16 -L xbip_dsp48_mult_v3_0_6 -L xbip_dsp48_multadd_v3_0_6 -L div_gen_v5_1_15 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator 2019.1
+Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
+Running: C:/Xilinx/Vivado/2019.1/bin/unwrapped/win64.o/xelab.exe -wto 89d7605952a24057b2151880802bfea9 --incr --debug typical --relax --mt 2 -L xbip_utils_v3_0_10 -L axi_utils_v2_0_6 -L xbip_pipe_v3_0_6 -L xbip_dsp48_wrapper_v3_0_4 -L xbip_dsp48_addsub_v3_0_6 -L xbip_bram18k_v3_0_6 -L mult_gen_v12_0_15 -L floating_point_v7_0_16 -L xbip_dsp48_mult_v3_0_6 -L xbip_dsp48_multadd_v3_0_6 -L div_gen_v5_1_15 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 17 for port 'left' [C:/verilog/verilog_v2.srcs/sources_1/new/sDTW.sv:56]
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 17 for port 'diag' [C:/verilog/verilog_v2.srcs/sources_1/new/sDTW.sv:58]
+Completed static elaboration
+INFO: [XSIM 43-4323] No Change in HDL. Linking previously generated obj files to create kernel
+INFO: [USF-XSim-69] 'elaborate' step finished in '2' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/verilog/verilog_v2.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "testbench_behav -key {Behavioral:sim_1:Functional:testbench} -tclbatch {testbench.tcl} -view {C:/verilog/testbench_behav.wcfg} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Vivado Simulator 2019.1
+Time resolution is 1 ps
+open_wave_config C:/verilog/testbench_behav.wcfg
+source testbench.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+# run 9000000ns
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. testbench.w_t.q_bram.xpm_memory_sdpram_inst.xpm_memory_base_inst.config_drc
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/q_bram/xpm_memory_sdpram_inst/xpm_memory_base_inst/Initial290_201  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+Info: [XPM_MEMORY 20-2] MEMORY_INIT_FILE (none), MEMORY_INIT_PARAM together specify no memory initialization. Initial memory contents will be all 0's. testbench.w_t.q_bram.xpm_memory_sdpram_inst.xpm_memory_base_inst.config_drc  0
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/q_bram/xpm_memory_sdpram_inst/xpm_memory_base_inst/Initial290_201  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+Info: [XPM_MEMORY 20-1] MEMORY_PRIMITIVE (0) instructs Vivado Synthesis to choose the memory primitive type. Depending on their values, other XPM_MEMORY parameters may preclude the choice of certain memory primitive types. Review XPM_MEMORY documentation and parameter values to understand any limitations, or set MEMORY_PRIMITIVE to a different value. testbench.w_t.ref_bram.xpm_memory_spram_inst.xpm_memory_base_inst.config_drc
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/ref_bram/xpm_memory_spram_inst/xpm_memory_base_inst/Initial290_215  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+Info: [XPM_MEMORY 20-2] MEMORY_INIT_FILE (none), MEMORY_INIT_PARAM together specify no memory initialization. Initial memory contents will be all 0's. testbench.w_t.ref_bram.xpm_memory_spram_inst.xpm_memory_base_inst.config_drc  0
+Time: 1 ps  Iteration: 0  Process: /testbench/w_t/ref_bram/xpm_memory_spram_inst/xpm_memory_base_inst/Initial290_215  File: /wrk/2019.1/continuous/2019_05_24_2552052/packages/customer/vivado/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
+file opened succesfully: -20000
+ptr=     -20000
+file opened succesfully: -20000
+ptr=     -20000
+////////////////////////////////////////////////
+//          Running Squal Testbench             //
+////////////////////////////////////////////////
+Test			FAILED! result = 1 expected =      0
+131071
+$finish called at time : 661475 ns : File "C:/verilog/verilog_v2.srcs/sources_1/new/testbench.sv" Line 378
+xsim: Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 2611.293 ; gain = 0.000
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'testbench_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 9000000ns
+launch_simulation: Time (s): cpu = 00:00:09 ; elapsed = 00:00:13 . Memory (MB): peak = 2611.293 ; gain = 0.000
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/verilog/verilog_v2.runs/synth_1
+
+launch_runs synth_1 -jobs 4
+[Tue Nov 17 21:31:18 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+close_design
+open_run synth_1 -name synth_1
+Design is defaulting to impl run constrset: constrs_1
+Design is defaulting to synth run part: xc7a200tsbv484-1
+INFO: [Netlist 29-17] Analyzing 255 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-479] Netlist was created with Vivado 2019.1
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.005 . Memory (MB): peak = 2632.648 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+open_run: Time (s): cpu = 00:00:08 ; elapsed = 00:00:06 . Memory (MB): peak = 2658.719 ; gain = 26.070
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/verilog/verilog_v2.runs/synth_1
+
+launch_runs synth_1 -jobs 4 -scripts_only
+close_design
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/verilog/verilog_v2.runs/synth_1
+
+launch_runs synth_1 -jobs 4 -scripts_only
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/verilog/verilog_v2.runs/synth_1
+
+launch_runs synth_1 -jobs 4
+[Tue Nov 17 22:43:56 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/verilog/verilog_v2.runs/synth_1
+
+launch_runs synth_1 -jobs 4
+[Tue Nov 17 22:45:01 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/verilog/verilog_v2.runs/synth_1
+
+launch_runs synth_1 -jobs 4
+[Tue Nov 17 22:45:43 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/verilog/verilog_v2.runs/synth_1
+
+launch_runs synth_1 -jobs 4
+[Tue Nov 17 22:47:44 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/verilog/verilog_v2.runs/synth_1
+
+launch_runs synth_1 -jobs 4
+[Tue Nov 17 22:54:12 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/verilog/verilog_v2.runs/synth_1
+
+launch_runs synth_1 -jobs 4
+[Tue Nov 17 23:23:43 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/verilog/verilog_v2.runs/synth_1
+
+launch_runs synth_1 -jobs 4
+[Tue Nov 17 23:24:20 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/verilog/verilog_v2.runs/synth_1
+
+launch_runs synth_1 -jobs 4
+[Tue Nov 17 23:28:12 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/verilog/verilog_v2.runs/synth_1
+
+launch_runs synth_1 -jobs 4
+[Tue Nov 17 23:29:21 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/verilog/verilog_v2.runs/synth_1
+
+launch_runs synth_1 -jobs 4
+[Tue Nov 17 23:33:16 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/verilog/verilog_v2.runs/synth_1
+
+launch_runs synth_1 -jobs 4
+[Tue Nov 17 23:34:13 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/verilog/verilog_v2.runs/synth_1
+
+launch_runs synth_1 -jobs 4
+[Tue Nov 17 23:35:36 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/verilog/verilog_v2.runs/synth_1
+
+launch_runs synth_1 -jobs 4
+[Tue Nov 17 23:38:13 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/verilog/verilog_v2.runs/synth_1
+
+launch_runs synth_1 -jobs 4
+[Tue Nov 17 23:52:54 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+open_run synth_1 -name synth_1
+Design is defaulting to impl run constrset: constrs_1
+Design is defaulting to synth run part: xc7a200tsbv484-1
+INFO: [Netlist 29-17] Analyzing 255 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-479] Netlist was created with Vivado 2019.1
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.007 . Memory (MB): peak = 2780.418 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+open_run: Time (s): cpu = 00:00:08 ; elapsed = 00:00:07 . Memory (MB): peak = 2860.242 ; gain = 79.824
+report_utilization -name utilization_1
+set_property is_enabled false [get_files  {C:/verilog/verilog_v2.srcs/sources_1/new/top_normalizer.sv C:/verilog/verilog_v2.srcs/sources_1/new/mean_calculator.sv C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_0/div_gen_0.xci C:/verilog/verilog_v2.srcs/sources_1/new/mad_calculator.sv C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_2/div_gen_2.xci C:/verilog/verilog_v2.srcs/sources_1/new/mad_normalizer.sv c:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_3/div_gen_3.xci C:/verilog/verilog_v2.srcs/sources_1/ip/div_gen_1/div_gen_1.xci}]
+set_property is_enabled true [get_files  {C:/verilog_v3/verilog_v2.srcs/sources_1/new/warper_top.sv C:/verilog/verilog_v2.srcs/sources_1/new/ref_bram.sv C:/verilog_v3/verilog_v2.srcs/sources_1/new/query_bram.sv C:/verilog/verilog_v2.srcs/sources_1/new/sDTW.sv C:/verilog/verilog_v2.srcs/sources_1/new/PE.sv}]
+set_property is_enabled false [get_files  C:/verilog_v3/verilog_v2.srcs/sources_1/new/warper_top.sv]
+set_property is_enabled false [get_files  {C:/verilog/verilog_v2.srcs/sources_1/new/ref_bram.sv C:/verilog_v3/verilog_v2.srcs/sources_1/new/query_bram.sv}]
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/verilog/verilog_v2.runs/synth_1
+
+launch_runs synth_1 -jobs 4 -scripts_only
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/verilog/verilog_v2.runs/synth_1
+
+launch_runs synth_1 -jobs 4
+[Wed Nov 18 00:13:36 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/verilog/verilog_v2.runs/synth_1
+
+launch_runs synth_1 -jobs 4
+[Wed Nov 18 00:14:05 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+close_design
+set_property top sDTW [current_fileset]
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/verilog/verilog_v2.runs/synth_1
+
+launch_runs synth_1 -jobs 4
+[Wed Nov 18 00:14:43 2020] Launched synth_1...
+Run output will be captured here: C:/verilog/verilog_v2.runs/synth_1/runme.log
+open_run synth_1 -name synth_1
+Design is defaulting to impl run constrset: constrs_1
+Design is defaulting to synth run part: xc7a200tsbv484-1
+INFO: [Netlist 29-17] Analyzing 644 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-479] Netlist was created with Vivado 2019.1
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.003 . Memory (MB): peak = 2981.609 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+open_run: Time (s): cpu = 00:00:07 ; elapsed = 00:00:06 . Memory (MB): peak = 2981.609 ; gain = 0.000
+report_utilization -name utilization_1
