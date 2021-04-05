@@ -6,14 +6,16 @@ import h5py
 import random
 import numpy as np
 from ont_fast5_api.fast5_interface import get_fast5_file
+import matplotlib
+matplotlib.rcParams.update({'font.size': 22})
 
 main_dir = "/home/timdunn/SquiggAlign/data"
 max_reads = 1000
 
 for virus, basetype, other in zip(
-        ["covid", "lambda", "covid"], 
-        ["rtDNA", "DNA", "RNA"],
-        ["human", "human", "human"]):
+        ["covid", "lambda"], 
+        ["rtDNA", "DNA"],
+        ["human", "human"]):
     if basetype == "DNA":
         virus_color = 'red'
         other_color = 'forestgreen'
@@ -58,16 +60,21 @@ for virus, basetype, other in zip(
             if other_reads > max_reads: break
             else: other_reads += 1
         if other_reads > max_reads: break
+    print(np.mean(other_lengths))
 
     fig, ax = plt.subplots()
     virus_lengths = [x/scale for x in virus_lengths]
     other_lengths = [x/scale for x in other_lengths]
 
-    n, x, _ = ax.hist(virus_lengths, bins=np.linspace(0, maxlen, 100), 
-                               histtype=u'step', color='r')  
-    n, x, _ = ax.hist(other_lengths, bins=np.linspace(0, maxlen, 100), 
-                               histtype=u'step', color='g')  
-    ax.legend([f'{virus} {basetype}', f'{other} {basetype}'])
-    ax.set_xlabel('Read length (bases)')
-    ax.set_ylabel('Number of reads')
+    n, x, _ = ax.hist(virus_lengths, bins=np.linspace(0, maxlen, 40), 
+                               histtype=u'step', color='r', linewidth=4, alpha=0.6)  
+    n, x, _ = ax.hist(other_lengths, bins=np.linspace(0, maxlen, 40), 
+                               histtype=u'step', color='g', linewidth=4, alpha=0.6)  
+    if virus == "covid":
+        ax.legend([f'COVID {basetype}', f'{other} {basetype}'])
+    else:
+        ax.legend([f'lambda phage {basetype}', f'{other} {basetype}'])
+    ax.set_xlabel('')
+    ax.set_ylabel('')
+    ax.set_yticks([])
     fig.savefig(f'../img/read_lengths_{basetype}_0.png')

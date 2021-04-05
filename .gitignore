@@ -7,3 +7,4 @@ results/*
 *.bam
 *.bam.bai
 *.nfs*
+img/*

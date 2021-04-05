@@ -1,15 +1,15 @@
 #!/bin/bash
 
 # set datasets
-virus="lambda"
-other="human"
+virus="lambda/DNA/0"
+other="human/DNA/0"
 
 # set project filepaths
-proj_dir="/x/squiggalign_data"
+proj_dir="../data"
 
 # pipeline options
 do_read_until=true
-do_assembly=false
+do_assembly=true
 do_consensus=true
 run_medaka=true
 
@@ -40,9 +40,14 @@ if $do_read_until; then
     python3 read_until.py \
         --virus_dir $proj_dir/$virus \
         --other_dir $proj_dir/$other \
-        --max_reads 30000 \
-        --ratio 10 \
-        --target_coverage 1
+        --basetype dna \
+        --model_type fast \
+        --basecall \
+        --ratio 100 \
+        --max_reads 440000 \
+        --target_coverage 30 \
+        --batch_size 5 \
+        --chunk_lengths 2000
     deactivate
 else
     echo -e "${R1}[Skipping Read-Until]${R2}\n"
@@ -86,7 +91,7 @@ fi
 if $run_medaka; then
     echo -e "${G1}Running Medaka...${G2}"
     rm -rf $proj_dir/$virus/medaka_consensus
-    conda activate
+    source ~/software/medaka/venv/bin/activate
     time medaka_consensus \
         -m r941_min_high_g360 \
         -t $(nproc) \
@@ -94,7 +99,7 @@ if $run_medaka; then
         -i $proj_dir/$virus/fastq/all.fastq \
         -d $proj_dir/$virus/racon_consensus/consensus.fasta \
         -o $proj_dir/$virus/medaka_consensus
-    conda deactivate
+    deactivate
     echo -e "${G1}done\n${G2}"
 else
     echo -e "${R1}[Skipping Medaka Polishing]${R2}\n"

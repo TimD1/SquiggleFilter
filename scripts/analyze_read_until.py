@@ -6,14 +6,26 @@ import os
 from ont_fast5_api.fast5_interface import get_fast5_file
 from glob import glob
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.rcParams.update({'font.size': 20})
 import numpy as np
 import mappy
 import h5py
 from numba import njit
 from sklearn import metrics
+from scipy import stats
 
-import pyguppyclient
-from pyguppyclient.decode import ReadData
+from pyguppy_client_lib.pyclient import PyGuppyClient                            
+from pyguppy_client_lib.helper_functions import package_read, basecall_with_pyguppy
+
+class Read():
+    def __init__(self, signal, read_id, offset=0, scaling=1.0):
+        self.signal = signal                                                     
+        self.read_id = read_id                                                   
+        self.total_samples = len(signal)                                         
+        self.daq_offset = offset                                                 
+        self.daq_scaling = scaling                                               
+        self.read_tag = random.randint(0, int(2**32 - 1))   
 
 def yield_read_chunks(filename, start, length):
     with get_fast5_file(filename, 'r') as f5_fh:
@@ -23,7 +35,7 @@ def yield_read_chunks(filename, start, length):
             channel_info = read.handle[read.global_key + 'channel_id'].attrs
             scaling = channel_info['range'] / channel_info['digitisation']
             offset = int(channel_info['offset'])
-            yield ReadData(raw, read.read_id, scaling=scaling, offset=offset)
+            yield Read(raw, read.read_id, offset=offset, scaling=scaling)
 
 ################################################################################
 
@@ -50,18 +62,21 @@ def init(args):
         os.makedirs(args.img_dir, exist_ok=True)
 
     if args.basetype[-3:].lower() == "dna":
-        args.port = 1234
-    else:
-        args.port = 2345
-
-    if args.basetype[-3:].lower() == "dna":
         args.ru_lengths = list(range(1000, 10001, 1000))
         args.ru_thresholds = [
-                5500, 11000, 15000, 19000, 24000, 
-                29000, 34000, 39000, 44000, 48000]
+                3900, 7750, 12000, 16500, 20000, 
+                24000, 29500, 33000, 37000, 40000]
+        args.guppy_config = f"dna_r9.4.1_450bps_{args.model}.cfg"
+        args.port = 1234
+        args.preset = "map-ont"
+        args.k = 15
     else:
-        args.ru_lengths = list(range(2000, 20001, 2000))
+        args.ru_lengths = list(range(5000, 50001, 5000))
         args.ru_thresholds = [x*5 for x in args.ru_lengths] 
+        args.guppy_config = f"rna_r9.4.1_70bps_{args.model}.cfg"
+        args.port = 2345
+        args.preset = "splice"
+        args.k = 14
 
     return args
 
@@ -75,34 +90,57 @@ def basecall_align(read_type, length, args):
     # initialize mappy aligner
     aligner = mappy.Aligner(
             fn_idx_in = args.virus_dir+"/reference.fasta",
-            preset = "map-ont",
-            best_n = 1
+            preset = args.preset,
+            best_n = 1,
+            k = args.k
     )
 
-    # initialize guppy basecaller
-    if args.basetype[-3:].lower() == "dna":
-        guppy_config = f"/opt/ont/guppy/data/dna_r9.4.1_450bps_{args.model}.cfg"
-    else:
-        guppy_config = f"/opt/ont/guppy/data/rna_r9.4.1_70bps_{args.model}.cfg"
+    # initialize basecaller
+    basecaller = PyGuppyClient(address=f"127.0.0.1:{args.port}",     
+            config=args.guppy_config, server_file_load_timeout=100000)  
+    basecaller.connect() 
 
+    # generate all packets
+    all_packets = []
     read_count = 0
-    scores = np.zeros(max_reads)
-    with pyguppyclient.GuppyBasecallerClient(guppy_config, port=args.port) as bc:
-        for fast5_fn in glob(folder + "/fast5/*.fast5"):
-            for read in yield_read_chunks(fast5_fn, args.trim_start, length):
-                read_count += 1
-                if read_count >= max_reads: break
-                called = bc.basecall(read)
-                try:
-                    alignment = next(aligner.map(called.seq))
-                    scores[read_count] = alignment.mapq
-                except(StopIteration):
-                    pass # no alignment
-
+    for fast5_fn in glob(folder + "/fast5/*.fast5"):
+        for read in yield_read_chunks(fast5_fn, args.trim_start, length):
+            read_count += 1
             if read_count >= max_reads: break
+            all_packets.append( package_read(
+                read_tag = read.read_tag,
+                read_id = read.read_id,
+                raw_data = read.signal,
+                daq_offset = float(read.daq_offset),
+                daq_scaling = float(read.daq_scaling)
+                )
+            )
+        if read_count >= max_reads: break
 
-        # return mapping scores
-        return scores
+    # basecall all packets
+    all_calls = []                                               
+    sent, rcvd = 0, 0                                            
+    while sent < len(all_packets):                               
+        success = basecaller.pass_read(all_packets[sent])        
+        if not success:                                          
+            print('ERROR: Failed to basecall read.')             
+            break                                                
+        else:                                                    
+            sent += 1                                            
+    while rcvd < len(all_packets):                               
+        result = basecaller.get_completed_reads()                
+        rcvd += len(result)                                      
+        all_calls.extend(result)                                 
+
+    # align all basecalls
+    scores = np.zeros(max_reads)
+    for idx, call in enumerate(all_calls):
+        try:
+            alignment = next(aligner.map(call['datasets']['sequence']))
+            scores[idx] = alignment.mapq
+        except(StopIteration):
+            pass # no alignment
+    return scores
 
 ################################################################################
 
@@ -210,30 +248,34 @@ def dtw_align(read_type, length, args):
 ################################################################################
 
 def plot_data(length, threshold, ba_virus, ba_other, dtw_virus, dtw_other):
+    if args.virus_species == 'covid':
+        virus_name = "SARS-CoV-2"
+    else:
+        virus_name = "lambda phage"
 
     # plot raw Basecall-Align Histograms
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(10,5))
     ax.set_xlim((0, 61))
-    ax.hist(ba_virus, bins=list(range(61)), facecolor='r', alpha=0.5)
-    ax.hist(ba_other, bins=list(range(61)), facecolor='g', alpha=0.5)
-    ax.legend([f'{args.virus_species}', f'{args.other_species}'])
-    ax.set_xlabel('MiniMap Map Quality')
-    ax.set_ylabel('Read Count')
-    ax.set_title(f"Basecall-Align MapQ: {length} signals")
+    ax.hist(ba_virus, bins=list(range(61)), histtype=u'step', facecolor='r', alpha=0.6)
+    ax.hist(ba_other, bins=list(range(61)), histtype=u'step', facecolor='g', alpha=0.6)
+    ax.legend([f'{virus_name}', f'{args.other_species}', 'threshold'])
+    ax.set_xlabel('MiniMap2 Mapping Quality')
+    ax.set_yticks([])
     fig.savefig(f"{args.img_dir}/ba_hist_{length}.png")
 
     # plot raw DTW Histograms
     fig, ax = plt.subplots()
     ax.set_xlim((0, threshold*2))
-    ax.hist(dtw_virus, bins=list(range(0,threshold*2, 1000)), 
-            facecolor='r', alpha=0.5)
-    ax.hist(dtw_other, bins=list(range(0,threshold*2, 1000)), 
-            facecolor='g', alpha=0.5)
-    ax.legend([f'{args.virus_species}', f'{args.other_species}'])
-    ax.set_xlabel('DTW Alignment Score')
-    ax.set_ylabel('Read Count')
+    ax.hist(dtw_virus, histtype=u'step', bins=list(range(0,threshold*2, int(threshold/25))), 
+            color='r', alpha=0.6, linewidth=4)
+    ax.hist(dtw_other, histtype=u'step', bins=list(range(0,threshold*2, int(threshold/25))), 
+            color='g', alpha=0.6, linewidth=4)
     ax.axvline(threshold, color='k', linestyle='--')
-    ax.set_title(f"DTW-Align Score: {length} signals")
+    # ax.legend(['threshold', f'{virus_name}', f'{args.other_species}'], loc=(1,1))
+    # ax.set_xlabel('DTW Alignment Score')
+    # ax.set_ylabel('Read Count')
+    ax.set_ylim((0,150))
+    plt.tight_layout()
     fig.savefig(f"{args.img_dir}/dtw_hist_{length}.png")
 
     # create thresholds for plotting
@@ -257,9 +299,8 @@ def plot_data(length, threshold, ba_virus, ba_other, dtw_virus, dtw_other):
     # plot basecall-align discard rate
     fig, ax = plt.subplots()
     ax.plot(ba_virus_discard_rate, ba_other_discard_rate, marker='o', alpha=0.5)
-    ax.set_xlabel(f'{args.virus_species} Discard Rate')
+    ax.set_xlabel(f'{virus_name} Discard Rate')
     ax.set_ylabel(f'{args.other_species} Discard Rate')
-    ax.set_title(f'Basecall-Align Accuracy: {length} signals')
     ax.set_xlim((-0.1, 1.1))
     ax.set_ylim((-0.1, 1.1))
     fig.savefig(f'{args.img_dir}/ba_discard_{length}.png')
@@ -267,9 +308,8 @@ def plot_data(length, threshold, ba_virus, ba_other, dtw_virus, dtw_other):
     # plot dtw-align discard rate
     fig, ax = plt.subplots()
     ax.plot(dtw_virus_discard_rate, dtw_other_discard_rate, marker='o', alpha=0.5)
-    ax.set_xlabel(f'{args.virus_species} Discard Rate')
+    ax.set_xlabel(f'{virus_name} Discard Rate')
     ax.set_ylabel(f'{args.other_species} Discard Rate')
-    ax.set_title(f'DTW-Align Accuracy: {length} signals')
     ax.set_xlim((-0.1, 1.1))
     ax.set_ylim((-0.1, 1.1))
     fig.savefig(f'{args.img_dir}/dtw_discard_{length}.png')
@@ -369,17 +409,17 @@ def parser():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--main_dir", default="/home/timdunn/SquiggAlign/data")
-    parser.add_argument("--basetype", default="RNA")
+    parser.add_argument("--basetype", default="rtDNA")
     parser.add_argument("--virus_species", default="covid")
     parser.add_argument("--other_species", default="human")
     parser.add_argument("--virus_dataset", default="0")
     parser.add_argument("--other_dataset", default="0")
 
-    parser.add_argument("--model", default="hac")
+    parser.add_argument("--model", default="fast")
 
     parser.add_argument("--trim_start", type=int, default=1000)
-    parser.add_argument("--max_virus_reads", type=int, default=100)
-    parser.add_argument("--max_other_reads", type=int, default=100)
+    parser.add_argument("--max_virus_reads", type=int, default=1000)
+    parser.add_argument("--max_other_reads", type=int, default=1000)
 
     parser.add_argument("--save_scores", action="store_true", default=False)
     parser.add_argument("--load_scores", action="store_true", default=False)

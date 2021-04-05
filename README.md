@@ -9,6 +9,7 @@ $ python3.8 -m venv venv3
 $ source venv3/bin/activate
 (venv3)$ pip install upgrade pip
 (venv3)$ pip install -r requirements.txt
+(venv3)$ ipython kernel install --name "sf-venv" --user
 ```
 
 ### Datasets:
