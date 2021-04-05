@@ -54,7 +54,8 @@ module warper_top(input clk,
                      output logic result,
                      output  [`DATA_OUT_WIDTH-1:0] loop_score_o,
                      output loop_score_val  ,
-                     output logic done  );
+                     output logic done
+                     );
 
 
   // wire [`DATA_WIDTH-1:0] query;
@@ -74,7 +75,7 @@ module warper_top(input clk,
                     .init_sig(init_sig)   ,
                     .loop_score_o(loop_score_o),
                      .loop_score_val(loop_score_val)  ,
-                     .loop_finish(loop_finish)                
+                     .loop_finish(loop_finish)                     
                     );   
 
 

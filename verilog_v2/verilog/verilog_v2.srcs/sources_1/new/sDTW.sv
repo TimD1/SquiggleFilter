@@ -144,7 +144,7 @@ module sDTW(input clk,
 					.curr_op(pe_op[i]),
 					.prev_op(pe_prev_op[i]),
 					.prev_bonus(pe_prev_bonus[i]),
-					.stop_bit(stop_bits[i]),	
+					//.stop_bit(stop_bits[i]),	
 					//.prev_bonus(prev_bonus),			
 					.op_reference(op_reference[i]),
 					.query_o(query_o[i])				

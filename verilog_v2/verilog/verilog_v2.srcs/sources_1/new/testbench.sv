@@ -51,7 +51,7 @@ module testbench();
    int ref_file,rd_file;
    logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] ip_reference;
    logic [`CNTR_BITS-1:0] counter;
-   logic [`QUERY_LEN-1:0] stop_bits;
+   logic stop_bit;
    logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] l_query;
    logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] op_reference;
    logic [`QUERY_LEN-1:0][`DATA_WIDTH-1:0] l_query_r;

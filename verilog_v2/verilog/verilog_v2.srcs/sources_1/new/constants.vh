@@ -1,13 +1,13 @@
 //independent defines, tunable params before synthesis
 //synthesis defines
-//`define SYNTH
+`define SYNTH
 //warper defines
 `define DATA_WIDTH 8 // need to re-configure IP's too if this change
 `define IP_DATA_WIDTH 10
 `ifdef SYNTH
-    `define QUERY_LEN 500 // array size
-    `define REF_MAX_LEN 60000
-    `define READ_LEN 5000  //input read size
+    `define QUERY_LEN 2 // array size
+    `define REF_MAX_LEN 10
+    `define READ_LEN 4  //input read size
     `define MAX_LOOP_CNT `READ_LEN/`QUERY_LEN // no of loop iterations needed
 `else
     `define QUERY_LEN 10 // array size
