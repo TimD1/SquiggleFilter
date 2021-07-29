@@ -1,6 +1,5 @@
 venv3/
 data/*/*
-results/*
 *.ipynb*
 *.txt
 *.sam
@@ -8,3 +7,5 @@ results/*
 *.bam.bai
 *.nfs*
 img/*
+__pycache__
+scripts/results/*

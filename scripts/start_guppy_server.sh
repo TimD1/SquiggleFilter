@@ -1,7 +1,7 @@
 #!/bin/bash
 
 basetype="$1";
-model="hac"
+model="fast"
 
 if [ "$basetype" == "dna" ]; then
     config="dna_r9.4.1_450bps_$model.cfg"
