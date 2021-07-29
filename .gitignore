@@ -1,5 +1,6 @@
 venv3/
-data/*/*
+data/covid/fast5
+data/lambda/fast5
 *.ipynb*
 *.txt
 *.sam
