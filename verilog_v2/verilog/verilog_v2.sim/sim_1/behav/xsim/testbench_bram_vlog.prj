@@ -1,0 +1,15 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  --include "../../../../verilog_v2.srcs/sources_1/new" \
+"../../../../verilog_v2.srcs/sources_1/ip/blk_mem_gen_0/sim/blk_mem_gen_0.v" \
+
+sv xil_defaultlib  --include "../../../../verilog_v2.srcs/sources_1/new" \
+"../../../../verilog_v2.srcs/sources_1/new/testbench_bram.sv" \
+
+verilog xil_defaultlib  --include "../../../../verilog_v2.srcs/sources_1/new" \
+"../../../../verilog_v2.srcs/sources_1/ip/blk_mem_gen_1/sim/blk_mem_gen_1.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort
