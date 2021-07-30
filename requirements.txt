@@ -1,11 +1,18 @@
 matplotlib==3.0.3
 h5py
-pyguppyclient
-ont-fast5-api
-mappy==2.17
 numba
 sklearn
-pysam
-ont-pyguppy-client-lib
+# pysam
+# ont-pyguppy-client-lib
+# pyguppyclient
+# ont-fast5-api
+# mappy==2.17
 jupyter
 seaborn
+pandas
+numpy
+itertools
+glob
+scipy
+random
+os

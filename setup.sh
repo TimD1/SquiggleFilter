@@ -1,22 +1,5 @@
-# SquiggleFilter: An Accelerator for Portable Virus Detection
+#!/bin/bash
 
-### System Requirements
-Ubuntu 18 is recommended for ease of installation.
-
-### Setup
-
-First, install the required packages and clone the repository:
-```bash                                                                         
-# install basic required packages
-sudo apt update && sudo apt install git curl python3.6 python3-pip python3-dev jupyter
-
-# clone SquiggleFilter repository
-git clone https://github.com/TimD1/SquiggleFilter && cd SquiggleFilter
-chmod +x setup.sh && sudo ./setup.sh
-``` 
-
-The remaining setup is handled by the `setup.sh` script, whose contents are shown below:
-```bash                                                                         
 echo -en "installing aws s3 (for downloading datasets)"
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" \
     -o "aws_cli_v2.zip" && \
@@ -49,9 +32,3 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ipython kernel install --name "sf-venv3" --user
 echo -e "done!"
-``` 
-
-### Usage
-
-### Citation
-
