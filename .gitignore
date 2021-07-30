@@ -1,7 +1,7 @@
 venv3/
 data/covid/fast5
 data/human/fast5
-*.ipynb*
+.ipynb*
 *.sam
 *.bam
 *.bam.bai
