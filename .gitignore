@@ -1,12 +1,11 @@
 venv3/
 data/covid/fast5
-data/lambda/fast5
+data/human/fast5
 *.ipynb*
-*.txt
 *.sam
 *.bam
 *.bam.bai
 *.nfs*
 img/*
 __pycache__
-scripts/results/*
+scripts/results/artifact-eval

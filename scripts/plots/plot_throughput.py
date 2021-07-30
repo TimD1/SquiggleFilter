@@ -38,11 +38,5 @@ ax.text(2.5, 6000, "Titan\nXP\n" + r"$471\mathrm{mm}^2$" + "\n250W", ha='center'
 ax.text(4, 6000, "1-Tile\nASIC\n" + r"$3\mathrm{mm}^2$" + "\n3W", ha='center')
 ax.text(5, 6000, "5-Tile\nASIC\n" + r"$13\mathrm{mm}^2$" + "\n14W", ha='center')
 
-# add curly-braces
-# ax.annotate('', xy=(0.5, 0.5), ha='center', va='bottom',
-#     arrowprops=dict(arrowstyle='-[, widthB=7.0, lengthB=1.5', lw=2.0))
-
-
 plt.tight_layout()
-
 fig.savefig('../../img/throughput.png', dpi=300)

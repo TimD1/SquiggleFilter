@@ -9,6 +9,10 @@ if [ "$basetype" == "dna" ]; then
 elif [ "$basetype" == "rna" ]; then
     config="rna_r9.4.1_70bps_$model.cfg"
     port=2345
+elif [ "$basetype" == "" ]; then
+    # just do DNA
+    config="dna_r9.4.1_450bps_$model.cfg"
+    port=1234
 else
     echo "Invalid base type, must be 'rna' or 'dna'"
     exit 1
