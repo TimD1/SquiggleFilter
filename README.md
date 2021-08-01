@@ -37,3 +37,34 @@ Lastly, we provide the scripts used for generating multiple figures from our pap
 
 ### Hardware Evaluation
 
+[Vivado 2019 Installation](
+https://www.xilinx.com/support/documentation-navigation/design-hubs/2019-1/dh0013-vivado-installation-and-licensing-hub.html)
+If Vivado does not open or crashes, please check the [Xilinx SDK requirements](https://www.xilinx.com/html_docs/xilinx2019_1/SDK_Doc/xsct/intro/xsct_system_requirements.html). We succesfully ran it on a Quadcore i-5 8th gen with 8G memory.
+
+
+#### Loading the environment
+1. Uncompress `design/verilog.tar`. The project folder is compressed to avoid GitHub size limits. You can simply uncompress this, install Vivado, and run the project.
+
+2. Open a project on Vivado under the `File` tab and load `design/verilog/verilog\_v2.xpr from the uncompressed folder`.
+
+#### Settings
+
+1. Set the reference filename on the `reference\_filename` and local query filepath on the `query\_filename` in `testbench\_top.sv`. Make sure to do this in all three places it appears in the file.
+2. Set simulation runtime under `Tools->Settings` to 18ms.
+
+#### Defaults & description
+- `testbench\_top.sv` is the top file of the testbench simulation environment.
+- `warper\_top.sv` is the top file of the systolic array.
+- `normalizer\_top.sv` is the top file of the normalizer.
+- `constants.h`: the reference length can be controlled with `REF\_MAX\_LEN` and `QUERY\_LEN` can be controlled with `QUERY\_LEN`.
+- This project does use integer adder, subtractor, divider and accumulator IPs from Xilinx. They are linked to the project environment.
+- A smaller `QUERY` size of 100 instead of the original SARS-CoV-2 reference is used for this artifact to achieve simulation times and resource usage. However, if you wish to do so, you can vary `QUERY\_LEN` under `constants.vh` from 1-500 on the datasets in `design/sv\_sim\_datasets`.
+- The BRAM and DRAM are not connected and query and reference sequences are loaded from text file.
+
+#### Testbench
+
+The testbench loads test vectors from a subset of our public datasets in `design/sv\_sim\_datasets`. Make sure to update your local path in testbench before starting simulation. It compares the output of the design in `result` when `done` is set high to our expectation: 1 for virus and 1 for human.
+
+#### Behavioral simulation using the testbench
+
+Go to the flow navigator on the left hand side tab and press `Run Simulation` to start the simulation. Watch the test case number and `PASSED/FAILED` displays on the tcl console. The behavioral simulation may also be inspected by looking at the waveform. We observe and expect all 18 testcases to pass.
