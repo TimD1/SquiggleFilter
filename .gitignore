@@ -7,5 +7,6 @@ data/human/fast5
 *.bam.bai
 *.nfs*
 img/*
+*index.db
 __pycache__
 scripts/results/artifact-eval
