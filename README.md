@@ -1,9 +1,12 @@
-# SquiggleFilter: An Accelerator for Portable Virus Detection
+## SquiggleFilter: An Accelerator for Portable Virus Detection
 
-### System Requirements
-Ubuntu 18 is recommended for ease of installation.
+### Software Evaluation
 
-### Setup
+#### System Requirements
+
+Ubuntu 18 is recommended for ease of installation, and at least 10GB RAM.
+
+#### Instructions
 
 First, install the required packages and clone the repository:
 ```bash                                                                         
@@ -12,46 +15,25 @@ sudo apt update && sudo apt install git curl python3.6 python3-pip python3-dev j
 
 # clone SquiggleFilter repository
 git clone https://github.com/TimD1/SquiggleFilter && cd SquiggleFilter
-chmod +x setup.sh && sudo ./setup.sh
 ``` 
 
-The remaining setup is handled by the `setup.sh` script, whose contents are shown below:
+All remaining setup is handled by the `setup.sh` script, which will install the command-line AWS S3 tool, download the SARS-CoV-2 and human datasets, and create a Jupyter Notebook environment with all required dependencies:
 ```bash                                                                         
-echo -en "installing aws s3 (for downloading datasets)"
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" \
-    -o "aws_cli_v2.zip" && \
-    unzip aws_cli_v2.zip && \
-    ./aws/install && \
-    rm aws_cli_v2.zip && \
-    rm -r ./aws
-echo -e "done!"
-
-echo -en "downloading covid data..."
-mkdir -p data/covid/fast5 && \
-    cd data/covid/fast5 && \
-    wget https://cadde.s3.climb.ac.uk/SP1-raw.tgz && \
-    tar -xvf SP1-raw.tgz && \
-    rm SP1-raw.tgz && \
-    cd -
-echo -e "done!"
-
-echo -en "downloading human data..."
-mkdir -p data/human/fast5 && \
-    aws s3 --no-sign-request sync \
-        s3://ont-open-data/gm24385_2020.09/analysis/r9.4.1/20200914_1357_1-E11-H11_PAF272_d3c9678e/guppy_v4.0.11_r9.4.1_hac_prom/align_unfiltered/chr19/fast5/ \
-        data/human/fast5  
-echo -e "done!"
-
-echo -en "setting up virtual environment..."
-python3.6 -m venv sf-venv3
-source sf-venv3/bin/activate
-pip install --upgrade pip
-pip install -r requirements.txt
-ipython kernel install --name "sf-venv3" --user
-echo -e "done!"
+chmod +x setup.sh && ./setup.sh
 ``` 
 
-### Usage
+Once the dataset downloads complete, run the main Jupyter Notebook `sdtw_analysis.ipynb`:
+```bash                                                                         
+jupyter notebook sdtw_analysis.ipynb
+``` 
 
-### Citation
+If the notebook does not automatically open in a browser, navigate in any browser to `http://localhost:8888/notebooks/sdtw_analysis.ipynb`. From there, ensure that the `sf-venv3` kernel is selected, and choose `Kernel -> Restart and Run All` from the Jupyter Notebook menu.
+
+This pipeline will run our custom software sDTW implementation (`sdtw()`, in cell 13 (i cell numberings labeled after being run)) on 1000 random human and viral reads from the selected datasets. Figures 11 and 17a from our paper are regenerated, showing the human and virus alignment cost distributions and classification accuracies, respectively.
+
+Next, our Read Until runtime model is provided (`Reads()`, `Flowcell()`, `Classifier()`, and `Run()`, in cell 23). This estimates and plots expected Read Until runtime (Figures 17b/c) based on statistics measured after running our sDTW algorithm on the random subsample of reads.
+
+Lastly, we provide the scripts used for generating multiple figures from our paper (Figures 2, 5, 10, 16a, 16b, 18, 19, and 21).
+
+### Hardware Evaluation
 
