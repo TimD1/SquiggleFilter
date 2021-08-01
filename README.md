@@ -29,7 +29,7 @@ jupyter notebook sdtw_analysis.ipynb
 
 If the notebook does not automatically open in a browser, navigate in any browser to `http://localhost:8888/notebooks/sdtw_analysis.ipynb`. From there, ensure that the `sf-venv3` kernel is selected, and choose `Kernel -> Restart and Run All` from the Jupyter Notebook menu.
 
-This pipeline will run our custom software sDTW implementation (`sdtw()`, in cell 13 (i cell numberings labeled after being run)) on 1000 random human and viral reads from the selected datasets. Figures 11 and 17a from our paper are regenerated, showing the human and virus alignment cost distributions and classification accuracies, respectively.
+This pipeline will run our custom software sDTW implementation (`sdtw()`, in cell 13 (cells are numbered after being run)) on 1000 random human and viral reads from the selected datasets. Figures 11 and 17a from our paper are regenerated, showing the human and virus alignment cost distributions and classification accuracies, respectively.
 
 Next, our Read Until runtime model is provided (`Reads()`, `Flowcell()`, `Classifier()`, and `Run()`, in cell 23). This estimates and plots expected Read Until runtime (Figures 17b/c) based on statistics measured after running our sDTW algorithm on the random subsample of reads.
 
