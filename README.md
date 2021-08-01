@@ -1,4 +1,5 @@
 ## SquiggleFilter: An Accelerator for Portable Virus Detection
+[![DOI](https://zenodo.org/badge/308382397.svg)](https://zenodo.org/badge/latestdoi/308382397)
 
 ### Software Evaluation
 
