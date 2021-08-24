@@ -7,7 +7,7 @@ echo -e "\n${G1}installing aws s3 (for downloading datasets)${G2}"
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" \
     -o "aws_cli_v2.zip" && \
     unzip aws_cli_v2.zip && \
-    ./aws/install && \
+    sudo ./aws/install && \
     rm -f aws_cli_v2.zip && \
     rm -rf ./aws
 echo -e "${G1}done!${G2}"
@@ -17,8 +17,8 @@ mkdir -p data/covid/fast5 && \
     cd data/covid/fast5 && \
     wget https://cadde.s3.climb.ac.uk/SP1-raw.tgz && \
     tar -xvf SP1-raw.tgz && \
-    rm SP1-raw.tgz SP1-mapped.fastq README && \
-    cd -
+    rm SP1-raw.tgz SP1-mapped.fastq README
+cd -
 echo -e "${G1}done!${G2}"
 
 echo -e "\n${G1}downloading human data...${G2}"
