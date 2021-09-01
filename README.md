@@ -58,7 +58,7 @@ If Vivado does not open or crashes, please check the [Xilinx SDK requirements](h
 - `normalizer_top.sv` is the top file of the normalizer.
 - `constants.h`: the reference length can be controlled with `REF_MAX_LEN` and `QUERY_LEN` can be controlled with `QUERY_LEN`.
 - This project does use integer adder, subtractor, divider and accumulator IPs from Xilinx. They are linked to the project environment.
-- A smaller `QUERY` size of 100 instead of the original SARS-CoV-2 reference is used for this artifact to achieve simulation times and resource usage. However, if you wish to do so, you can vary `QUERY_LEN` under `constants.vh` from 1-500 on the datasets in `design/sv_sim_datasets`.
+- A smaller `QUERY` size of 100 instead of the original SARS-CoV-2 reference is used for this artifact to achieve simulation times and resource usage. However, if you wish to reconfigure, you can vary `QUERY_LEN` under `constants.vh` from 1-500 on the datasets in `design/sv_sim_datasets`.
 - The BRAM and DRAM are not connected and query and reference sequences are loaded from text file.
 
 #### Testbench
@@ -67,4 +67,4 @@ The testbench loads test vectors from a subset of our public datasets in `design
 
 #### Behavioral simulation using the testbench
 
-Go to the flow navigator on the left hand side tab and press `Run Simulation` to start the simulation. Watch the test case number and `PASSED/FAILED` displays on the tcl console. The behavioral simulation may also be inspected by looking at the waveform. We observe and expect all 18 testcases to pass.
+Go to the flow navigator on the left hand side tab and press `Run Simulation` to start the simulation. Watch the test case number and `PASSED/FAILED` displays on the tcl console for functionally verifying the design. The behavioral simulation may also be closely inspected by looking at the waveform. We observe and expect all 18 testcases to pass.
