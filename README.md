@@ -43,9 +43,9 @@ If Vivado does not open or crashes, please check the [Xilinx SDK requirements](h
 
 
 #### Loading the environment
-1. Uncompress `design/verilog.tar`. The project folder is compressed to avoid GitHub size limits. You can simply uncompress this, install Vivado, and run the project.
+1. Uncompress `design/verilog_v2.rar`. The project folder is compressed to avoid GitHub size limits. You can simply uncompress this, install Vivado, and run the project.
 
-2. Open a project on Vivado under the `File` tab and load `design/verilog/verilog_v2.xpr from the uncompressed folder`.
+2. Open a project on Vivado under the `File` tab and load `design/verilog_v2/verilog_v2.xpr from the uncompressed folder`.
 
 #### Settings
 
