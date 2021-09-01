@@ -39,7 +39,7 @@ Lastly, we provide the scripts used for generating multiple figures from our pap
 ### Hardware Evaluation
 
 Please install Vivado 2019.1 from [this link](https://www.xilinx.com/support/documentation-navigation/design-hubs/2019-1/dh0013-vivado-installation-and-licensing-hub.html).
-If Vivado does not open or crashes, please check the [Xilinx SDK requirements](https://www.xilinx.com/html_docs/xilinx2019_1/SDK_Doc/xsct/intro/xsct_system_requirements.html). We succesfully ran it on a Quadcore i-5 8th gen with 8G memory.
+If Vivado does not open or crashes, please check the [Xilinx SDK requirements](https://www.xilinx.com/html_docs/xilinx2019_1/SDK_Doc/xsct/intro/xsct_system_requirements.html). We succesfully ran it on a Quadcore i-5 8th gen with 8G memory. The intention of this setup is only for functionally verifying the design and not for ASIC synthesis.
 
 
 #### Loading the environment
