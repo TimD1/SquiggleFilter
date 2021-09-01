@@ -10,3 +10,4 @@ img/*
 *index.db
 __pycache__
 scripts/results/artifact-eval
+aws
