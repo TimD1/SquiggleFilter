@@ -72,11 +72,11 @@ Go to the flow navigator on the left hand side tab and press `Run Simulation` to
 Signals in waveform.wcfg to help guide waveform inspection:
 
 -testcase_no: 0-17 (0-7:virus reads, 8-17: human reads)<br />
--clk: clock for SquiggleFilter
--rst4: resets the systolic array processors.
--start1: signals start of systolic array processing
--reference:reference current samples for sars-cov-2 genome
--scaled_op: normalized query from normalizer
--done: signals completion of SquiggleFilter processing for a read.
--result: SquiggleFilter output, 1 for virus detection, 0 for human
--expected_result: Testbench provided expected result value, 1 for virus detection, 0 for human
+-clk: clock for SquiggleFilter<br />
+-rst4: resets the systolic array processors<br />
+-start1: signals start of systolic array processing<br />
+-reference:reference current samples for sars-cov-2 genome<br />
+-scaled_op: normalized query from normalizer<br />
+-done: signals completion of SquiggleFilter processing for a read<br />
+-result: SquiggleFilter output, 1 for virus detection, 0 for human<br />
+-expected_result: Testbench provided expected result value, 1 for virus detection, 0 for human<br />
