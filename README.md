@@ -71,7 +71,7 @@ Go to the flow navigator on the left hand side tab and press `Run Simulation` to
 
 Signals in waveform.wcfg to help guide waveform inspection:
 
--testcase_no: 0-17 (0-7:virus reads, 8-17: human reads)
+-testcase_no: 0-17 (0-7:virus reads, 8-17: human reads)``` 
 -clk: clock for SquiggleFilter
 -rst4: resets the systolic array processors.
 -start1: signals start of systolic array processing
