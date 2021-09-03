@@ -64,7 +64,7 @@ If Vivado does not open or crashes, please check the [Xilinx SDK requirements](h
 
 #### Testbench
 
-The testbench loads test vectors from a subset of our public datasets in `design/sv_sim_datasets`. Make sure to update your local path in testbench before starting simulation. It compares the output of the design in `result` when `done` is set high to our expectation: 1 for virus and 1 for human.
+The testbench loads test vectors from a subset of our public datasets in `design/sv_sim_datasets`. Make sure to update your local path in testbench before starting simulation. It compares the output of the design in `result` when `done` is set high to our expectation: 1 for virus and 0 for human.
 
 #### Behavioral simulation using the testbench
 
