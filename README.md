@@ -75,7 +75,7 @@ Signals in waveform.wcfg to help guide waveform inspection:
 -`clk`: clock for SquiggleFilter<br />
 -`rst4`: resets the systolic array processors<br />
 -`start1`: signals start of systolic array processing<br />
--`reference`:reference current samples for sars-cov-2 genome<br />
+-`reference`:reference current samples for SARS-Cov-2 genome<br />
 -`scaled_op`: normalized query from normalizer<br />
 -`done`: signals completion of SquiggleFilter processing for a read<br />
 -`result`: SquiggleFilter output, 1 for virus detection, 0 for human<br />
