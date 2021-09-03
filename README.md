@@ -67,4 +67,16 @@ The testbench loads test vectors from a subset of our public datasets in `design
 
 #### Behavioral simulation using the testbench
 
-Go to the flow navigator on the left hand side tab and press `Run Simulation` to start the simulation. Watch the test case number and `PASSED/FAILED` displays on the tcl console for functionally verifying the design. The behavioral simulation may also be closely inspected by looking at the waveform. We observe and expect all 18 testcases to pass.
+Go to the flow navigator on the left hand side tab and press `Run Simulation` to start the simulation. Watch the test case number and `PASSED/FAILED` displays on the tcl console for functionally verifying the design. We observe and expect all 18 testcases to pass. Additionally, the behavioral simulation may also be closely inspected by looking at the waveform. waveform.wcfg in the working directory should be automatically loaded into the waveform viewer and following signals maybe observed to further verify the functionality.
+
+Signals in waveform.wcfg to help guide waveform inspection:
+
+-testcase_no: 0-17 (0-7:virus reads, 8-17: human reads)
+-clk: clock for SquiggleFilter
+-rst4: resets the systolic array processors.
+-start1: signals start of systolic array processing
+-reference:reference current samples for sars-cov-2 genome
+-scaled_op: normalized query from normalizer
+-done: signals completion of SquiggleFilter processing for a read.
+-result: SquiggleFilter output, 1 for virus detection, 0 for human
+-expected_result: Testbench provided expected result value, 1 for virus detection, 0 for human
