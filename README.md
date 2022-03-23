@@ -3,7 +3,7 @@
 
 Please cite SquiggleFilter if you compare to/use it in your work:
 
-Dunn, Tim, Harisankar Sadasivan, Jack Wadden, Kush Goliya, Kuan-Yu Chen, David Blaauw, Reetuparna Das, and Satish Narayanasamy. "SquiggleFilter: An Accelerator for Portable Virus Detection." In MICRO-54: 54th Annual IEEE/ACM International Symposium on Microarchitecture, pp. 535-549. 2021.
+```Dunn, Tim, Harisankar Sadasivan, Jack Wadden, Kush Goliya, Kuan-Yu Chen, David Blaauw, Reetuparna Das, and Satish Narayanasamy. "SquiggleFilter: An Accelerator for Portable Virus Detection." In MICRO-54: 54th Annual IEEE/ACM International Symposium on Microarchitecture, pp. 535-549. 2021.```
 
 ### Software Evaluation
 
